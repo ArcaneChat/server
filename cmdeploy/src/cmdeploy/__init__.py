@@ -101,7 +101,7 @@ def _install_remote_venv_with_chatmaild(config) -> None:
     for fn in (
         "doveauth",
         "filtermail",
-        "echobot",
+        # "echobot",
         "chatmail-metadata",
         "lastlogin",
     ):
@@ -563,7 +563,7 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         groups=["opendkim"],
         system=True,
     )
-    server.user(name="Create echobot user", user="echobot", system=True)
+    # server.user(name="Create echobot user", user="echobot", system=True)
     server.user(name="Create iroh user", user="iroh", system=True)
 
     # Add our OBS repository for dovecot_no_delay
