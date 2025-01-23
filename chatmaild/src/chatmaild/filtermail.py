@@ -211,20 +211,13 @@ class BeforeQueueHandler:
             return
 
         for recipient in envelope.rcpt_tos:
-            if envelope.mail_from == recipient:
-                # Always allow sending emails to self.
-                continue
-            if recipient_matches_passthrough(recipient, passthrough_recipients):
-                continue
             res = recipient.split("@")
             if len(res) != 2:
                 return f"500 Invalid address <{recipient}>"
-            _recipient_addr, recipient_domain = res
 
-            is_outgoing = recipient_domain != envelope_from_domain
-            if is_outgoing and not mail_encrypted:
-                print("Rejected unencrypted mail.", file=sys.stderr)
-                return f"500 Invalid unencrypted mail to <{recipient}>"
+        if not mail_encrypted:
+            print("Rejected unencrypted mail.", file=sys.stderr)
+            return f"500 Invalid unencrypted mail to <{recipient}>"
 
 
 class SendRateLimiter:
