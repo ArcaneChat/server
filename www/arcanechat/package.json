@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite --port 3000",
+    "fix": "prettier --write .",
+    "check": "prettier --check .",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "sass": "^1.83.4",
+    "vite": "^6.0.7"
+  },
+  "dependencies": {
+    "@fontsource/jost": "^5.1.2",
+    "bootstrap": "5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "swiper": "^11.2.1"
+  }
+}

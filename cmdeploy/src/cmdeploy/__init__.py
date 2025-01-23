@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 from chatmaild.config import Config, read_config
-from pyinfra import host, facts
+from pyinfra import facts, host
 from pyinfra.facts.files import File
 from pyinfra.facts.systemd import SystemdEnabled
 from pyinfra.operations import apt, files, pip, server, systemd
@@ -649,9 +649,8 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
 
     www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
 
-    build_dir = www_path.joinpath("build")
-    src_dir = www_path.joinpath("src")
-    build_webpages(src_dir, build_dir, config)
+    subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
+    build_dir = www_path.joinpath("arcanechat/dist")
     files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
 
     _install_remote_venv_with_chatmaild(config)

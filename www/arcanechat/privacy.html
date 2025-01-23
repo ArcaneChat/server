@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ArcaneChat - Private chats for the family</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta name="description" content="Private chats for the family" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ArcaneChat" />
+    <meta
+      property="og:image"
+      content="https://arcanechat.me/assets/social.png"
+    />
+    <meta property="og:url" content="https://arcanechat.me" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="./img/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="./img/favicon.svg" />
+    <link rel="shortcut icon" href="./img/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./img/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="/assets/site.webmanifest" />
+
+    <link href="./src/style.scss" rel="stylesheet" />
+    <script src="./src/main.js" type="module"></script>
+  </head>
+
+  <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="51">
+    <div class="container-xxl bg-white p-0">
+      <!-- Navbar & Hero Start -->
+      <div class="container-xxl position-relative p-0" id="home">
+        <nav
+          class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0"
+        >
+          <a href="/" class="navbar-brand p-0">
+            <h1 class="m-0">
+              <svg
+                version="1.1"
+                id="logo"
+                width="228.00002"
+                height="279.99997"
+                viewBox="0 0 228.00002 279.99997"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:svg="http://www.w3.org/2000/svg"
+              >
+                <defs id="defs1" />
+                <g id="g1" transform="translate(-80.805809,-220.86922)">
+                  <g
+                    id="g31"
+                    transform="matrix(0.99897107,0,0,0.99804163,-329.64213,-165.43829)"
+                    fill="currentColor"
+                  >
+                    <path
+                      id="path5-3"
+                      fill="currentColor"
+                      d="m 420.91268,621.66513 c 0.29969,-0.0112 0.59894,-0.0233 0.89843,-0.0391 -0.0686,-0.48747 -0.14083,-0.97447 -0.20117,-1.46289 -0.14876,-1.34504 -0.25704,-2.69392 -0.24804,-4.04882 -0.0167,-0.85838 -0.0518,-1.71611 -0.0742,-2.57422 -0.0883,-0.0649 -0.17782,-0.12781 -0.26563,-0.19336 -0.0226,-0.0157 -0.0439,-0.033 -0.0664,-0.0488 z m 34.87109,-1.19336 c 11.72457,-8.36543 26.89221,-14.81652 46.25391,-15.92774 0,0 39.97266,-0.27228 47.96289,-3.53711 7.99004,-3.26463 68.75378,-14.72174 83.02539,-98.62109 14.27142,-83.89935 -1.0586,-115.32031 -1.0586,-115.32031 0,0 -21.1616,55.7865 -81.10546,59.93164 0,0 -14.51394,1.03136 -38.86329,1.41992 -24.34915,0.38856 -75.84479,20.6908 -90.64062,85.79297 l -0.22266,43.52734 c 2.50642,4.22719 5.49846,8.13135 8.91992,11.6836 3.99177,4.11383 8.12226,8.13862 12.80079,11.47656 2.26504,1.65299 4.65742,3.20885 6.51562,5.33594 1.94411,2.34513 3.33678,5.01458 4.20703,7.94336 0.7059,2.10854 1.45116,4.20328 2.20508,6.29492 z"
+                    />
+                    <path
+                      id="path5-3-1"
+                      fill="currentColor"
+                      d="m 629.06355,433.01533 c -0.29969,0.0112 -0.59894,0.0233 -0.89843,0.0391 0.0686,0.48747 0.14083,0.97447 0.20117,1.46289 0.14876,1.34504 0.25704,2.69392 0.24804,4.04882 0.0167,0.85838 0.0518,1.71611 0.0742,2.57422 0.0883,0.0649 0.17782,0.12781 0.26563,0.19336 0.0226,0.0157 0.0439,0.033 0.0664,0.0488 z m -34.87109,1.19336 c -11.72457,8.36543 -26.89221,14.81652 -46.25391,15.92774 0,0 -39.97266,0.27228 -47.96289,3.53711 -7.99004,3.26463 -68.75378,14.72174 -83.02539,98.62109 -14.27142,83.89935 1.0586,115.32031 1.0586,115.32031 0,0 21.1616,-55.7865 81.10546,-59.93164 0,0 14.51394,-1.03136 38.86329,-1.41992 24.34915,-0.38856 75.84479,-20.6908 90.64062,-85.79297 l 0.22266,-43.52734 c -2.50642,-4.22719 -5.49846,-8.13135 -8.91992,-11.6836 -3.99177,-4.11383 -8.12226,-8.13862 -12.80079,-11.47656 -2.26504,-1.65299 -4.65742,-3.20885 -6.51562,-5.33594 -1.94411,-2.34513 -3.33678,-5.01458 -4.20703,-7.94336 -0.7059,-2.10854 -1.45116,-4.20328 -2.20508,-6.29492 z"
+                    />
+                  </g>
+                </g></svg
+              >ArcaneChat
+            </h1>
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+          >
+            <span class="bi bi-list"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav mx-auto py-0">
+              <a href="/#home" class="nav-item nav-link">Home</a>
+              <a href="/#features" class="nav-item nav-link">Features</a>
+              <a href="#privacy" class="nav-item nav-link">Privacy</a>
+              <a href="/#faq" class="nav-item nav-link">Help</a>
+              <a href="/#contact" class="nav-item nav-link">Contact</a>
+            </div>
+          </div>
+        </nav>
+
+        <div
+          class="container-xxl bg-primary hero-header"
+          style="margin-bottom: 0 !important"
+        >
+          <div class="container px-lg-5">
+            <div class="row g-5">
+              <div class="col-lg-8 text-center text-lg-start">
+                <p class="pb-3"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Navbar & Hero End -->
+
+      <!-- Privacy Start -->
+      <div class="container-xxl" id="privacy">
+        <div class="container px-lg-5">
+          <div class="text-center">
+            <h5 class="text-primary-gradient fw-medium">Privacy</h5>
+            <h1 class="mb-5">ArcaneChat Terms & Privacy Policy</h1>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <p>
+                ArcaneChat server is designed to never collect or store any
+                sensitive information. ArcaneChat messages cannot be accessed by
+                us or other third parties because they are always end-to-end
+                encrypted, private, and secure. Our Terms of Service and Privacy
+                Policy are available below.
+              </p>
+              <ul>
+                <li><a href="#terms">Terms of Service</a></li>
+                <li><a href="#privacy-policy">Privacy Policy</a></li>
+              </ul>
+              <h3 id="terms">Terms of Service</h3>
+              <p>
+                ArcaneChat Messenger (“ArcaneChat”) utilizes security and
+                end-to-end encryption to provide private messaging, and other
+                services to users. You agree to our Terms of Service (“Terms”)
+                by installing or using our apps, services, or website (together,
+                “Services”).
+              </p>
+              <h4>About our services</h4>
+              <p>
+                <strong>Minimum Age.</strong> You must be at least 13 years old
+                to use our Services. The minimum age to use our Services without
+                parental approval may be higher in your home country.
+              </p>
+              <p>
+                <strong>Account Registration.</strong> To create an account you
+                must register anonymously for our Services no private data is
+                required, a random username and password is generated for you
+                and kept in your ArcaneChat app.
+              </p>
+              <p>
+                <strong>Privacy of user data.</strong> ArcaneChat does not
+                collect your personal data or content in any way.
+              </p>
+              <p>
+                Please read our Privacy Policy to understand how we safeguard
+                the information you provide when using our Services. For the
+                purpose of operating our Services, you agree to our data
+                practices as described in our Privacy Policy.
+              </p>
+              <p>
+                <strong>Fees and Taxes.</strong> You are responsible for data
+                and mobile carrier fees and taxes associated with the devices on
+                which you use our Services.
+              </p>
+              <h4>Using ArcaneChat</h4>
+              <p>
+                <strong>Legal and Acceptable Use.</strong> You agree to use our
+                Services only for legal, authorized, and acceptable purposes.
+                You will not use (or assist others in using) our Services in
+                ways that: (a) violate or infringe the rights of ArcaneChat, our
+                users, or others, including privacy, publicity, intellectual
+                property, or other proprietary rights; (b) involve sending
+                illegal or impermissible communications such as bulk messaging.
+              </p>
+              <p>
+                <strong>Keeping Your Account Secure.</strong> ArcaneChat
+                embraces privacy by design and does not have the ability to
+                access your messages. You are responsible for keeping your
+                device and your ArcaneChat account safe and secure. If you lose
+                your phone and account backups, your data is lost forever.
+              </p>
+
+              <p>
+                <strong>Third-party services.</strong> Our Services may allow
+                you to access, use, or interact with third-party websites, apps,
+                content, and other products and services. When you use
+                third-party services, their terms and privacy policies govern
+                your use of those services.
+              </p>
+
+              <h4>Disclaimers and Limitations</h4>
+              <p>
+                <strong>Disclaimers.</strong> YOU USE OUR SERVICES AT YOUR OWN
+                RISK AND SUBJECT TO THE FOLLOWING DISCLAIMERS. WE PROVIDE OUR
+                SERVICES ON AN “AS IS” BASIS WITHOUT ANY EXPRESS OR IMPLIED
+                WARRANTIES, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF
+                MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE,
+                NON-INFRINGEMENT, AND FREEDOM FROM COMPUTER VIRUS OR OTHER
+                HARMFUL CODE. ARCANECHAT DOES NOT WARRANT THAT ANY INFORMATION
+                PROVIDED BY US IS ACCURATE, COMPLETE, OR USEFUL, THAT OUR
+                SERVICES WILL BE OPERATIONAL, ERROR-FREE, SECURE, OR SAFE, OR
+                THAT OUR SERVICES WILL FUNCTION WITHOUT DISRUPTIONS, DELAYS, OR
+                IMPERFECTIONS. WE DO NOT CONTROL, AND ARE NOT RESPONSIBLE FOR,
+                CONTROLLING HOW OR WHEN OUR USERS USE OUR SERVICES. WE ARE NOT
+                RESPONSIBLE FOR THE ACTIONS OR INFORMATION (INCLUDING CONTENT)
+                OF OUR USERS OR OTHER THIRD PARTIES. YOU RELEASE US, AFFILIATES,
+                DIRECTORS, OFFICERS, EMPLOYEES, PARTNERS, AND AGENTS (TOGETHER,
+                “ARCANECHAT PARTIES”) FROM ANY CLAIM, COMPLAINT, CAUSE OF
+                ACTION, CONTROVERSY, OR DISPUTE (TOGETHER, “CLAIM”) AND DAMAGES,
+                KNOWN AND UNKNOWN, RELATING TO, ARISING OUT OF, OR IN ANY WAY
+                CONNECTED WITH ANY SUCH CLAIM YOU HAVE AGAINST ANY THIRD
+                PARTIES.
+              </p>
+
+              <p>
+                <strong>Limitation of liability.</strong> THE ARCANECHAT PARTIES
+                WILL NOT BE LIABLE TO YOU FOR ANY LOST PROFITS OR CONSEQUENTIAL,
+                SPECIAL, PUNITIVE, INDIRECT, OR INCIDENTAL DAMAGES RELATING TO,
+                ARISING OUT OF, OR IN ANY WAY IN CONNECTION WITH OUR TERMS, US,
+                OR OUR SERVICES, EVEN IF THE ARCANECHAT PARTIES HAVE BEEN
+                ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR AGGREGATE
+                LIABILITY RELATING TO, ARISING OUT OF, OR IN ANY WAY IN
+                CONNECTION WITH OUR TERMS, US, OR OUR SERVICES WILL NOT EXCEED
+                ONE HUNDRED DOLLARS ($100). THE FOREGOING DISCLAIMER OF CERTAIN
+                DAMAGES AND LIMITATION OF LIABILITY WILL APPLY TO THE MAXIMUM
+                EXTENT PERMITTED BY APPLICABLE LAW. THE LAWS OF SOME STATES OR
+                JURISDICTIONS MAY NOT ALLOW THE EXCLUSION OR LIMITATION OF
+                CERTAIN DAMAGES, SO SOME OR ALL OF THE EXCLUSIONS AND
+                LIMITATIONS SET FORTH ABOVE MAY NOT APPLY TO YOU.
+                NOTWITHSTANDING ANYTHING TO THE CONTRARY IN OUR TERMS, IN SUCH
+                CASES, THE LIABILITY OF THE ARCANECHAT PARTIES WILL BE LIMITED
+                TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW.
+              </p>
+
+              <p>
+                <strong>Availability of Our Services.</strong> Our Services may
+                be interrupted, including for maintenance, upgrades, or network
+                or equipment failures. We may discontinue some or all of our
+                Services, including certain features and the support for certain
+                devices and platforms, at any time.
+              </p>
+
+              <h4>Ending Terms</h4>
+              <p>
+                <strong>Ending these Terms.</strong> You may end these Terms
+                with ArcaneChat at any time by deleting ArcaneChat Messenger
+                from your device and discontinuing use of our Services. We may
+                modify, suspend, or terminate your access to or use of our
+                Services anytime for any reason, such as if you violate the
+                letter or spirit of our Terms or create harm, risk, or possible
+                legal exposure for ArcaneChat. The following provisions will
+                survive termination of your relationship with ArcaneChat:
+                “Disclaimers”, “Limitation of Liability”, “Availability” and
+                “Ending these Terms”.
+              </p>
+
+              <hr />
+              <h3 id="privacy-policy">Privacy Policy</h3>
+              <strong>Summary: No personal data asked or collected</strong>
+              <p>
+                ArcaneChat server neither asks for nor retains personal
+                information. ArcaneChat server exist to reliably transmit (store
+                and deliver) end-to-end encrypted messages between user's
+                devices running the ArcaneChat messenger app.
+              </p>
+              <p>ArcaneChat server:</p>
+              <ul>
+                <li>
+                  <p>unconditionally removes messages after 20 days,</p>
+                </li>
+                <li>
+                  <p>prohibits sending out un-encrypted messages,</p>
+                </li>
+                <li>
+                  <p>does not store Internet addresses ("IP addresses"),</p>
+                </li>
+                <li>
+                  <p>
+                    does not process IP addresses in relation to email
+                    addresses.
+                  </p>
+                </li>
+              </ul>
+              <p>
+                Due to the resulting lack of personal data processing this
+                server may not require a privacy policy.
+              </p>
+              <p>
+                Nevertheless, we provide legal details below to make life easier
+                for data protection specialists and lawyers scrutinizing the
+                server's operations.
+              </p>
+              <h4>1. Name and contact information</h4>
+              <p>
+                Responsible for the processing of your personal data is:
+                <code>Asiel Diaz Benitez</code>
+              </p>
+              <p>E-mail: adb@arcanechat.me</p>
+              <h4>2. Processing when using ArcaneChat services</h4>
+              <p>
+                We provide services optimized for the use from
+                <a href="https://arcanechat.me">ArcaneChat</a> apps and process
+                only the data necessary for the setup and technical execution of
+                message delivery. The purpose of the processing is that users
+                can read, write, manage, delete, send, and receive chat
+                messages. For this purpose, we operate server-side software that
+                enables us to send and receive messages.
+              </p>
+              <p>We process the following data and details:</p>
+              <ul>
+                <li>
+                  <p>
+                    Outgoing and incoming messages (SMTP) are stored for transit
+                    on behalf of their users until the message can be delivered.
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    E-Mail-Messages are stored for the recipient and made
+                    accessible via IMAP protocols, until explicitly deleted by
+                    the user or until a fixed time period is exceeded, (<em
+                      >usually 4-8 weeks</em
+                    >).
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    IMAP and SMTP protocols are password protected with unique
+                    credentials for each account.
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Users can retrieve or delete all stored messages without
+                    intervention from the operators using standard IMAP client
+                    tools.
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Users can connect to a "realtime relay service" to establish
+                    Peer-to-Peer connection between user devices, allowing them
+                    to send and retrieve ephemeral messages which are never
+                    stored on the ArcaneChat server, also not in encrypted form.
+                  </p>
+                </li>
+              </ul>
+              <h5>2.1 Account setup</h5>
+              <p>
+                Creating an account happens in one of two ways on our mail
+                servers:
+              </p>
+              <ul>
+                <li>
+                  <p>
+                    with a QR invitation token which is scanned using the
+                    ArcaneChat app and then the account is created.
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    by letting ArcaneChat otherwise create an account and
+                    register it with a arcanechat.me mail server.
+                  </p>
+                </li>
+              </ul>
+              <p>
+                In either case, we process the newly created email address. No
+                phone numbers, other email addresses, or other identifiable data
+                is currently required. The legal basis for the processing is
+                Art. 6 (1) lit. b GDPR, as you have a usage contract with us by
+                using our services.
+              </p>
+              <h5>2.2 Processing of E-Mail-Messages</h5>
+              <p>
+                In addition, we will process data to keep the server
+                infrastructure operational for purposes of e-mail dispatch and
+                abuse prevention.
+              </p>
+              <ul>
+                <li>
+                  <p>
+                    Therefore, it is necessary to process the content and/or
+                    metadata (e.g., headers of the email as well as smtp
+                    chatter) of E-Mail-Messages in transit.
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    We will keep logs of messages in transit for a limited time.
+                    These logs are used to debug delivery problems and software
+                    bugs.
+                  </p>
+                </li>
+              </ul>
+              <p>
+                In addition, we process data to protect the systems from
+                excessive use. Therefore, limits are enforced:
+              </p>
+              <ul>
+                <li>
+                  <p>rate limits</p>
+                </li>
+                <li>
+                  <p>storage limits</p>
+                </li>
+                <li>
+                  <p>message size limits</p>
+                </li>
+                <li>
+                  <p>
+                    any other limit necessary for the whole server to function
+                    in a healthy way and to prevent abuse.
+                  </p>
+                </li>
+              </ul>
+              <p>
+                The processing and use of the above permissions are performed to
+                provide the service. The data processing is necessary for the
+                use of our services, therefore the legal basis of the processing
+                is Art. 6 (1) lit. b GDPR, as you have a usage contract with us
+                by using our services. The legal basis for the data processing
+                for the purposes of security and abuse prevention is Art. 6 (1)
+                lit. f GDPR. Our legitimate interest results from the
+                aforementioned purposes. We will not use the collected data for
+                the purpose of drawing conclusions about your person.
+              </p>
+              <h4>3. Processing when using our Website</h4>
+              <p>
+                When you visit our website, the browser used on your end device
+                automatically sends information to the server of our website.
+                This information is temporarily stored in a so-called log file.
+                The following information is collected and stored until it is
+                automatically deleted (<em>usually 7 days</em>):
+              </p>
+              <ul>
+                <li>
+                  <p>used type of browser,</p>
+                </li>
+                <li>
+                  <p>used operating system,</p>
+                </li>
+                <li>
+                  <p>access date and time as well as</p>
+                </li>
+                <li>
+                  <p>country of origin and IP address,</p>
+                </li>
+                <li>
+                  <p>the requested file name or HTTP resource,</p>
+                </li>
+                <li>
+                  <p>the amount of data transferred,</p>
+                </li>
+                <li>
+                  <p>
+                    the access status (file transferred, file not found, etc.)
+                    and
+                  </p>
+                </li>
+                <li>
+                  <p>the page from which the file was requested.</p>
+                </li>
+              </ul>
+              <p>
+                This website is hosted by an external service provider (hoster).
+                The personal data collected on this website is stored on the
+                hoster's servers. Our hoster will process your data only to the
+                extent necessary to fulfill its obligations to perform under our
+                instructions. In order to ensure data protection-compliant
+                processing, we have concluded a data processing agreement with
+                our hoster.
+              </p>
+              <p>
+                The aforementioned data is processed by us for the following
+                purposes:
+              </p>
+              <ul>
+                <li>
+                  <p>Ensuring a reliable connection setup of the website,</p>
+                </li>
+                <li>
+                  <p>ensuring a convenient use of our website,</p>
+                </li>
+                <li>
+                  <p>
+                    checking and ensuring system security and stability, and
+                  </p>
+                </li>
+                <li>
+                  <p>for other administrative purposes.</p>
+                </li>
+              </ul>
+              <p>
+                The legal basis for the data processing is Art. 6 (1) lit. f
+                GDPR. Our legitimate interest results from the aforementioned
+                purposes of data collection. We will not use the collected data
+                for the purpose of drawing conclusions about your person.
+              </p>
+              <h4>4. Transfer of Data</h4>
+              <p>
+                We do not retain any personal data but e-mail messages waiting
+                to be delivered may contain personal data. Any such residual
+                personal data will not be transferred to third parties for
+                purposes other than those listed below:
+              </p>
+              <p>
+                a) you have given your express consent in accordance with Art. 6
+                para. 1 sentence 1 lit. a GDPR,
+              </p>
+              <p>
+                b) the disclosure is necessary for the assertion, exercise or
+                defence of legal claims pursuant to Art. 6 (1) sentence 1 lit. f
+                GDPR and there is no reason to assume that you have an
+                overriding interest worthy of protection in the non-disclosure
+                of your data,
+              </p>
+              <p>
+                c) in the event that there is a legal obligation to disclose
+                your data pursuant to Art. 6 para. 1 sentence 1 lit. c GDPR, as
+                well as
+              </p>
+              <p>
+                d) this is legally permissible and necessary in accordance with
+                Art. 6 Para. 1 S. 1 lit. b GDPR for the processing of
+                contractual relationships with you,
+              </p>
+              <p>
+                e) this is carried out by a service provider acting on our
+                behalf and on our exclusive instructions, whom we have carefully
+                selected (Art. 28 (1) GDPR) and with whom we have concluded a
+                corresponding contract on commissioned processing (Art. 28 (3)
+                GDPR), which obliges our contractor, among other things, to
+                implement appropriate security measures and grants us
+                comprehensive control powers.
+              </p>
+              <h4>5. Rights of the data subject</h4>
+              <p>
+                The rights arise from Articles 12 to 23 GDPR. Since no personal
+                data is stored on our servers, even in encrypted form, there is
+                no need to provide information on these or possible objections.
+                A deletion can be made directly in the ArcaneChat email
+                messenger.
+              </p>
+              <p>
+                If you have any questions or complaints, please feel free to
+                contact us by email: adb@arcanechat.me<br />
+              </p>
+              <p>
+                As a rule, you can contact the supervisory authority of your
+                usual place of residence or workplace.
+              </p>
+              <h4>6. Validity of this privacy policy</h4>
+              <p>
+                This data protection declaration is valid as of
+                <em>January 2025</em>. Due to the further development of our
+                service and offers or due to changed legal or official
+                requirements, it may become necessary to revise this data
+                protection declaration from time to time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Privacy End -->
+
+      <!-- Footer Start -->
+      <div class="container-fluid bg-primary text-light footer">
+        <div class="container py-5 px-lg-5">
+          <div class="row g-5">
+            <div class="col-md-6 col-lg-3">
+              <h4 class="text-white mb-4">Address</h4>
+              <p><i class="bi bi-geo-alt-fill me-3"></i>Freiburg, Germany</p>
+              <p><i class="bi bi-envelope-fill me-3"></i>adb@arcanechat.me</p>
+              <div class="d-flex pt-2">
+                <a
+                  class="btn btn-outline-light btn-social"
+                  href="https://mastodon.social/@adbenitez"
+                  ><i class="bi bi-mastodon"></i
+                ></a>
+                <a
+                  class="btn btn-outline-light btn-social"
+                  href="https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&a=adb%40arcanechat.me&n=adb&i=pw6hnrJhutO1ocFCxEzmCMsp&s=0UAOOP4AFmQBAcutnIQmLlmA"
+                  ><i class="bi bi-chat-left-dots-fill"></i
+                ></a>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6">
+              <h4 class="text-white mb-4">Useful Links</h4>
+              <a
+                class="btn btn-link"
+                href="https://github.com/ArcaneChat/android/issues"
+                >Report a Bug</a
+              >
+              <a
+                class="btn btn-link"
+                href="https://github.com/ArcaneChat/android"
+                >Source Code</a
+              >
+              <a class="btn btn-link" href="#privacy">Terms & Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+        <div class="container px-lg-5">
+          <div class="copyright">
+            <div class="row">
+              <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                &copy; Asiel Diaz Benitez, All Right Reserved.
+
+                <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                Designed By
+                <a href="https://htmlcodex.com">HTML Codex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer End -->
+
+      <!-- Back to Top -->
+      <a href="#home" class="btn btn-lg btn-lg-square back-to-top pt-2"
+        ><i class="bi bi-arrow-up text-white"></i
+      ></a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ArcaneChat - Private chats for the family</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta name="description" content="Private chats for the family" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ArcaneChat" />
+    <meta
+      property="og:image"
+      content="https://arcanechat.me/assets/social.png"
+    />
+    <meta property="og:url" content="https://arcanechat.me" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="./img/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="./img/favicon.svg" />
+    <link rel="shortcut icon" href="./img/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./img/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="/assets/site.webmanifest" />
+
+    <link href="./src/style.scss" rel="stylesheet" />
+    <script src="./src/main.js" type="module"></script>
+  </head>
+
+  <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="51">
+    <div class="container-xxl bg-white p-0">
+      <!-- Navbar & Hero Start -->
+      <div class="container-xxl position-relative p-0" id="home">
+        <nav
+          class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0"
+        >
+          <a href="#" class="navbar-brand p-0">
+            <h1 class="m-0">
+              <svg
+                version="1.1"
+                id="logo"
+                width="228.00002"
+                height="279.99997"
+                viewBox="0 0 228.00002 279.99997"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:svg="http://www.w3.org/2000/svg"
+              >
+                <defs id="defs1" />
+                <g id="g1" transform="translate(-80.805809,-220.86922)">
+                  <g
+                    id="g31"
+                    transform="matrix(0.99897107,0,0,0.99804163,-329.64213,-165.43829)"
+                    fill="currentColor"
+                  >
+                    <path
+                      id="path5-3"
+                      fill="currentColor"
+                      d="m 420.91268,621.66513 c 0.29969,-0.0112 0.59894,-0.0233 0.89843,-0.0391 -0.0686,-0.48747 -0.14083,-0.97447 -0.20117,-1.46289 -0.14876,-1.34504 -0.25704,-2.69392 -0.24804,-4.04882 -0.0167,-0.85838 -0.0518,-1.71611 -0.0742,-2.57422 -0.0883,-0.0649 -0.17782,-0.12781 -0.26563,-0.19336 -0.0226,-0.0157 -0.0439,-0.033 -0.0664,-0.0488 z m 34.87109,-1.19336 c 11.72457,-8.36543 26.89221,-14.81652 46.25391,-15.92774 0,0 39.97266,-0.27228 47.96289,-3.53711 7.99004,-3.26463 68.75378,-14.72174 83.02539,-98.62109 14.27142,-83.89935 -1.0586,-115.32031 -1.0586,-115.32031 0,0 -21.1616,55.7865 -81.10546,59.93164 0,0 -14.51394,1.03136 -38.86329,1.41992 -24.34915,0.38856 -75.84479,20.6908 -90.64062,85.79297 l -0.22266,43.52734 c 2.50642,4.22719 5.49846,8.13135 8.91992,11.6836 3.99177,4.11383 8.12226,8.13862 12.80079,11.47656 2.26504,1.65299 4.65742,3.20885 6.51562,5.33594 1.94411,2.34513 3.33678,5.01458 4.20703,7.94336 0.7059,2.10854 1.45116,4.20328 2.20508,6.29492 z"
+                    />
+                    <path
+                      id="path5-3-1"
+                      fill="currentColor"
+                      d="m 629.06355,433.01533 c -0.29969,0.0112 -0.59894,0.0233 -0.89843,0.0391 0.0686,0.48747 0.14083,0.97447 0.20117,1.46289 0.14876,1.34504 0.25704,2.69392 0.24804,4.04882 0.0167,0.85838 0.0518,1.71611 0.0742,2.57422 0.0883,0.0649 0.17782,0.12781 0.26563,0.19336 0.0226,0.0157 0.0439,0.033 0.0664,0.0488 z m -34.87109,1.19336 c -11.72457,8.36543 -26.89221,14.81652 -46.25391,15.92774 0,0 -39.97266,0.27228 -47.96289,3.53711 -7.99004,3.26463 -68.75378,14.72174 -83.02539,98.62109 -14.27142,83.89935 1.0586,115.32031 1.0586,115.32031 0,0 21.1616,-55.7865 81.10546,-59.93164 0,0 14.51394,-1.03136 38.86329,-1.41992 24.34915,-0.38856 75.84479,-20.6908 90.64062,-85.79297 l 0.22266,-43.52734 c -2.50642,-4.22719 -5.49846,-8.13135 -8.91992,-11.6836 -3.99177,-4.11383 -8.12226,-8.13862 -12.80079,-11.47656 -2.26504,-1.65299 -4.65742,-3.20885 -6.51562,-5.33594 -1.94411,-2.34513 -3.33678,-5.01458 -4.20703,-7.94336 -0.7059,-2.10854 -1.45116,-4.20328 -2.20508,-6.29492 z"
+                    />
+                  </g>
+                </g></svg
+              >ArcaneChat
+            </h1>
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+          >
+            <span class="bi bi-list"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav mx-auto py-0">
+              <a href="#home" class="nav-item nav-link">Home</a>
+              <a href="#features" class="nav-item nav-link">Features</a>
+              <a href="/privacy.html" class="nav-item nav-link">Privacy</a>
+              <a href="#faq" class="nav-item nav-link">Help</a>
+              <a href="#contact" class="nav-item nav-link">Contact</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="container-xxl bg-primary hero-header">
+          <div class="container px-lg-5">
+            <div class="row g-5">
+              <div class="col-lg-8 text-center text-lg-start">
+                <h1 class="text-white mb-4">Private chats for the family</h1>
+                <p class="text-white">
+                  Fast, reliable, decentralized, encrypted messenger compatible
+                  with e-mail.
+                </p>
+                <a
+                  href="#download"
+                  class="btn btn-primary-gradient mt-3 py-sm-3 px-4 px-sm-5 rounded-pill me-3"
+                  >Download</a
+                >
+                <a
+                  href="#features"
+                  class="btn btn-secondary-gradient mt-3 py-sm-3 px-4 px-sm-5 rounded-pill"
+                  >Read More</a
+                >
+              </div>
+              <div
+                class="col-lg-4 d-flex justify-content-center justify-content-lg-end"
+              >
+                <div class="screenshot-carousel">
+                  <div class="swiper">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+                      <!-- Slides -->
+                      <div class="swiper-slide">
+                        <img
+                          class="img-fluid"
+                          src="img/screenshot-1.jpeg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="swiper-slide">
+                        <img
+                          class="img-fluid"
+                          src="img/screenshot-2.jpeg"
+                          alt=""
+                        />
+                      </div>
+                      <div class="swiper-slide">
+                        <img
+                          class="img-fluid"
+                          src="img/screenshot-3.png"
+                          alt=""
+                        />
+                      </div>
+                      <div class="swiper-slide">
+                        <img
+                          class="img-fluid"
+                          src="img/screenshot-4.png"
+                          alt=""
+                        />
+                      </div>
+                      <div class="swiper-slide">
+                        <img
+                          class="img-fluid"
+                          src="img/screenshot-5.png"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Navbar & Hero End -->
+
+      <!-- Download Start -->
+      <div id="download" class="container-xxl py-5">
+        <div class="container py-5 px-lg-5 text-center">
+          <h5 class="text-primary-gradient fw-medium">Download</h5>
+          <h1 class="mb-4">Download The Latest Version</h1>
+          <p class="mb-4">
+            <strong
+              >WARNING: The process of making the app available in Google Play
+              is still ongoing, due to bureaucracy it may take some days!<br
+            /></strong>
+            ArcaneChat is available only for Android at the moment, but you can
+            download the
+            <a href="https://get.delta.chat">Delta Chat app</a> in other
+            platforms and chat with ArcaneChat users!
+          </p>
+          <div id="store-btns">
+            <div class="store-btn">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.github.arcanechat"
+              >
+                <img src="img/get-it-on-gplay.png" />
+              </a>
+            </div>
+            <div class="store-btn">
+              <a href="https://f-droid.org/packages/chat.delta.lite/">
+                <img src="img/get-it-on-fdroid.png" />
+              </a>
+            </div>
+            <div class="store-btn">
+              <a
+                href="https://github.com/ArcaneChat/android/releases/latest/download/ArcaneChat-gplay.apk"
+              >
+                <img src="img/get-it-direct-download.png" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Download End -->
+
+      <!-- Features Start -->
+      <div class="container-xxl py-5" id="features">
+        <div class="container py-5 px-lg-5">
+          <div class="text-center pb-4">
+            <h5 class="text-primary-gradient fw-medium">App Features</h5>
+            <h1 class="mb-5">Why use ArcaneChat?</h1>
+          </div>
+          <div class="row gy-5 gx-4 justify-content-center">
+            <div class="col-lg-4 col-sm-6 text-center pt-4">
+              <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
+                <div
+                  class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                  style="width: 100px; height: 100px"
+                >
+                  <i class="bi bi-lightning-charge-fill bi-3x text-white"></i>
+                </div>
+                <h5 class="mt-4 mb-3">Fast</h5>
+                <p class="mb-0">
+                  Fast, reliable instant messaging with multi-profile and
+                  multi-device support
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 text-center pt-4">
+              <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
+                <div
+                  class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                  style="width: 100px; height: 100px"
+                >
+                  <i class="bi bi-eye-slash-fill bi-3x text-white"></i>
+                </div>
+                <h5 class="mt-4 mb-3">Private</h5>
+                <p class="mb-0">
+                  Easy anonymous sign-up, no phone number or any private data
+                  required
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 text-center pt-4">
+              <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
+                <div
+                  class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                  style="width: 100px; height: 100px"
+                >
+                  <i class="bi bi-shield-fill-check bi-3x text-white"></i>
+                </div>
+                <h5 class="mt-4 mb-3">Secure</h5>
+                <p class="mb-0">
+                  End-to-end encrypted chats safe against network and server
+                  attacks
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 text-center pt-4">
+              <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
+                <div
+                  class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                  style="width: 100px; height: 100px"
+                >
+                  <i class="bi bi-joystick bi-3x text-white"></i>
+                </div>
+                <h5 class="mt-4 mb-3">Fun</h5>
+                <p class="mb-0">
+                  Interactive mini-apps in chats for gaming, productivity and
+                  collaboration
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 text-center pt-4">
+              <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
+                <div
+                  class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                  style="width: 100px; height: 100px"
+                >
+                  <i class="bi bi-envelope-fill bi-3x text-white"></i>
+                </div>
+                <h5 class="mt-4 mb-3">Flexible</h5>
+                <p class="mb-0">
+                  Can be used as an e-mail client, with your existing e-mail
+                  address
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 text-center pt-4">
+              <div class="position-relative bg-light rounded pt-5 pb-4 px-4">
+                <div
+                  class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                  style="width: 100px; height: 100px"
+                >
+                  <i class="bi bi-stars bi-3x text-white"></i>
+                </div>
+                <h5 class="mt-4 mb-3">Magic</h5>
+                <p class="mb-0">
+                  ArcaneChat works in slow unstable networks while traveling
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Features End -->
+
+      <!-- FAQ Start -->
+      <div class="container-xxl py-5" id="faq">
+        <div class="container py-5 px-lg-5">
+          <div class="text-center">
+            <h5 class="text-primary-gradient fw-medium">Help</h5>
+            <h1 class="mb-5">Frequently Asked Questions</h1>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <ul>
+                <li>
+                  <h3 id="whois">Who is developing ArcaneChat?</h3>
+                  <p>
+                    ArcaneChat was created by
+                    <strong>Asiel Diaz Benitez (adb)</strong>, a free/open
+                    software developer with an infinite love for privacy,
+                    security, decentralization and freedom. He is also one of
+                    the mantainers of the
+                    <a href="https://delta.chat">Delta Chat</a> app.
+                    <br />
+                  </p>
+                </li>
+                <li>
+                  <h3 id="deltachat-compat">
+                    Is ArcaneChat compatible with DeltaChat?
+                  </h3>
+                  <p>
+                    Yes, ArcaneChat is a
+                    <a href="https://delta.chat">Delta Chat</a> client, you can
+                    chat with Delta Chat users using ArcaneChat.
+                  </p>
+                </li>
+                <li>
+                  <h3 id="message-retention">
+                    How long are my messages stored on the arcanechat.me server?
+                  </h3>
+                  <p>
+                    If you have a single device, your ArcaneChat app will delete
+                    messages immediately after downloading them. Messages are
+                    unconditionally removed 20 days after arriving on the
+                    <strong>arcanechat.me</strong> server.
+                  </p>
+                </li>
+                <li>
+                  <h3 id="account-deletion">
+                    Account Deletion: How to remove my profile?
+                  </h3>
+                  <p>
+                    If you uninstall ArcaneChat or remove an
+                    <strong>arcanechat.me</strong>
+                    profile from within the ArcaneChat app, then the according
+                    account on the server, along with all associated data, is
+                    automatically deleted 90 days afterwards.
+                  </p>
+                  <p>
+                    If you use multiple devices then you need to remove the
+                    according profile from each device in order for all account
+                    data to be removed on the server side.
+                  </p>
+                  <p>
+                    If you have any further questions or requests regarding
+                    account deletion please
+                    <a href="#contact">contact us</a> using your ArcaneChat
+                    account.
+                  </p>
+                </li>
+                <li>
+                  <h3 id="contribute">I love ArcaneChat, how to contribute?</h3>
+                  <p>
+                    If you would like to help the development of the project and
+                    to keep the <strong>arcanechat.me</strong> server running,
+                    you can send donations to:
+                    <br />
+                    IBAN: <code>DE44680501010014375817</code>, Account owner:
+                    <code>Asiel Diaz Benitez</code>
+                    <br />
+                    Thanks a lot! your contributions are really appreciated!
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FAQ End -->
+
+      <!-- Contact Start -->
+      <div class="container-xxl py-5" id="contact">
+        <div class="container py-5 px-lg-5">
+          <div class="text-center">
+            <h5 class="text-primary-gradient fw-medium">Contact Us</h5>
+            <h1 class="mb-5">Get In Touch!</h1>
+          </div>
+          <div class="row justify-content-center text-center">
+            <div class="col-lg-9">
+              <p class="text-center mb-4">
+                To get in contact with ArcaneChat developer,
+                <strong>Asiel Diaz Benitez (adb)</strong>, you can write to him
+                in ArcaneChat, scan the following QR code or
+                <a
+                  href="https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&a=adb%40arcanechat.me&n=adb&i=pw6hnrJhutO1ocFCxEzmCMsp&s=0UAOOP4AFmQBAcutnIQmLlmA"
+                  >click here</a
+                >.
+              </p>
+            </div>
+            <div class="col-lg-12">
+              <a
+                href="https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&a=adb%40arcanechat.me&n=adb&i=pw6hnrJhutO1ocFCxEzmCMsp&s=0UAOOP4AFmQBAcutnIQmLlmA"
+              >
+                <img class="qr" src="img/contact.svg" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Contact End -->
+
+      <!-- Footer Start -->
+      <div class="container-fluid bg-primary text-light footer">
+        <div class="container py-5 px-lg-5">
+          <div class="row g-5">
+            <div class="col-md-6 col-lg-3">
+              <h4 class="text-white mb-4">Address</h4>
+              <p><i class="bi bi-geo-alt-fill me-3"></i>Freiburg, Germany</p>
+              <p><i class="bi bi-envelope-fill me-3"></i>adb@arcanechat.me</p>
+              <div class="d-flex pt-2">
+                <a
+                  class="btn btn-outline-light btn-social"
+                  href="https://mastodon.social/@adbenitez"
+                  ><i class="bi bi-mastodon"></i
+                ></a>
+                <a
+                  class="btn btn-outline-light btn-social"
+                  href="https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&a=adb%40arcanechat.me&n=adb&i=pw6hnrJhutO1ocFCxEzmCMsp&s=0UAOOP4AFmQBAcutnIQmLlmA"
+                  ><i class="bi bi-chat-left-dots-fill"></i
+                ></a>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6">
+              <h4 class="text-white mb-4">Useful Links</h4>
+              <a
+                class="btn btn-link"
+                href="https://github.com/ArcaneChat/android/issues"
+                >Report a Bug</a
+              >
+              <a
+                class="btn btn-link"
+                href="https://github.com/ArcaneChat/android"
+                >Source Code</a
+              >
+              <a class="btn btn-link" href="/privacy.html"
+                >Terms & Privacy Policy</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="container px-lg-5">
+          <div class="copyright">
+            <div class="row">
+              <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                &copy; Asiel Diaz Benitez, All Right Reserved.
+
+                <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                Designed By
+                <a href="https://htmlcodex.com">HTML Codex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer End -->
+
+      <!-- Back to Top -->
+      <a href="#home" class="btn btn-lg btn-lg-square back-to-top pt-2"
+        ><i class="bi bi-arrow-up text-white"></i
+      ></a>
+    </div>
+  </body>
+</html>
