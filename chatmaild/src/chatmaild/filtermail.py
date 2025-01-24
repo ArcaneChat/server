@@ -10,8 +10,7 @@ from email.parser import BytesParser
 from email.utils import parseaddr
 from smtplib import SMTP as SMTPClient
 
-from aiosmtpd.controller import Controller
-
+from .aiosmtpd_patch import PatchedController as Controller
 from .common_encrypted_subjects import common_encrypted_subjects
 from .config import read_config
 
@@ -201,8 +200,6 @@ class BeforeQueueHandler:
         if envelope.mail_from in self.config.passthrough_senders:
             return
 
-        passthrough_recipients = self.config.passthrough_recipients
-
         is_securejoin = message.get("secure-join") in [
             "vc-request",
             "vg-request",
@@ -210,14 +207,24 @@ class BeforeQueueHandler:
         if is_securejoin:
             return
 
+        mail_domain = self.config.mail_domain
+        passthrough_recipients = set(
+            self.config.passthrough_recipients + self.config.passthrough_senders
+        )
         for recipient in envelope.rcpt_tos:
+            if recipient_matches_passthrough(recipient, passthrough_recipients):
+                continue
             res = recipient.split("@")
             if len(res) != 2:
                 return f"500 Invalid address <{recipient}>"
+            _recipient_addr, recipient_domain = res
 
-        if not mail_encrypted:
-            print("Rejected unencrypted mail.", file=sys.stderr)
-            return f"500 Invalid unencrypted mail to <{recipient}>"
+            if not mail_encrypted and mail_domain in (
+                envelope_from_domain,
+                recipient_domain,
+            ):
+                print("Rejected unencrypted mail.", file=sys.stderr)
+                return f"500 Invalid unencrypted mail to <{recipient}>"
 
 
 class SendRateLimiter:
