@@ -99,6 +99,28 @@ def check_armored_payload(payload: str):
         return False
 
 
+def is_securejoin(message):
+    if message.get("secure-join") not in ["vc-request", "vg-request"]:
+        return False
+    if not message.is_multipart():
+        return False
+    parts_count = 0
+    for part in message.iter_parts():
+        if parts_count == 0:
+            if part.is_multipart():
+                return False
+            if part.get_content_type() != "text/plain":
+                return False
+
+            payload = part.get_payload().strip().lower()
+            if payload not in ("secure-join: vc-request", "secure-join: vg-request"):
+                return False
+        else:
+            return False
+        parts_count += 1
+    return True
+
+
 def check_encrypted(message):
     """Check that the message is an OpenPGP-encrypted message.
 
@@ -200,11 +222,7 @@ class BeforeQueueHandler:
         if envelope.mail_from in self.config.passthrough_senders:
             return
 
-        is_securejoin = message.get("secure-join") in [
-            "vc-request",
-            "vg-request",
-        ]
-        if is_securejoin:
+        if mail_encrypted or is_securejoin(message):
             return
 
         mail_domain = self.config.mail_domain
@@ -219,7 +237,7 @@ class BeforeQueueHandler:
                 return f"500 Invalid address <{recipient}>"
             _recipient_addr, recipient_domain = res
 
-            if not mail_encrypted and mail_domain in (
+            if mail_domain in (
                 envelope_from_domain,
                 recipient_domain,
             ):
