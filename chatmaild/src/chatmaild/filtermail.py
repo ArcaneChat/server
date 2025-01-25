@@ -160,7 +160,9 @@ def check_encrypted(message):
 
 async def asyncmain_beforequeue(config):
     port = config.filtermail_smtp_port
+    port2 = config.filtermail_incoming_smtp_port
     Controller(BeforeQueueHandler(config), hostname="127.0.0.1", port=port).start()
+    Controller(IncomingMsgsHandler(config), hostname="127.0.0.1", port=port2).start()
 
 
 def recipient_matches_passthrough(recipient, passthrough_recipients):
@@ -215,9 +217,9 @@ class BeforeQueueHandler:
             return f"500 Invalid FROM <{from_addr!r}> for <{envelope.mail_from!r}>"
 
         if mail_encrypted:
-            print("Filtering encrypted mail.", file=sys.stderr)
+            print("OUTGOING: Filtering encrypted mail.", file=sys.stderr)
         else:
-            print("Filtering unencrypted mail.", file=sys.stderr)
+            print("OUTGOING: Filtering unencrypted mail.", file=sys.stderr)
 
         if envelope.mail_from in self.config.passthrough_senders:
             return
@@ -225,23 +227,62 @@ class BeforeQueueHandler:
         if mail_encrypted or is_securejoin(message):
             return
 
-        mail_domain = self.config.mail_domain
         passthrough_recipients = set(
             self.config.passthrough_recipients + self.config.passthrough_senders
         )
         for recipient in envelope.rcpt_tos:
             if recipient_matches_passthrough(recipient, passthrough_recipients):
                 continue
+            print("OUTGOING: Rejected unencrypted mail.", file=sys.stderr)
+            return f"500 Invalid unencrypted mail to <{recipient}>"
+
+
+class IncomingMsgsHandler:
+    def __init__(self, config):
+        self.config = config
+
+    async def handle_DATA(self, server, session, envelope):
+        logging.info("handle_DATA before-queue")
+        error = self.check_DATA(envelope)
+        if error:
+            return error
+        logging.info("re-injecting the mail that passed checks")
+        client = SMTPClient("localhost", self.config.postfix_reinject_port)
+        client.sendmail(envelope.mail_from, envelope.rcpt_tos, envelope.content)
+        return "250 OK"
+
+    def check_DATA(self, envelope):
+        """the central filtering function for e-mails."""
+        logging.info(f"Processing DATA message from {envelope.mail_from}")
+
+        message = BytesParser(policy=policy.default).parsebytes(envelope.content)
+        mail_encrypted = check_encrypted(message)
+
+        if mail_encrypted:
+            print("INCOMING: Filtering encrypted mail.", file=sys.stderr)
+        else:
+            print("INCOMING: Filtering unencrypted mail.", file=sys.stderr)
+
+        if mail_encrypted or is_securejoin(message):
+            return
+
+        _, from_addr = parseaddr(message.get("from").strip())
+        if from_addr.lower().startswith("mailer-daemon@"):
+            return
+
+        server_domain = self.config.mail_domain
+        passthrough_senders = self.config.passthrough_senders
+
+        for recipient in envelope.rcpt_tos:
+            if recipient_matches_passthrough(recipient, passthrough_senders):
+                continue
             res = recipient.split("@")
             if len(res) != 2:
                 return f"500 Invalid address <{recipient}>"
             _recipient_addr, recipient_domain = res
 
-            if mail_domain in (
-                envelope_from_domain,
-                recipient_domain,
-            ):
-                print("Rejected unencrypted mail.", file=sys.stderr)
+            if server_domain == recipient_domain:
+                print("INCOMING: Rejected unencrypted mail.", file=sys.stderr)
                 return f"500 Invalid unencrypted mail to <{recipient}>"
 
 

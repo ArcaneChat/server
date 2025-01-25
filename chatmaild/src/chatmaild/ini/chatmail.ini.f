@@ -49,6 +49,9 @@ passthrough_recipients = xstore@testrun.org
 # where the filtermail SMTP service listens
 filtermail_smtp_port = 10080
 
+# where the filtermail SMTP service listens for incoming email
+filtermail_incoming_smtp_port = 10081
+
 # postfix accepts on the localhost reinject SMTP port
 postfix_reinject_port = 10025
 
