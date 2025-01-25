@@ -98,6 +98,26 @@ def run_cmd(args, out):
     return retcode
 
 
+def web_cmd(args, out):
+    """Deploy chatmail website on the remote server."""
+
+    sshexec = args.get_sshexec()
+
+    deploy_path = importlib.resources.files(__package__).joinpath("deploy_web.py").resolve()
+    ssh_host = args.config.mail_domain
+    cmd = f"pyinfra --ssh-user root {ssh_host} {deploy_path} -y"
+    if version.parse(pyinfra.__version__) < version.parse("3"):
+        out.red("Please re-run scripts/initenv.sh to update pyinfra to version 3.")
+        return 1
+
+    retcode = out.check_call(cmd)
+    if retcode == 0:
+        out.green("Website deployment completed.")
+    else:
+        out.red("Website deployment failed.")
+    return retcode
+
+
 def dns_cmd_options(parser):
     parser.add_argument(
         "--zonefile",

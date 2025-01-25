@@ -535,6 +535,13 @@ def deploy_iroh_relay(config) -> None:
     )
 
 
+def deploy_website() -> None:
+    www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
+    subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
+    build_dir = www_path.joinpath("arcanechat/dist")
+    files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
+
+
 def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
     """Deploy a chat-mail instance.
 
@@ -649,9 +656,7 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
 
     www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
 
-    subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
-    build_dir = www_path.joinpath("arcanechat/dist")
-    files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
+    deploy_website()
 
     _install_remote_venv_with_chatmaild(config)
     debug = False
