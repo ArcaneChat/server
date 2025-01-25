@@ -14,13 +14,13 @@ importers:
       bootstrap:
         specifier: 5.3.3
         version: 5.3.3(@popperjs/core@2.11.8)
-      bootstrap-icons:
-        specifier: ^1.11.3
-        version: 1.11.3
       swiper:
         specifier: ^11.2.1
         version: 11.2.1
     devDependencies:
+      bootstrap-icons:
+        specifier: ^1.11.3
+        version: 1.11.3
       prettier:
         specifier: ^3.4.2
         version: 3.4.2

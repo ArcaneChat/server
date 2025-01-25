@@ -80,7 +80,19 @@
             data-bs-toggle="collapse"
             data-bs-target="#navbarCollapse"
           >
-            <span class="bi bi-list"></span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="icon"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+              />
+            </svg>
           </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav mx-auto py-0">
@@ -220,7 +232,10 @@
                   class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
                   style="width: 100px; height: 100px"
                 >
-                  <i class="bi bi-lightning-charge-fill bi-3x text-white"></i>
+                  <img
+                    class="feat-icon"
+                    src="./img/lightning-charge-fill.svg"
+                  />
                 </div>
                 <h5 class="mt-4 mb-3">Fast</h5>
                 <p class="mb-0">
@@ -235,7 +250,7 @@
                   class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
                   style="width: 100px; height: 100px"
                 >
-                  <i class="bi bi-eye-slash-fill bi-3x text-white"></i>
+                  <img class="feat-icon" src="./img/eye-slash-fill.svg" />
                 </div>
                 <h5 class="mt-4 mb-3">Private</h5>
                 <p class="mb-0">
@@ -250,7 +265,7 @@
                   class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
                   style="width: 100px; height: 100px"
                 >
-                  <i class="bi bi-shield-fill-check bi-3x text-white"></i>
+                  <img class="feat-icon" src="./img/shield-fill-check.svg" />
                 </div>
                 <h5 class="mt-4 mb-3">Secure</h5>
                 <p class="mb-0">
@@ -265,7 +280,7 @@
                   class="d-inline-flex align-items-center justify-content-center bg-secondary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
                   style="width: 100px; height: 100px"
                 >
-                  <i class="bi bi-joystick bi-3x text-white"></i>
+                  <img class="feat-icon" src="./img/gamepad.svg" />
                 </div>
                 <h5 class="mt-4 mb-3">Fun</h5>
                 <p class="mb-0">
@@ -280,7 +295,7 @@
                   class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
                   style="width: 100px; height: 100px"
                 >
-                  <i class="bi bi-envelope-fill bi-3x text-white"></i>
+                  <img class="feat-icon" src="./img/envelope-fill.svg" />
                 </div>
                 <h5 class="mt-4 mb-3">Flexible</h5>
                 <p class="mb-0">
@@ -295,7 +310,7 @@
                   class="d-inline-flex align-items-center justify-content-center bg-primary-gradient rounded-circle position-absolute top-0 start-50 translate-middle shadow"
                   style="width: 100px; height: 100px"
                 >
-                  <i class="bi bi-stars bi-3x text-white"></i>
+                  <img class="feat-icon" src="./img/stars.svg" />
                 </div>
                 <h5 class="mt-4 mb-3">Magic</h5>
                 <p class="mb-0">
@@ -431,19 +446,27 @@
           <div class="row g-5">
             <div class="col-md-6 col-lg-3">
               <h4 class="text-white mb-4">Address</h4>
-              <p><i class="bi bi-geo-alt-fill me-3"></i>Freiburg, Germany</p>
-              <p><i class="bi bi-envelope-fill me-3"></i>adb@arcanechat.me</p>
+              <p>
+                <img class="icon me-3" src="./img/geo-alt-fill.svg" />Freiburg,
+                Germany
+              </p>
+              <p>
+                <img
+                  class="icon me-3"
+                  src="./img/envelope-fill.svg"
+                />adb@arcanechat.me
+              </p>
               <div class="d-flex pt-2">
                 <a
                   class="btn btn-outline-light btn-social"
                   href="https://mastodon.social/@adbenitez"
-                  ><i class="bi bi-mastodon"></i
-                ></a>
+                  ><img class="icon" src="./img/mastodon.svg"
+                /></a>
                 <a
                   class="btn btn-outline-light btn-social"
                   href="https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&a=adb%40arcanechat.me&n=adb&i=pw6hnrJhutO1ocFCxEzmCMsp&s=0UAOOP4AFmQBAcutnIQmLlmA"
-                  ><i class="bi bi-chat-left-dots-fill"></i
-                ></a>
+                  ><img class="icon" src="./img/chat-left-dots-fill.svg"
+                /></a>
               </div>
             </div>
             <div class="col-md-6 col-lg-6">
@@ -483,8 +506,8 @@
 
       <!-- Back to Top -->
       <a href="#home" class="btn btn-lg btn-lg-square back-to-top pt-2"
-        ><i class="bi bi-arrow-up text-white"></i
-      ></a>
+        ><img class="icon" src="./img/arrow-up.svg"
+      /></a>
     </div>
   </body>
 </html>

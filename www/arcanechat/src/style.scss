@@ -1,7 +1,6 @@
 @import "@fontsource/jost/500.css";
 @import "@fontsource/jost/600.css";
 @import "@fontsource/jost/700.css";
-@import "bootstrap-icons/font/bootstrap-icons.css";
 @import "swiper/css";
 @import "swiper/css/autoplay";
 
@@ -75,8 +74,17 @@ body {
   background-color: #f0f6ff;
 }
 
-.bi-3x {
-  font-size: 3em;
+.icon {
+  width: 1em;
+  height: 1em;
+}
+.navbar-toggler .icon {
+  width: 1.25em;
+  height: 1.25em;
+}
+.feat-icon {
+  width: 3em;
+  height: 3em;
 }
 
 #store-btns {
