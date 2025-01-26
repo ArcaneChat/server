@@ -227,9 +227,7 @@ class BeforeQueueHandler:
         if mail_encrypted or is_securejoin(message):
             return
 
-        passthrough_recipients = set(
-            self.config.passthrough_recipients + self.config.passthrough_senders
-        )
+        passthrough_recipients = self.config.passthrough_recipients
         for recipient in envelope.rcpt_tos:
             if recipient_matches_passthrough(recipient, passthrough_recipients):
                 continue
