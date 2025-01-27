@@ -30,7 +30,7 @@ class Config:
         self.passthrough_recipients = params["passthrough_recipients"].split()
         self.filtermail_smtp_port = int(params["filtermail_smtp_port"])
         self.filtermail_incoming_smtp_port = int(
-            params["filtermail_incoming_smtp_port"]
+            params.get("filtermail_incoming_smtp_port", "10081")
         )
         self.postfix_reinject_port = int(params["postfix_reinject_port"])
         self.mtail_address = params.get("mtail_address")
