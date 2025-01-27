@@ -535,10 +535,18 @@ def deploy_iroh_relay(config) -> None:
     )
 
 
-def deploy_website() -> None:
+def deploy_website(config_path: Path) -> None:
+    config = read_config(config_path)
+    check_config(config)
+    mail_domain = config.mail_domain
+
     www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
-    subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
-    build_dir = www_path.joinpath("arcanechat/dist")
+    if mail_domain == "arcanechat.me":
+        subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
+        build_dir = www_path.joinpath("arcanechat/dist")
+    else:
+        build_dir = www_path.joinpath("build")
+        build_webpages(www_path.joinpath("src"), build_dir, config)
     files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
 
 
@@ -656,7 +664,7 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
 
     www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
 
-    deploy_website()
+    deploy_website(config_path)
 
     _install_remote_venv_with_chatmaild(config)
     debug = False
