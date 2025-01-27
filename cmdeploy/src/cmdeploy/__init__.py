@@ -545,6 +545,8 @@ def deploy_website(config_path: Path) -> None:
         subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
         build_dir = www_path.joinpath("arcanechat/dist")
     else:
+        from .www import build_webpages
+
         build_dir = www_path.joinpath("build")
         build_webpages(www_path.joinpath("src"), build_dir, config)
     files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
@@ -559,8 +561,6 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
     config = read_config(config_path)
     check_config(config)
     mail_domain = config.mail_domain
-
-    from .www import build_webpages
 
     server.group(name="Create vmail group", group="vmail", system=True)
     server.user(name="Create vmail user", user="vmail", group="vmail", system=True)
