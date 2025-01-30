@@ -78,6 +78,11 @@ def _install_remote_venv_with_chatmaild(config) -> None:
         always_copy=True,
     )
 
+    apt.packages(
+        name="install gcc and headers to build crypt_r source package",
+        packages=["gcc", "python3-dev"],
+    )
+
     server.shell(
         name=f"forced pip-install {dist_file.name}",
         commands=[
@@ -517,9 +522,9 @@ def deploy_iroh_relay(config) -> None:
     need_restart |= systemd_unit.changed
 
     iroh_config = files.put(
-        name=f"Upload iroh-relay config",
+        name="Upload iroh-relay config",
         src=importlib.resources.files(__package__).joinpath("iroh-relay.toml"),
-        dest=f"/etc/iroh-relay.toml",
+        dest="/etc/iroh-relay.toml",
         user="root",
         group="root",
         mode="644",
