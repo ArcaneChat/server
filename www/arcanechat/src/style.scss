@@ -196,6 +196,12 @@ h6,
   );
 }
 
+.btn:active {
+    color: #ffffff !important;
+}
+
+.btn.btn-primary-gradient:active::after,
+.btn.btn-secondary-gradient:active::after,
 .btn.btn-primary-gradient:hover::after,
 .btn.btn-secondary-gradient:hover::after {
   opacity: 1;
