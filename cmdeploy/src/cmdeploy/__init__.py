@@ -217,8 +217,8 @@ def _configure_opendkim(domain: str, dkim_selector: str = "dkim") -> bool:
             commands=[
                 f"opendkim-genkey -D /etc/dkimkeys -d {domain} -s {dkim_selector}"
             ],
-            _sudo=True,
-            _sudo_user="opendkim",
+            _use_su_login=True,
+            _su_user="opendkim",
         )
 
     return need_restart
@@ -716,6 +716,11 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         running=True,
         enabled=True,
         restarted=journald_conf.changed,
+    )
+    files.directory(
+        name="Ensure old logs on disk are deleted",
+        path="/var/log/journal/",
+        present=False,
     )
 
     apt.packages(
