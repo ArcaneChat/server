@@ -2,11 +2,20 @@
 
 ## untagged
 
+- mtail: fix getting logs from STDIN
+  ([#502](https://github.com/chatmail/chatmail/pull/502))
+
+- filtermail: don't require exactly 2 lines after openPGP payload
+  ([#497](https://github.com/chatmail/chatmail/pull/497))
+
 - cmdeploy dns: offer alternative DKIM record format for some web interfaces
   ([#470](https://github.com/deltachat/chatmail/pull/470))
 
 - journald: remove old logs from disk
   ([#490](https://github.com/deltachat/chatmail/pull/490))
+
+- opendkim: restart once every day to mend RAM leaks
+  ([#498](https://github.com/chatmail/chatmail/pull/498)
 
 - migration guide: let opendkim own the DKIM keys directory
   ([#468](https://github.com/deltachat/chatmail/pull/468))
