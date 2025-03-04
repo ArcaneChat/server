@@ -2,6 +2,9 @@
 
 ## untagged
 
+- cmdeploy dovecot: delete big messages after 7 days
+  ([#504](https://github.com/chatmail/server/pull/504))
+
 - mtail: fix getting logs from STDIN
   ([#502](https://github.com/chatmail/chatmail/pull/502))
 
