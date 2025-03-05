@@ -55,6 +55,9 @@ filtermail_incoming_smtp_port = 10081
 # postfix accepts on the localhost reinject SMTP port
 postfix_reinject_port = 10025
 
+# port where postfix is listening to reinject filtered incoming email
+postfix_incoming_reinject_port = 10026
+
 # if set to "True" IPv6 is disabled
 disable_ipv6 = False
 

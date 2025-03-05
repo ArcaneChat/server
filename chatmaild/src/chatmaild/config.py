@@ -33,6 +33,9 @@ class Config:
             params.get("filtermail_incoming_smtp_port", "10081")
         )
         self.postfix_reinject_port = int(params["postfix_reinject_port"])
+        self.postfix_incoming_reinject_port = int(
+            params.get("postfix_incoming_reinject_port", "10026")
+        )
         self.mtail_address = params.get("mtail_address")
         self.disable_ipv6 = params.get("disable_ipv6", "false").lower() == "true"
         self.imap_rawlog = params.get("imap_rawlog", "false").lower() == "true"

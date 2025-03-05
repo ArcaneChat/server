@@ -197,7 +197,9 @@ class BeforeQueueHandler:
             return error
         logging.info("re-injecting the mail that passed checks")
         client = SMTPClient("localhost", self.config.postfix_reinject_port)
-        client.sendmail(envelope.mail_from, envelope.rcpt_tos, envelope.content)
+        client.sendmail(
+            envelope.mail_from, envelope.rcpt_tos, envelope.original_content
+        )
         return "250 OK"
 
     def check_DATA(self, envelope):
@@ -243,8 +245,14 @@ class IncomingMsgsHandler:
         if error:
             return error
         logging.info("re-injecting the mail that passed checks")
-        client = SMTPClient("localhost", self.config.postfix_reinject_port)
-        client.sendmail(envelope.mail_from, envelope.rcpt_tos, envelope.content)
+        client = SMTPClient(
+            "127.0.0.1",
+            self.config.postfix_incoming_reinject_port,
+            source_address=("127.0.0.2", 0),
+        )
+        client.sendmail(
+            envelope.mail_from, envelope.rcpt_tos, envelope.original_content
+        )
         return "250 OK"
 
     def check_DATA(self, envelope):
