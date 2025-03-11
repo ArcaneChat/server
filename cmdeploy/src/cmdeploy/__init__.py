@@ -215,7 +215,7 @@ def _configure_opendkim(domain: str, dkim_selector: str = "dkim") -> bool:
         server.shell(
             name="Generate OpenDKIM domain keys",
             commands=[
-                f"opendkim-genkey -D /etc/dkimkeys -d {domain} -s {dkim_selector}"
+                f"/usr/sbin/opendkim-genkey -D /etc/dkimkeys -d {domain} -s {dkim_selector}"
             ],
             _use_su_login=True,
             _su_user="opendkim",
