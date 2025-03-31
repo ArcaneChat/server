@@ -210,7 +210,6 @@ class BeforeQueueHandler:
         mail_encrypted = check_encrypted(message)
 
         _, from_addr = parseaddr(message.get("from").strip())
-        envelope_from_domain = from_addr.split("@").pop()
 
         logging.info(f"mime-from: {from_addr} envelope-from: {envelope.mail_from!r}")
         if envelope.mail_from.lower() != from_addr.lower():

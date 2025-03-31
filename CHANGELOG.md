@@ -2,6 +2,16 @@
 
 ## untagged
 
+- Enforce end-to-end encryption between local addresses 
+  ([#535](https://github.com/chatmail/server/pull/535))
+
+- Limit the bind for the HTTPS server on 8443 to 127.0.0.1 
+  ([#522](https://github.com/chatmail/server/pull/522))
+  ([#532](https://github.com/chatmail/server/pull/532))
+
+- Send SNI when connecting to outside servers
+  ([#524](https://github.com/chatmail/server/pull/524))
+
 - Pass through `original_content` instead of `content` in filtermail
   ([#509](https://github.com/chatmail/server/pull/509))
 
