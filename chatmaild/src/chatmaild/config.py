@@ -11,7 +11,11 @@ def read_config(inipath):
     assert Path(inipath).exists(), inipath
     cfg = iniconfig.IniConfig(inipath)
     params = cfg.sections["params"]
-    return Config(inipath, params=params)
+    default_config_content = get_default_config_content(params["mail_domain"])
+    df_params = iniconfig.IniConfig("ini", data=default_config_content)["params"]
+    new_params = dict(df_params.items())
+    new_params.update(params)
+    return Config(inipath, params=new_params)
 
 
 class Config:
@@ -22,6 +26,7 @@ class Config:
         self.max_mailbox_size = params["max_mailbox_size"]
         self.max_message_size = int(params.get("max_message_size", "31457280"))
         self.delete_mails_after = params["delete_mails_after"]
+        self.delete_large_after = params["delete_large_after"]
         self.delete_inactive_users_after = int(params["delete_inactive_users_after"])
         self.username_min_length = int(params["username_min_length"])
         self.username_max_length = int(params["username_max_length"])
@@ -29,12 +34,12 @@ class Config:
         self.passthrough_senders = params["passthrough_senders"].split()
         self.passthrough_recipients = params["passthrough_recipients"].split()
         self.filtermail_smtp_port = int(params["filtermail_smtp_port"])
-        self.filtermail_incoming_smtp_port = int(
-            params.get("filtermail_incoming_smtp_port", "10081")
+        self.filtermail_smtp_port_incoming = int(
+            params["filtermail_smtp_port_incoming"]
         )
         self.postfix_reinject_port = int(params["postfix_reinject_port"])
-        self.postfix_incoming_reinject_port = int(
-            params.get("postfix_incoming_reinject_port", "10026")
+        self.postfix_reinject_port_incoming = int(
+            params["postfix_reinject_port_incoming"]
         )
         self.mtail_address = params.get("mtail_address")
         self.disable_ipv6 = params.get("disable_ipv6", "false").lower() == "true"
@@ -75,6 +80,11 @@ class Config:
 
 def write_initial_config(inipath, mail_domain, overrides):
     """Write out default config file, using the specified config value overrides."""
+    content = get_default_config_content(mail_domain, **overrides)
+    inipath.write_text(content)
+
+
+def get_default_config_content(mail_domain, **overrides):
     from importlib.resources import files
 
     inidir = files(__package__).joinpath("ini")
@@ -119,5 +129,4 @@ def write_initial_config(inipath, mail_domain, overrides):
             else:
                 lines.append(line)
         content = "\n".join(lines)
-
-    inipath.write_text(content)
+    return content

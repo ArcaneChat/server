@@ -10,8 +10,12 @@ from email.parser import BytesParser
 from email.utils import parseaddr
 from smtplib import SMTP as SMTPClient
 
-from .aiosmtpd_patch import PatchedController as Controller
+from aiosmtpd.controller import Controller
+from aiosmtpd.smtp import SMTP
+
 from .config import read_config
+
+ENCRYPTION_NEEDED_523 = "523 Encryption Needed: Invalid Unencrypted Mail"
 
 
 def check_openpgp_payload(payload: bytes):
@@ -156,11 +160,14 @@ def check_encrypted(message):
     return True
 
 
-async def asyncmain_beforequeue(config):
-    port = config.filtermail_smtp_port
-    port2 = config.filtermail_incoming_smtp_port
-    Controller(BeforeQueueHandler(config), hostname="127.0.0.1", port=port).start()
-    Controller(IncomingMsgsHandler(config), hostname="127.0.0.1", port=port2).start()
+async def asyncmain_beforequeue(config, mode):
+    if mode == "outgoing":
+        port = config.filtermail_smtp_port
+        handler = OutgoingBeforeQueueHandler(config)
+    else:
+        port = config.filtermail_smtp_port_incoming
+        handler = IncomingBeforeQueueHandler(config)
+    HackedController(handler, hostname="127.0.0.1", port=port).start()
 
 
 def recipient_matches_passthrough(recipient, passthrough_recipients):
@@ -172,7 +179,21 @@ def recipient_matches_passthrough(recipient, passthrough_recipients):
     return False
 
 
-class BeforeQueueHandler:
+class HackedController(Controller):
+    def factory(self):
+        return SMTPDiscardRCPTO_options(self.handler, **self.SMTP_kwargs)
+
+
+class SMTPDiscardRCPTO_options(SMTP):
+    def _getparams(self, params):
+        # aiosmtpd's SMTP daemon fails to handle a request if there are RCPT TO options
+        # We just ignore them for our incoming filtermail purposes
+        if len(params) == 1 and params[0].startswith("ORCPT"):
+            return {}
+        return super()._getparams(params)
+
+
+class OutgoingBeforeQueueHandler:
     def __init__(self, config):
         self.config = config
         self.send_rate_limiter = SendRateLimiter()
@@ -211,30 +232,35 @@ class BeforeQueueHandler:
 
         _, from_addr = parseaddr(message.get("from").strip())
 
-        logging.info(f"mime-from: {from_addr} envelope-from: {envelope.mail_from!r}")
         if envelope.mail_from.lower() != from_addr.lower():
             return f"500 Invalid FROM <{from_addr!r}> for <{envelope.mail_from!r}>"
 
-        if mail_encrypted:
-            print("OUTGOING: Filtering encrypted mail.", file=sys.stderr)
-        else:
-            print("OUTGOING: Filtering unencrypted mail.", file=sys.stderr)
+        if mail_encrypted or is_securejoin(message):
+            print("Outgoing: Filtering encrypted mail.", file=sys.stderr)
+            return
+
+        print("Outgoing: Filtering unencrypted mail.", file=sys.stderr)
 
         if envelope.mail_from in self.config.passthrough_senders:
             return
 
-        if mail_encrypted or is_securejoin(message):
-            return
+        # allow self-sent Autocrypt Setup Message
+        if envelope.rcpt_tos == [from_addr]:
+            if message.get("subject") == "Autocrypt Setup Message":
+                if message.get_content_type() == "multipart/mixed":
+                    return
 
         passthrough_recipients = self.config.passthrough_recipients
+
         for recipient in envelope.rcpt_tos:
             if recipient_matches_passthrough(recipient, passthrough_recipients):
                 continue
-            print("OUTGOING: Rejected unencrypted mail.", file=sys.stderr)
-            return f"500 Invalid unencrypted mail to <{recipient}>"
+
+            print("Rejected unencrypted mail.", file=sys.stderr)
+            return ENCRYPTION_NEEDED_523
 
 
-class IncomingMsgsHandler:
+class IncomingBeforeQueueHandler:
     def __init__(self, config):
         self.config = config
 
@@ -244,9 +270,12 @@ class IncomingMsgsHandler:
         if error:
             return error
         logging.info("re-injecting the mail that passed checks")
+
+        # the smtp daemon on reinject_port_incoming gives it to dkim milter
+        # which looks at source address to determine whether to verify or sign
         client = SMTPClient(
-            "127.0.0.1",
-            self.config.postfix_incoming_reinject_port,
+            "localhost",
+            self.config.postfix_reinject_port_incoming,
             source_address=("127.0.0.2", 0),
         )
         client.sendmail(
@@ -261,32 +290,27 @@ class IncomingMsgsHandler:
         message = BytesParser(policy=policy.default).parsebytes(envelope.content)
         mail_encrypted = check_encrypted(message)
 
-        if mail_encrypted:
-            print("INCOMING: Filtering encrypted mail.", file=sys.stderr)
-        else:
-            print("INCOMING: Filtering unencrypted mail.", file=sys.stderr)
-
         if mail_encrypted or is_securejoin(message):
+            print("Incoming: Filtering encrypted mail.", file=sys.stderr)
             return
 
-        _, from_addr = parseaddr(message.get("from").strip())
-        if from_addr.lower().startswith("mailer-daemon@"):
-            return
+        print("Incoming: Filtering unencrypted mail.", file=sys.stderr)
 
-        server_domain = self.config.mail_domain
-        passthrough_senders = self.config.passthrough_senders
+        # we want cleartext mailer-daemon messages to pass through
+        # chatmail core will typically not display them as normal messages
+        if message.get("auto-submitted"):
+            _, from_addr = parseaddr(message.get("from").strip())
+            if from_addr.lower().startswith("mailer-daemon@"):
+                if message.get_content_type() == "multipart/report":
+                    return
 
         for recipient in envelope.rcpt_tos:
-            if recipient_matches_passthrough(recipient, passthrough_senders):
+            user = self.config.get_user(recipient)
+            if user is None or user.is_incoming_cleartext_ok():
                 continue
-            res = recipient.split("@")
-            if len(res) != 2:
-                return f"500 Invalid address <{recipient}>"
-            _recipient_addr, recipient_domain = res
 
-            if server_domain == recipient_domain:
-                print("INCOMING: Rejected unencrypted mail.", file=sys.stderr)
-                return f"500 Invalid unencrypted mail to <{recipient}>"
+            print("Rejected unencrypted mail.", file=sys.stderr)
+            return ENCRYPTION_NEEDED_523
 
 
 class SendRateLimiter:
@@ -305,11 +329,14 @@ class SendRateLimiter:
 
 def main():
     args = sys.argv[1:]
-    assert len(args) == 1
+    assert len(args) == 2
     config = read_config(args[0])
+    mode = args[1]
     logging.basicConfig(level=logging.WARN)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    task = asyncmain_beforequeue(config)
+    assert mode in ["incoming", "outgoing"]
+    task = asyncmain_beforequeue(config, mode)
     loop.create_task(task)
+    logging.info("entering serving loop")
     loop.run_forever()

@@ -1,7 +1,8 @@
 import pytest
 
 from chatmaild.filtermail import (
-    BeforeQueueHandler,
+    IncomingBeforeQueueHandler,
+    OutgoingBeforeQueueHandler,
     SendRateLimiter,
     check_armored_payload,
     check_encrypted,
@@ -18,7 +19,13 @@ def maildomain():
 @pytest.fixture
 def handler(make_config, maildomain):
     config = make_config(maildomain)
-    return BeforeQueueHandler(config)
+    return OutgoingBeforeQueueHandler(config)
+
+
+@pytest.fixture
+def inhandler(make_config, maildomain):
+    config = make_config(maildomain)
+    return IncomingBeforeQueueHandler(config)
 
 
 def test_reject_forged_from(maildata, gencreds, handler):
@@ -127,12 +134,26 @@ def test_cleartext_excempt_privacy(maildata, gencreds, handler):
         rcpt_tos = [to_addr, false_to]
         content = msg.as_bytes()
 
-    assert "500" in handler.check_DATA(envelope=env2)
+    assert "523" in handler.check_DATA(envelope=env2)
 
 
-def test_cleartext_self_send_fails(maildata, gencreds, handler):
+def test_cleartext_self_send_autocrypt_setup_message(maildata, gencreds, handler):
     from_addr = gencreds()[0]
     to_addr = from_addr
+
+    msg = maildata("asm.eml", from_addr=from_addr, to_addr=to_addr)
+
+    class env:
+        mail_from = from_addr
+        rcpt_tos = [to_addr]
+        content = msg.as_bytes()
+
+    assert not handler.check_DATA(envelope=env)
+
+
+def test_cleartext_send_fails(maildata, gencreds, handler):
+    from_addr = gencreds()[0]
+    to_addr = gencreds()[0]
 
     msg = maildata("plain.eml", from_addr=from_addr, to_addr=to_addr)
 
@@ -142,7 +163,41 @@ def test_cleartext_self_send_fails(maildata, gencreds, handler):
         content = msg.as_bytes()
 
     res = handler.check_DATA(envelope=env)
-    assert "500 Invalid unencrypted" in res
+    assert "523 Encryption Needed" in res
+
+
+def test_cleartext_incoming_fails(maildata, gencreds, inhandler):
+    from_addr = gencreds()[0]
+    to_addr, password = gencreds()
+
+    msg = maildata("plain.eml", from_addr=from_addr, to_addr=to_addr)
+
+    class env:
+        mail_from = from_addr
+        rcpt_tos = [to_addr]
+        content = msg.as_bytes()
+
+    user = inhandler.config.get_user(to_addr)
+    user.set_password(password)
+    res = inhandler.check_DATA(envelope=env)
+    assert "523 Encryption Needed" in res
+
+    user.allow_incoming_cleartext()
+    assert not inhandler.check_DATA(envelope=env)
+
+
+def test_cleartext_incoming_mailer_daemon(maildata, gencreds, inhandler):
+    from_addr = "mailer-daemon@example.org"
+    to_addr = gencreds()[0]
+
+    msg = maildata("mailer-daemon.eml", from_addr=from_addr, to_addr=to_addr)
+
+    class env:
+        mail_from = from_addr
+        rcpt_tos = [to_addr]
+        content = msg.as_bytes()
+
+    assert not inhandler.check_DATA(envelope=env)
 
 
 def test_cleartext_passthrough_domains(maildata, gencreds, handler):
@@ -166,7 +221,7 @@ def test_cleartext_passthrough_domains(maildata, gencreds, handler):
         rcpt_tos = [to_addr, false_to]
         content = msg.as_bytes()
 
-    assert "500" in handler.check_DATA(envelope=env2)
+    assert "523" in handler.check_DATA(envelope=env2)
 
 
 def test_cleartext_passthrough_senders(gencreds, handler, maildata):

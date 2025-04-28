@@ -2,8 +2,41 @@
 
 ## untagged
 
+- If `dns-utils` needs to be installed before cmdeploy run, apt update to make sure it works
+  ([#560](https://github.com/chatmail/relay/pull/560))
+
+- Add config value after how many days large files are deleted
+  ([#555](https://github.com/chatmail/relay/pull/555))
+
+## 1.6.0 2025-04-11
+
+- Handle Port-25 connect errors more gracefully (common with VPNs)
+  ([#552](https://github.com/chatmail/relay/pull/552))
+
+- Avoid "acmetool not found" during initial run
+  ([#550](https://github.com/chatmail/relay/pull/550))
+
+- Fix timezone handling such that client/servers do not need to use
+  same timezone. 
+  ([#553](https://github.com/chatmail/relay/pull/553))
+
+- Enforce end-to-end encryption for incoming messages. 
+  New user address mailboxes now get a `enforceE2EEincoming` file 
+  which prohibits incoming cleartext messages from other domains. 
+  An outside MTA trying to submit a cleartext message will 
+  get a "523 Encryption Needed" response, see RFC5248. 
+  If the file does not exist (as it the case for all existing accounts) 
+  incoming cleartext messages are accepted. 
+  ([#538](https://github.com/chatmail/server/pull/538))
+
 - Enforce end-to-end encryption between local addresses 
   ([#535](https://github.com/chatmail/server/pull/535))
+
+- unbound: check that port 53 is not occupied by a different process
+  ([#537](https://github.com/chatmail/server/pull/537))
+
+- unbound: before unbound is there, use 9.9.9.9 for resolving
+  ([#518](https://github.com/chatmail/relay/pull/518))
 
 - Limit the bind for the HTTPS server on 8443 to 127.0.0.1 
   ([#522](https://github.com/chatmail/server/pull/522))
@@ -11,6 +44,9 @@
 
 - Send SNI when connecting to outside servers
   ([#524](https://github.com/chatmail/server/pull/524))
+
+- postfix master.cf: use 127.0.0.1 for consistency
+  ([#544](https://github.com/chatmail/relay/pull/544))
 
 - Pass through `original_content` instead of `content` in filtermail
   ([#509](https://github.com/chatmail/server/pull/509))

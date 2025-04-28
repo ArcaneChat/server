@@ -23,6 +23,9 @@ max_message_size = 31457280
 # days after which mails are unconditionally deleted
 delete_mails_after = 20
 
+# days after which large messages (>200k) are unconditionally deleted
+delete_large_after = 7
+
 # days after which users without a successful login are deleted (database and mails)
 delete_inactive_users_after = 90
 
@@ -46,17 +49,13 @@ passthrough_recipients = xstore@testrun.org
 # Deployment Details
 #
 
-# where the filtermail SMTP service listens
+# SMTP outgoing filtermail and reinjection 
 filtermail_smtp_port = 10080
-
-# where the filtermail SMTP service listens for incoming email
-filtermail_incoming_smtp_port = 10081
-
-# postfix accepts on the localhost reinject SMTP port
 postfix_reinject_port = 10025
 
-# port where postfix is listening to reinject filtered incoming email
-postfix_incoming_reinject_port = 10026
+# SMTP incoming filtermail and reinjection 
+filtermail_smtp_port_incoming = 10081
+postfix_reinject_port_incoming = 10026
 
 # if set to "True" IPv6 is disabled
 disable_ipv6 = False

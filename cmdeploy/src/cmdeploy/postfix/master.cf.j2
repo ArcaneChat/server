@@ -14,7 +14,7 @@ smtp      inet  n       -       y       -       -       smtpd -v
 {%- else %}
 smtp      inet  n       -       y       -       -       smtpd 
 {%- endif %}
-  -o smtpd_proxy_filter=127.0.0.1:{{ config.filtermail_incoming_smtp_port }}
+  -o smtpd_proxy_filter=127.0.0.1:{{ config.filtermail_smtp_port_incoming }}
 submission inet n       -       y       -       5000    smtpd
   -o syslog_name=postfix/submission
   -o smtpd_tls_security_level=encrypt
@@ -76,14 +76,15 @@ anvil     unix  -       -       y       -       1       anvil
 scache    unix  -       -       y       -       1       scache
 postlog   unix-dgram n  -       n       -       1       postlogd
 filter    unix -        n       n       -       -       lmtp
-# Local SMTP server for reinjecting filered mail.
-localhost:{{ config.postfix_reinject_port }} inet  n       -       n       -       10      smtpd
+# Local SMTP server for reinjecting outgoing filtered mail.
+127.0.0.1:{{ config.postfix_reinject_port }} inet  n       -       n       -       10      smtpd
   -o syslog_name=postfix/reinject
   -o smtpd_milters=unix:opendkim/opendkim.sock
   -o cleanup_service_name=authclean
-# Local SMTP server for reinjecting filered incoming mail.
-localhost:{{ config.postfix_incoming_reinject_port }} inet  n       -       n       -       10      smtpd
-  -o syslog_name=postfix/reinject
+
+# Local SMTP server for reinjecting incoming filtered mail 
+127.0.0.1:{{ config.postfix_reinject_port_incoming }} inet  n       -       n       -       10      smtpd
+  -o syslog_name=postfix/reinject_incoming
   -o smtpd_milters=unix:opendkim/opendkim.sock
 
 # Cleanup `Received` headers for authenticated mail

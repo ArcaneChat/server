@@ -1,11 +1,11 @@
 [Unit]
-Description=Chatmail Postfix before queue filter
+Description=Outgoing Chatmail Postfix before queue filter
 
 [Service]
-ExecStart={execpath} {config_path}
+ExecStart={execpath} {config_path} outgoing
 Restart=always
 RestartSec=30
-User=filtermail
+User=vmail
 
 [Install]
 WantedBy=multi-user.target
