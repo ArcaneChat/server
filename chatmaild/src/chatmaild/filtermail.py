@@ -208,6 +208,8 @@ class OutgoingBeforeQueueHandler:
         logging.info(f"handle_MAIL from {address}")
         envelope.mail_from = address
         max_sent = self.config.max_user_send_per_minute
+        if address in ("pixsocial@arcanechat.me", "social-es@arcanechat.me"):
+            max_sent = 6000
         if not self.send_rate_limiter.is_sending_allowed(address, max_sent):
             return f"450 4.7.1: Too much mail from {address}"
 
