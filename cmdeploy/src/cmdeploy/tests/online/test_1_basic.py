@@ -1,5 +1,7 @@
 import datetime
 import smtplib
+import socket
+import subprocess
 
 import pytest
 
@@ -63,6 +65,14 @@ class TestSSHExecutor:
         assert (now - since_date).total_seconds() < 60 * 60 * 51
 
 
+def test_timezone_env(remote):
+    for line in remote.iter_output("env"):
+        print(line)
+        if line == "tz=:/etc/localtime":
+            return True
+    pytest.fail("TZ is not set")
+
+
 def test_remote(remote, imap_or_smtp):
     lineproducer = remote.iter_output(imap_or_smtp.logcmd)
     imap_or_smtp.connect()
@@ -117,12 +127,19 @@ def test_authenticated_from(cmsetup, maildata):
 
 @pytest.mark.parametrize("from_addr", ["fake@example.org", "fake@testrun.org"])
 def test_reject_missing_dkim(cmsetup, maildata, from_addr):
-    recipient = cmsetup.gen_users(1)[0]
-    msg = maildata("encrypted.eml", from_addr=from_addr, to_addr=recipient.addr).as_string()
+    domain = cmsetup.maildomain
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(10)
     try:
-        conn = smtplib.SMTP(cmsetup.maildomain, 25, timeout=10)
-    except TimeoutError:
-        pytest.skip(f"port 25 not reachable for {cmsetup.maildomain}")
+        sock.connect((domain, 25))
+    except socket.timeout:
+        pytest.skip(f"port 25 not reachable for {domain}")
+
+    recipient = cmsetup.gen_users(1)[0]
+    msg = maildata(
+        "encrypted.eml", from_addr=from_addr, to_addr=recipient.addr
+    ).as_string()
+    conn = smtplib.SMTP(cmsetup.maildomain, 25, timeout=10)
 
     with conn as s:
         with pytest.raises(smtplib.SMTPDataError, match="No valid DKIM signature"):
@@ -183,7 +200,24 @@ def test_expunged(remote, chatmail_config):
         f"find {chatmail_config.mailboxes_dir} -path '*/.*/tmp/*' -mtime +{outdated_days} -type f",
     ]
     outdated_days = int(chatmail_config.delete_large_after) + 1
-    find_cmds.append("find {chatmail_config.mailboxes_dir} -path '*/cur/*' -mtime +{outdated_days} -size +200k -type f")
+    find_cmds.append(
+        "find {chatmail_config.mailboxes_dir} -path '*/cur/*' -mtime +{outdated_days} -size +200k -type f"
+    )
     for cmd in find_cmds:
         for line in remote.iter_output(cmd):
             assert not line
+
+
+def test_deployed_state(remote):
+    git_hash = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode()
+    git_diff = subprocess.check_output(["git", "diff"]).decode()
+    git_status = [git_hash.strip()]
+    for line in git_diff.splitlines():
+        git_status.append(line.strip().lower())
+    remote_version = []
+    for line in remote.iter_output("cat /etc/chatmail-version"):
+        print(line)
+        remote_version.append(line)
+    # assert len(git_status) == len(remote_version)  # for some reason, we only get 11 lines from remote.iter_output()
+    for i in range(len(remote_version)):
+        assert git_status[i] == remote_version[i], "You have undeployed changes."

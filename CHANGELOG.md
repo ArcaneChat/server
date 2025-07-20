@@ -2,14 +2,42 @@
 
 ## untagged
 
+- Expire push notification tokens after 90 days
+  ([#583](https://github.com/chatmail/relay/pull/583))
+
+- Use official `mtail` binary instead of `mtail` package
+  ([#581](https://github.com/chatmail/relay/pull/581))
+
+- dovecot: install from download.delta.chat instead of openSUSE Build Service
+  ([#590](https://github.com/chatmail/relay/pull/590))
+
+- Reconfigure Dovecot imap-login service to high-performance mode
+  ([#578](https://github.com/chatmail/relay/pull/578))
+
+- Set timezone to improve dovecot performance
+  ([#584](https://github.com/chatmail/relay/pull/584))
+
+- Increase nginx connection limits
+  ([#576](https://github.com/chatmail/relay/pull/576))
+
 - If `dns-utils` needs to be installed before cmdeploy run, apt update to make sure it works
   ([#560](https://github.com/chatmail/relay/pull/560))
+
+- filtermail: respect config message size limit
+  ([#572](https://github.com/chatmail/relay/pull/572))
 
 - Add config value after how many days large files are deleted
   ([#555](https://github.com/chatmail/relay/pull/555))
 
+- cmdeploy: push relay version to /etc/chatmail-version
+  ([#573](https://github.com/chatmail/relay/pull/573))
+
 - filtermail: allow partial body length in OpenPGP payloads
   ([#570](https://github.com/chatmail/relay/pull/570))
+
+- chatmaild: allow echobot to receive unencrypted messages by default
+  ([#556](https://github.com/chatmail/relay/pull/556))
+
 
 ## 1.6.0 2025-04-11
 
