@@ -262,6 +262,18 @@ This starts a local live development cycle for chatmail web pages:
 
 - Starts a browser window automatically where you can "refresh" as needed.
 
+#### Custom web pages
+
+You can skip uploading a web page
+by setting `www_folder=disabled` in `chatmail.ini`.
+
+If you want to manage your web pages outside this git repository,
+you can set `www_folder` in `chatmail.ini` to a custom directory on your computer.
+`cmdeploy run` will upload it as the server's home page,
+and if it contains a `src/index.md` file,
+will build it with hugo.
+
+
 ## Mailbox directory layout
 
 Fresh chatmail addresses have a mailbox directory that contains: 
@@ -548,3 +560,6 @@ Here are some related projects that you may be interested in:
   progress](https://github.com/mjl-/mox/issues/251) to modify it to support all
   of the features and configuration settings required to operate as a chatmail
   relay.
+- [Maddy-Chatmail](https://github.com/sadraiiali/maddy_chatmail): a plugin for the
+  [Maddy email server](https://maddy.email/) which aims to implement the
+  chatmail relay features and configuration options.

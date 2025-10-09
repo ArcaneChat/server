@@ -2,6 +2,12 @@
 
 ## untagged
 
+- Make www upload path configurable
+  ([#618](https://github.com/chatmail/relay/pull/618))
+
+- Check whether GCC is installed in initenv.sh
+  ([#608](https://github.com/chatmail/relay/pull/608))
+
 - Expire push notification tokens after 90 days
   ([#583](https://github.com/chatmail/relay/pull/583))
 
@@ -25,6 +31,9 @@
 
 - filtermail: respect config message size limit
   ([#572](https://github.com/chatmail/relay/pull/572))
+
+- Don't deploy if one of the ports used for chatmail relay services is occupied by an unexpected process
+  ([#568](https://github.com/chatmail/relay/pull/568))
 
 - Add config value after how many days large files are deleted
   ([#555](https://github.com/chatmail/relay/pull/555))

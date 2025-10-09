@@ -11,7 +11,7 @@ from io import StringIO
 from pathlib import Path
 
 from chatmaild.config import Config, read_config
-from pyinfra import facts, host
+from pyinfra import facts, host, logger
 from pyinfra.api import FactBase
 from pyinfra.facts.files import File
 from pyinfra.facts.server import Sysctl
@@ -609,20 +609,27 @@ def deploy_iroh_relay(config) -> None:
 
 
 def deploy_website(config_path: Path) -> None:
+    from .www import build_webpages, get_paths
+
     config = read_config(config_path)
     check_config(config)
     mail_domain = config.mail_domain
 
-    www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
+    www_path, src_dir, build_dir = get_paths(config)
     if mail_domain == "arcanechat.me":
         subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
         build_dir = www_path.joinpath("arcanechat/dist")
+        files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
     else:
-        from .www import build_webpages
-
-        build_dir = www_path.joinpath("build")
-        build_webpages(www_path.joinpath("src"), build_dir, config)
-    files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
+        # if www_folder was set to a non-existing folder, skip upload
+        if not www_path.is_dir():
+            logger.warning("Building web pages is disabled in chatmail.ini, skipping")
+        else:
+            # if www_folder is a hugo page, build it
+            if build_dir:
+                www_path = build_webpages(src_dir, build_dir, config)
+            # if it is not a hugo page, upload it as is
+            files.rsync(f"{www_path}/", "/var/www/html", flags=["-avz"])
 
 
 def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
@@ -690,10 +697,32 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
     # to use 127.0.0.1 as the resolver.
     from cmdeploy.cmdeploy import Out
 
-    process_on_53 = host.get_fact(Port, port=53)
-    if process_on_53 not in (None, "unbound"):
-        Out().red(f"Can't install unbound: port 53 is occupied by: {process_on_53}")
-        exit(1)
+    port_services = [
+        (["master", "smtpd"], 25),
+        ("unbound", 53),
+        ("acmetool", 80),
+        ("imap-login", 143),
+        ("nginx", 443),
+        (["master", "smtpd"], 465),
+        (["master", "smtpd"], 587),
+        ("imap-login", 993),
+        ("iroh-relay", 3340),
+        ("nginx", 8443),
+        (["master", "smtpd"], config.postfix_reinject_port),
+        (["master", "smtpd"], config.postfix_reinject_port_incoming),
+        ("filtermail", config.filtermail_smtp_port),
+        ("filtermail", config.filtermail_smtp_port_incoming),
+    ]
+    for service, port in port_services:
+        print(f"Checking if port {port} is available for {service}...")
+        running_service = host.get_fact(Port, port=port)
+        if running_service:
+            if running_service not in service:
+                Out().red(
+                    f"Deploy failed: port {port} is occupied by: {running_service}"
+                )
+                exit(1)
+
     apt.packages(
         name="Install unbound",
         packages=["unbound", "unbound-anchor", "dnsutils"],
@@ -745,8 +774,6 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         name="Install fcgiwrap",
         packages=["fcgiwrap"],
     )
-
-    www_path = importlib.resources.files(__package__).joinpath("../../../www").resolve()
 
     deploy_website(config_path)
 
@@ -828,8 +855,14 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         name="Ensure cron is installed",
         packages=["cron"],
     )
-    git_hash = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode()
-    git_diff = subprocess.check_output(["git", "diff"]).decode()
+    try:
+        git_hash = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode()
+    except Exception:
+        git_hash = "unknown\n"
+    try:
+        git_diff = subprocess.check_output(["git", "diff"]).decode()
+    except Exception:
+        git_diff = ""
     files.put(
         name="Upload chatmail relay git commiit hash",
         src=StringIO(git_hash + git_diff),
