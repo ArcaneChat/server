@@ -13,7 +13,7 @@ from pathlib import Path
 from chatmaild.config import Config, read_config
 from pyinfra import facts, host, logger
 from pyinfra.api import FactBase
-from pyinfra.facts.files import File
+from pyinfra.facts.files import File, Sha256File
 from pyinfra.facts.server import Sysctl
 from pyinfra.facts.systemd import SystemdEnabled
 from pyinfra.operations import apt, files, pip, server, systemd
@@ -128,6 +128,11 @@ def _install_remote_venv_with_chatmaild(config) -> None:
         # "echobot",
         "chatmail-metadata",
         "lastlogin",
+        "turnserver",
+        "chatmail-expire",
+        "chatmail-expire.timer",
+        "chatmail-fsreport",
+        "chatmail-fsreport.timer",
     ):
         execpath = fn if fn != "filtermail-incoming" else "filtermail"
         params = dict(
@@ -136,23 +141,31 @@ def _install_remote_venv_with_chatmaild(config) -> None:
             remote_venv_dir=remote_venv_dir,
             mail_domain=config.mail_domain,
         )
+
+        basename = fn if "." in fn else f"{fn}.service"
+
         source_path = importlib.resources.files(__package__).joinpath(
-            "service", f"{fn}.service.f"
+            "service", f"{basename}.f"
         )
         content = source_path.read_text().format(**params).encode()
 
         files.put(
-            name=f"Upload {fn}.service",
+            name=f"Upload {basename}",
             src=io.BytesIO(content),
-            dest=f"/etc/systemd/system/{fn}.service",
+            dest=f"/etc/systemd/system/{basename}",
             **root_owned,
         )
+        if fn == "chatmail-expire" or fn == "chatmail-fsreport":
+            # don't auto-start but let the corresponding timer trigger execution
+            enabled = False
+        else:
+            enabled = True
         systemd.service(
-            name=f"Setup {fn} service",
-            service=f"{fn}.service",
-            running=True,
-            enabled=True,
-            restarted=True,
+            name=f"Setup {basename}",
+            service=basename,
+            running=enabled,
+            enabled=enabled,
+            restarted=enabled,
             daemon_reload=True,
         )
 
@@ -386,13 +399,11 @@ def _configure_dovecot(config: Config, debug: bool = False) -> bool:
     )
     need_restart |= lua_push_notification_script.changed
 
-    files.template(
-        src=importlib.resources.files(__package__).joinpath("dovecot/expunge.cron.j2"),
-        dest="/etc/cron.d/expunge",
-        user="root",
-        group="root",
-        mode="644",
-        config=config,
+    # remove historic expunge script
+    # which is now implemented through a systemd chatmail-expire service/timer
+    files.file(
+        path="/etc/cron.d/expunge",
+        present=False,
     )
 
     # as per https://doc.dovecot.org/configuration_manual/os/
@@ -497,6 +508,56 @@ def check_config(config):
     return config
 
 
+def deploy_turn_server(config):
+    (url, sha256sum) = {
+        "x86_64": (
+            "https://github.com/chatmail/chatmail-turn/releases/download/v0.3/chatmail-turn-x86_64-linux",
+            "841e527c15fdc2940b0469e206188ea8f0af48533be12ecb8098520f813d41e4",
+        ),
+        "aarch64": (
+            "https://github.com/chatmail/chatmail-turn/releases/download/v0.3/chatmail-turn-aarch64-linux",
+            "a5fc2d06d937b56a34e098d2cd72a82d3e89967518d159bf246dc69b65e81b42",
+        ),
+    }[host.get_fact(facts.server.Arch)]
+
+    need_restart = False
+
+    existing_sha256sum = host.get_fact(Sha256File, "/usr/local/bin/chatmail-turn")
+    if existing_sha256sum != sha256sum:
+        server.shell(
+            name="Download chatmail-turn",
+            commands=[
+                f"(curl -L {url} >/usr/local/bin/chatmail-turn.new && (echo '{sha256sum} /usr/local/bin/chatmail-turn.new' | sha256sum -c) && mv /usr/local/bin/chatmail-turn.new /usr/local/bin/chatmail-turn)",
+                "chmod 755 /usr/local/bin/chatmail-turn",
+            ],
+        )
+        need_restart = True
+
+    source_path = importlib.resources.files(__package__).joinpath(
+        "service", "turnserver.service.f"
+    )
+    content = source_path.read_text().format(mail_domain=config.mail_domain).encode()
+
+    systemd_unit = files.put(
+        name="Upload turnserver.service",
+        src=io.BytesIO(content),
+        dest="/etc/systemd/system/turnserver.service",
+        user="root",
+        group="root",
+        mode="644",
+    )
+    need_restart |= systemd_unit.changed
+
+    systemd.service(
+        name="Setup turnserver service",
+        service="turnserver.service",
+        running=True,
+        enabled=True,
+        restarted=need_restart,
+        daemon_reload=systemd_unit.changed,
+    )
+
+
 def deploy_mtail(config):
     # Uninstall mtail package, we are going to install a static binary.
     apt.packages(name="Uninstall mtail", packages=["mtail"], present=False)
@@ -555,12 +616,12 @@ def deploy_mtail(config):
 def deploy_iroh_relay(config) -> None:
     (url, sha256sum) = {
         "x86_64": (
-            "https://github.com/n0-computer/iroh/releases/download/v0.28.1/iroh-relay-v0.28.1-x86_64-unknown-linux-musl.tar.gz",
-            "2ffacf7c0622c26b67a5895ee8e07388769599f60e5f52a3bd40a3258db89b2c",
+            "https://github.com/n0-computer/iroh/releases/download/v0.35.0/iroh-relay-v0.35.0-x86_64-unknown-linux-musl.tar.gz",
+            "45c81199dbd70f8c4c30fef7f3b9727ca6e3cea8f2831333eeaf8aa71bf0fac1",
         ),
         "aarch64": (
-            "https://github.com/n0-computer/iroh/releases/download/v0.28.1/iroh-relay-v0.28.1-aarch64-unknown-linux-musl.tar.gz",
-            "b915037bcc1ff1110cc9fcb5de4a17c00ff576fd2f568cd339b3b2d54c420dc4",
+            "https://github.com/n0-computer/iroh/releases/download/v0.35.0/iroh-relay-v0.35.0-aarch64-unknown-linux-musl.tar.gz",
+            "f8ef27631fac213b3ef668d02acd5b3e215292746a3fc71d90c63115446008b1",
         ),
     }[host.get_fact(facts.server.Arch)]
 
@@ -569,15 +630,18 @@ def deploy_iroh_relay(config) -> None:
         packages=["curl"],
     )
 
-    server.shell(
-        name="Download iroh-relay",
-        commands=[
-            f"(echo '{sha256sum} /usr/local/bin/iroh-relay' | sha256sum -c) || (curl -L {url} | gunzip | tar -x -f - ./iroh-relay -O >/usr/local/bin/iroh-relay.new && mv /usr/local/bin/iroh-relay.new /usr/local/bin/iroh-relay)",
-            "chmod 755 /usr/local/bin/iroh-relay",
-        ],
-    )
-
     need_restart = False
+
+    existing_sha256sum = host.get_fact(Sha256File, "/usr/local/bin/iroh-relay")
+    if existing_sha256sum != sha256sum:
+        server.shell(
+            name="Download iroh-relay",
+            commands=[
+                f"(curl -L {url} | gunzip | tar -x -f - ./iroh-relay -O >/usr/local/bin/iroh-relay.new && (echo '{sha256sum} /usr/local/bin/iroh-relay.new' | sha256sum -c) && mv /usr/local/bin/iroh-relay.new /usr/local/bin/iroh-relay)",
+                "chmod 755 /usr/local/bin/iroh-relay",
+            ],
+        )
+        need_restart = True
 
     systemd_unit = files.put(
         name="Upload iroh-relay systemd unit",
@@ -619,7 +683,9 @@ def deploy_website(config_path: Path) -> None:
     if mail_domain == "arcanechat.me":
         subprocess.check_output(["pnpm", "build"], cwd=www_path.joinpath("arcanechat"))
         build_dir = www_path.joinpath("arcanechat/dist")
-        files.rsync(f"{build_dir}/", "/var/www/html", flags=["-avz"])
+        files.rsync(
+            f"{build_dir}/", "/var/www/html", flags=["-avz", "--chown=www-data"]
+        )
     else:
         # if www_folder was set to a non-existing folder, skip upload
         if not www_path.is_dir():
@@ -629,7 +695,9 @@ def deploy_website(config_path: Path) -> None:
             if build_dir:
                 www_path = build_webpages(src_dir, build_dir, config)
             # if it is not a hugo page, upload it as is
-            files.rsync(f"{www_path}/", "/var/www/html", flags=["-avz"])
+            files.rsync(
+                f"{www_path}/", "/var/www/html", flags=["-avz", "--chown=www-data"]
+            )
 
 
 def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
@@ -692,6 +760,8 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         packages=["rsync"],
     )
 
+    deploy_turn_server(config)
+
     # Run local DNS resolver `unbound`.
     # `resolvconf` takes care of setting up /etc/resolv.conf
     # to use 127.0.0.1 as the resolver.
@@ -701,11 +771,11 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         (["master", "smtpd"], 25),
         ("unbound", 53),
         ("acmetool", 80),
-        ("imap-login", 143),
+        (["imap-login", "dovecot"], 143),
         ("nginx", 443),
         (["master", "smtpd"], 465),
         (["master", "smtpd"], 587),
-        ("imap-login", 993),
+        (["imap-login", "dovecot"], 993),
         ("iroh-relay", 3340),
         ("nginx", 8443),
         (["master", "smtpd"], config.postfix_reinject_port),
@@ -746,6 +816,7 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
     # Deploy acmetool to have TLS certificates.
     tls_domains = [mail_domain, f"mta-sts.{mail_domain}", f"www.{mail_domain}"]
     deploy_acmetool(
+        email=config.acme_email,
         domains=tls_domains,
     )
 
@@ -822,6 +893,21 @@ def deploy_chatmail(config_path: Path, disable_mail: bool) -> None:
         enabled=True,
         restarted=nginx_need_restart,
     )
+
+    systemd.service(
+        name="Start and enable fcgiwrap",
+        service="fcgiwrap.service",
+        running=True,
+        enabled=True,
+    )
+
+    """
+    systemd.service(
+        name="Restart echobot if postfix and dovecot were just started",
+        service="echobot.service",
+        restarted=postfix_need_restart and dovecot_need_restart,
+    )
+    """
 
     # This file is used by auth proxy.
     # https://wiki.debian.org/EtcMailName

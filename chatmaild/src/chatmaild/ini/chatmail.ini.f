@@ -45,6 +45,9 @@ passthrough_senders =
 # (space-separated, item may start with "@" to whitelist whole recipient domains)
 passthrough_recipients =
 
+# path to www directory - documented here: https://github.com/chatmail/relay/#custom-web-pages
+#www_folder = www
+
 #
 # Deployment Details
 #
@@ -59,6 +62,9 @@ postfix_reinject_port_incoming = 10026
 
 # if set to "True" IPv6 is disabled
 disable_ipv6 = False
+
+# Your email adress, which will be used in acmetool to manage Let's Encrypt SSL certificates
+acme_email = 
 
 # Defaults to https://iroh.{{mail_domain}} and running `iroh-relay` on the chatmail
 # service.
