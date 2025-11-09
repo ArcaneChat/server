@@ -133,10 +133,15 @@ def run_cmd(args, out):
     return retcode
 
 
+def web_cmd_options(parser):
+    add_ssh_host_option(parser)
+
+
 def web_cmd(args, out):
     """Deploy chatmail website on the remote server."""
 
-    sshexec = args.get_sshexec()
+    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain
+    sshexec = get_sshexec(ssh_host)
 
     deploy_path = (
         importlib.resources.files(__package__).joinpath("deploy_web.py").resolve()
