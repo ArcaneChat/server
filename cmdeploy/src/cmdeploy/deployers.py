@@ -451,7 +451,6 @@ class ChatmailVenvDeployer(Deployer):
 class ChatmailDeployer(Deployer):
     required_users = [
         ("vmail", "vmail", None),
-        ("echobot", None, None),
         ("iroh", None, None),
     ]
 
