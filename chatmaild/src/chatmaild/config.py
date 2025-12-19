@@ -4,8 +4,6 @@ import iniconfig
 
 from chatmaild.user import User
 
-echobot_password_path = Path("/run/echobot/password")
-
 
 def read_config(inipath):
     assert Path(inipath).exists(), inipath
@@ -46,6 +44,7 @@ class Config:
         self.disable_ipv6 = params.get("disable_ipv6", "false").lower() == "true"
         self.acme_email = params.get("acme_email", "")
         self.imap_rawlog = params.get("imap_rawlog", "false").lower() == "true"
+        self.imap_compress = params.get("imap_compress", "false").lower() == "true"
         if "iroh_relay" not in params:
             self.iroh_relay = "https://" + params["mail_domain"]
             self.enable_iroh_relay = True
@@ -72,10 +71,7 @@ class Config:
             raise ValueError(f"invalid address {addr!r}")
 
         maildir = self.mailboxes_dir.joinpath(addr)
-        if addr.startswith("echo@"):
-            password_path = echobot_password_path
-        else:
-            password_path = maildir.joinpath("password")
+        password_path = maildir.joinpath("password")
 
         return User(maildir, addr, password_path, uid="vmail", gid="vmail")
 

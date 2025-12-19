@@ -2,14 +2,40 @@
 
 ## untagged
 
+- Add imap_compress option to chatmail.ini (#760)
+
+- Remove echobot from relays 
+  ([#753](https://github.com/chatmail/relay/pull/753))
+
+- Add robots.txt to exclude all web crawlers
+  ([#732](https://github.com/chatmail/relay/pull/732))
+
+- acmetool: accept new Let's Encrypt ToS: https://letsencrypt.org/documents/LE-SA-v1.6-August-18-2025.pdf
+  ([#729](https://github.com/chatmail/relay/pull/729))
+
+- Organized cmdeploy into install, configure, and activate stages
+  ([#695](https://github.com/chatmail/relay/pull/695))
+
+- docs: move readme.md docs to sphinx documentation rendered at https://chatmail.at/doc/relay 
+  ([#711](https://github.com/chatmail/relay/pull/711))
+
+- acmetool: replace cronjob with a systemd timer
+  ([#719](https://github.com/chatmail/relay/pull/719))
+
+- remove xstore@testrun.org from default passthrough recipients
+  ([#722](https://github.com/chatmail/relay/pull/722))
+
+- don't deploy the website if there are merge conflicts in the www folder
+  ([#714](https://github.com/chatmail/relay/pull/714))
+
 - acmetool: use ECDSA keys instead of RSA
   ([#689](https://github.com/chatmail/relay/pull/689))
 
 - Require TLS 1.2 for outgoing SMTP connections
-  ([#685](https://github.com/chatmail/relay/pull/685))
+  ([#685](https://github.com/chatmail/relay/pull/685), [#730](https://github.com/chatmail/relay/pull/730))
 
 - require STARTTLS for incoming port 25 connections
-  ([#684](https://github.com/chatmail/relay/pull/684))
+  ([#684](https://github.com/chatmail/relay/pull/684), [#730](https://github.com/chatmail/relay/pull/730))
 
 - filtermail: run CPU-intensive handle_DATA in a thread pool executor
   ([#676](https://github.com/chatmail/relay/pull/676))
@@ -30,7 +56,7 @@
   ([#650](https://github.com/chatmail/relay/pull/650))
 
 - filtermail: accept mails from Protonmail
-  ([#616](https://github.com/chatmail/relay/pull/655))
+  ([#616](https://github.com/chatmail/relay/pull/616))
 
 - Ignore all RCPT TO: parameters
   ([#651](https://github.com/chatmail/relay/pull/651))
@@ -63,7 +89,7 @@
   to only do a single iteration over sometimes millions of messages
   instead of doing "find" commands that iterate 9 times over the messages. 
   Provide an "fsreport" CLI for more fine grained analysis of message files. 
-  ([#637](https://github.com/chatmail/relay/pull/632))
+  ([#637](https://github.com/chatmail/relay/pull/637))
 
 
 ## 1.7.0 2025-09-11

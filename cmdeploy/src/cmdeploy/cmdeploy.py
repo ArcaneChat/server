@@ -95,7 +95,7 @@ def run_cmd(args, out):
     env["CHATMAIL_INI"] = args.inipath
     env["CHATMAIL_DISABLE_MAIL"] = "True" if args.disable_mail else ""
     env["CHATMAIL_REQUIRE_IROH"] = "True" if require_iroh else ""
-    deploy_path = importlib.resources.files(__package__).joinpath("deploy.py").resolve()
+    deploy_path = importlib.resources.files(__package__).joinpath("run.py").resolve()
     pyinf = "pyinfra --dry" if args.dry_run else "pyinfra"
 
     cmd = f"{pyinf} --ssh-user root {ssh_host} {deploy_path} -y"
@@ -109,17 +109,6 @@ def run_cmd(args, out):
     try:
         retcode = out.check_call(cmd, env=env)
         if retcode == 0:
-            """
-            if not args.disable_mail:
-                print("\nYou can try out the relay by talking to this echo bot: ")
-                sshexec = SSHExec(args.config.mail_domain, verbose=args.verbose)
-                print(
-                    sshexec(
-                        call=remote.rshell.shell,
-                        kwargs=dict(command="cat /var/lib/echobot/invite-link.txt"),
-                    )
-                )
-            """
             out.green("Deploy completed, call `cmdeploy dns` next.")
         elif not remote_data["acme_account_url"]:
             out.red("Deploy completed but letsencrypt not configured")
@@ -200,10 +189,15 @@ def dns_cmd(args, out):
     return retcode
 
 
+def status_cmd_options(parser):
+    add_ssh_host_option(parser)
+
+
 def status_cmd(args, out):
     """Display status for online chatmail instance."""
 
-    sshexec = args.get_sshexec()
+    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain
+    sshexec = get_sshexec(ssh_host, verbose=args.verbose)
 
     out.green(f"chatmail domain: {args.config.mail_domain}")
     if args.config.privacy_mail:
@@ -262,7 +256,12 @@ def fmt_cmd_options(parser):
 def fmt_cmd(args, out):
     """Run formattting fixes on all chatmail source code."""
 
-    sources = [str(importlib.resources.files(x)) for x in ("chatmaild", "cmdeploy")]
+    chatmaild_dir = importlib.resources.files("chatmaild").resolve()
+    cmdeploy_dir = chatmaild_dir.joinpath(
+        "..", "..", "..", "cmdeploy", "src", "cmdeploy"
+    ).resolve()
+    sources = [str(chatmaild_dir), str(cmdeploy_dir)]
+
     format_args = [shutil.which("ruff"), "format"]
     check_args = [shutil.which("ruff"), "check"]
 
