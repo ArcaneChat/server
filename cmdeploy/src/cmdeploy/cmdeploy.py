@@ -72,6 +72,11 @@ def run_cmd_options(parser):
         help="install/upgrade the server, but disable postfix & dovecot for now",
     )
     parser.add_argument(
+        "--website-only",
+        action="store_true",
+        help="only update/deploy the website, skipping full server upgrade/deployment, useful when you only changed/updated the web pages and don't need to re-run a full server upgrade",
+    )
+    parser.add_argument(
         "--skip-dns-check",
         dest="dns_check_disabled",
         action="store_true",
@@ -93,6 +98,7 @@ def run_cmd(args, out):
 
     env = os.environ.copy()
     env["CHATMAIL_INI"] = args.inipath
+    env["CHATMAIL_WEBSITE_ONLY"] = "True" if args.website_only else ""
     env["CHATMAIL_DISABLE_MAIL"] = "True" if args.disable_mail else ""
     env["CHATMAIL_REQUIRE_IROH"] = "True" if require_iroh else ""
     deploy_path = importlib.resources.files(__package__).joinpath("run.py").resolve()
@@ -108,7 +114,12 @@ def run_cmd(args, out):
 
     try:
         retcode = out.check_call(cmd, env=env)
-        if retcode == 0:
+        if args.website_only:
+            if retcode == 0:
+                out.green("Website deployment completed.")
+            else:
+                out.red("Website deployment failed.")
+        elif retcode == 0:
             out.green("Deploy completed, call `cmdeploy dns` next.")
         elif not remote_data["acme_account_url"]:
             out.red("Deploy completed but letsencrypt not configured")
@@ -119,33 +130,6 @@ def run_cmd(args, out):
     except subprocess.CalledProcessError:
         out.red("Deploy failed")
         retcode = 1
-    return retcode
-
-
-def web_cmd_options(parser):
-    add_ssh_host_option(parser)
-
-
-def web_cmd(args, out):
-    """Deploy chatmail website on the remote server."""
-
-    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain
-    sshexec = get_sshexec(ssh_host)
-
-    deploy_path = (
-        importlib.resources.files(__package__).joinpath("deploy_web.py").resolve()
-    )
-    ssh_host = args.config.mail_domain
-    cmd = f"pyinfra --ssh-user root {ssh_host} {deploy_path} -y"
-    if version.parse(pyinfra.__version__) < version.parse("3"):
-        out.red("Please re-run scripts/initenv.sh to update pyinfra to version 3.")
-        return 1
-
-    retcode = out.check_call(cmd)
-    if retcode == 0:
-        out.green("Website deployment completed.")
-    else:
-        out.red("Website deployment failed.")
     return retcode
 
 
