@@ -75,7 +75,10 @@ http {
 			# as directory, then fall back to displaying a 404.
 			try_files $uri $uri/ =404;
 		}
-
+        # Redirect exact /channels (no trailing slash) to /channels/
+		location = /channels {
+			return 301 $scheme://$host$uri/;
+		}
 		location /metrics {
 			default_type text/plain;
 		}
