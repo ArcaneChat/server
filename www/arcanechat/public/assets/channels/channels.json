@@ -1,6 +1,28 @@
 [
   {
     "settings": {
+      "url": "https://feed.itsfoss.com/",
+      "name": "It's FOSS",
+      "description": "Making You a Better Linux User",
+      "html": true,
+      "socialImg": true
+    },
+    "image": "itsfoss.png",
+    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=CJnKPXHxF76S9uO_jokf1dyb&j=aJVL-egnz3u2Eb0oBagIhgpM&s=6mIoXVTaRObMz7M9zPuihUOF&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=It%27s+FOSS"
+  },
+  {
+    "settings": {
+      "url": "https://www.cyberciti.biz/feed/",
+      "name": "nixCraft",
+      "description": "Linux Tips, Hacks, Tutorials, And Ideas In Blog",
+      "html": false,
+      "socialImg": false
+    },
+    "image": "nixcraft.jpeg",
+    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=IJI6wRgBAyqnkTJpUAAqRXqA&j=H6_XZHeTicZko4DcjqkzkJP8&s=t0chKJbZ-RwvuC9gq5QRL1yy&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=nixCraft"
+  },
+  {
+    "settings": {
       "url": "http://animecorner.me/feed/",
       "name": "Anime Corner",
       "description": "News & Features Straight From Japan. A reliable source of news about anime and Japan",
