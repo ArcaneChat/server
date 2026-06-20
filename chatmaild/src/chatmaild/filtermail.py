@@ -231,6 +231,7 @@ class OutgoingBeforeQueueHandler:
         envelope.mail_from = address
         max_sent = self.config.max_user_send_per_minute
         if address in (
+            "arcanechat@arcanechat.me",
             "6j2tb0xyz@arcanechat.me",  # channelsbot
             "pixsocial@arcanechat.me",
             "social-es@arcanechat.me",
