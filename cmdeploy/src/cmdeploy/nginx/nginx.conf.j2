@@ -70,10 +70,10 @@ http {
 
 		access_log syslog:server=unix:/dev/log,facility=local7;
 
-        location ~ ^/(channels|privacy)/?$ {
-            default_type text/html;
-            try_files /$1.html =404;
-        }
+		location ~ ^/(channels|privacy)/?$ {
+			default_type text/html;
+			try_files /$1.html =404;
+		}
 
 		location / {
 			# First attempt to serve request as file, then
