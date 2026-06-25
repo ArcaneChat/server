@@ -131,11 +131,24 @@
       "description": "Comics about life, love and all the cats in between. 🍪\n\nWebsite: https://heyokyay.com/",
       "html": false,
       "text": false,
+      "includeLink": false,
       "extractImg": true,
       "socialImg": false
     },
     "image": "heyokyay.jpg",
     "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Whju-cocqhrRnHOOn9mo_uc8&j=UKMkDXNz0jPq0Q1HfJax-lY_&s=qAQt47mDmYCnFoVL0YwfIjhf&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=heyokyay"
+  },
+  {
+    "settings": {
+      "url": "https://bsky.app/profile/did:plc:gdcz3s2rofr4bbom5bx3kqrr/rss",
+      "name": "Twonks",
+      "description": "Twonks is a funny, offbeat webcomic series combining rude and twisted humour with a cast of cute but ultimately stupid characters. https://linktr.ee/twonkscomics",
+      "html": false,
+      "includeLink": false,
+      "socialImg": true
+    },
+    "image": "twonk.webp",
+    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=F7hsuSLrI6-oOt2vYtZyHni8&j=ouhN66ogZdpwhHhxtiHYHo7N&s=WKRB0o4bjlUWQamUwag9nt9G&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Twonks"
   },
   {
     "settings": {
