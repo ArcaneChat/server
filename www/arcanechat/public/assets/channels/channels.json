@@ -152,6 +152,18 @@
   },
   {
     "settings": {
+      "url": "https://bsky.app/profile/did:plc:dhow23r7araohqic3xoykz3r/rss",
+      "name": "Leftist Gamer Memes",
+      "description": "Crafting memes, comrade. ☭\n\nhttps://leftistgamermemes.com",
+      "html": false,
+      "includeLink": false,
+      "socialImg": true
+    },
+    "image": "leftistgamermemes.png",
+    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=-FVyUanRixV_lqFCSrh9ZLmA&j=QY9vRTOyE_A3M7lwOJKO8UBi&s=NmIRaJZpEoPTwepRda5VYAg8&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Leftist+Gamer+Memes"
+  },
+  {
+    "settings": {
       "url": "https://theshovel.com.au/feed/",
       "name": "The Shovel",
       "description": "News you can believe in",
