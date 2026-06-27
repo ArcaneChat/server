@@ -126,6 +126,19 @@
   },
   {
     "settings": {
+      "url": "https://www.bunicomic.com/feed/",
+      "name": "Buni",
+      "description": "Buni is a dark comic about an optimistic bunny with terrible luck.\n\nWebsite: https://www.bunicomic.com",
+      "html": false,
+      "text": false,
+      "extractImg": false,
+      "socialImg": true
+    },
+    "image": "buni.webp",
+    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Y3pDrb-vc-TBru-KS5H0F_25&j=7d-o0B4hvWwxianajAFyvfXm&s=Q0lLQSPxZn495mdZ7G_zoQqM&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Buni"
+  },
+  {
+    "settings": {
       "url": "https://heyokyay.com/feed/",
       "name": "heyokyay",
       "description": "Comics about life, love and all the cats in between. 🍪\n\nWebsite: https://heyokyay.com/",
