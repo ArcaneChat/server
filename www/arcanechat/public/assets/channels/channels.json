@@ -219,6 +219,16 @@
   },
   {
     "settings": {
+      "url": "https://mastodon.social/@greenpeace.rss",
+      "name": "Greenpeace International",
+      "description": "Greenpeace exists because this fragile Earth deserves a voice. It needs solutions. It needs change. It needs action.\n\nWebsite: https://greenpeace.org/international",
+      "html": false
+    },
+    "image": "greenpeace.jpeg",
+    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=OVB2LD5FvbhhrYHzkdBQU50p&j=uxWwBrg1nDUH08i3wgVuw6US&s=hpmcA1sjEKnnc2s71Y7_Bsf4&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Greenpeace+International"
+  },
+  {
+    "settings": {
       "url": "https://tmz.com/rss.xml",
       "name": "TMZ",
       "description": "Celebrity Gossip and Entertainment News, Covering Celebrity News and Hollywood Rumors. Get All The Latest Gossip at TMZ - Thirty Mile Zone",
