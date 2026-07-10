@@ -1,241 +1,286 @@
-[
-  {
-    "settings": {
-      "url": "https://feed.itsfoss.com/",
-      "name": "It's FOSS",
-      "description": "Making You a Better Linux User",
-      "html": true,
-      "socialImg": true
+{
+  "en": [
+    {
+      "settings": {
+        "url": "https://feed.itsfoss.com/",
+        "name": "It's FOSS",
+        "description": "Making You a Better Linux User",
+        "html": true,
+        "socialImg": true
+      },
+      "image": "itsfoss.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=CJnKPXHxF76S9uO_jokf1dyb&j=aJVL-egnz3u2Eb0oBagIhgpM&s=6mIoXVTaRObMz7M9zPuihUOF&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=It%27s+FOSS"
     },
-    "image": "itsfoss.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=CJnKPXHxF76S9uO_jokf1dyb&j=aJVL-egnz3u2Eb0oBagIhgpM&s=6mIoXVTaRObMz7M9zPuihUOF&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=It%27s+FOSS"
-  },
-  {
-    "settings": {
-      "url": "https://www.cyberciti.biz/feed/",
-      "name": "nixCraft",
-      "description": "Linux Tips, Hacks, Tutorials, And Ideas In Blog",
-      "html": false,
-      "socialImg": false
+    {
+      "settings": {
+        "url": "https://www.cyberciti.biz/feed/",
+        "name": "nixCraft",
+        "description": "Linux Tips, Hacks, Tutorials, And Ideas In Blog",
+        "html": false,
+        "socialImg": false
+      },
+      "image": "nixcraft.jpeg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=IJI6wRgBAyqnkTJpUAAqRXqA&j=H6_XZHeTicZko4DcjqkzkJP8&s=t0chKJbZ-RwvuC9gq5QRL1yy&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=nixCraft"
     },
-    "image": "nixcraft.jpeg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=IJI6wRgBAyqnkTJpUAAqRXqA&j=H6_XZHeTicZko4DcjqkzkJP8&s=t0chKJbZ-RwvuC9gq5QRL1yy&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=nixCraft"
-  },
-  {
-    "settings": {
-      "url": "http://animecorner.me/feed/",
-      "name": "Anime Corner",
-      "description": "News & Features Straight From Japan. A reliable source of news about anime and Japan",
-      "html": false,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "http://animecorner.me/feed/",
+        "name": "Anime Corner",
+        "description": "News & Features Straight From Japan. A reliable source of news about anime and Japan",
+        "html": false,
+        "socialImg": true
+      },
+      "image": "animecorner.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=NE8KI1SvCtGBWE8krUJ1J7Gz&j=-Q4tOAHM6R9t9v8ZlfXTZzmX&s=HzAlOhkw7afFMGGBV_ipwHtG&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Anime+Corner"
     },
-    "image": "animecorner.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=NE8KI1SvCtGBWE8krUJ1J7Gz&j=-Q4tOAHM6R9t9v8ZlfXTZzmX&s=HzAlOhkw7afFMGGBV_ipwHtG&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Anime+Corner"
-  },
-  {
-    "settings": {
-      "url": "https://newatlas.com/technology/index.rss",
-      "name": "New Atlas: Technology",
-      "description": "Technology News. Extraordinary ideas and innovations moving the world forward.",
-      "html": false,
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://newatlas.com/technology/index.rss",
+        "name": "New Atlas: Technology",
+        "description": "Technology News. Extraordinary ideas and innovations moving the world forward.",
+        "html": false,
+        "extractImg": true
+      },
+      "image": "new-atlas.jpg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=stxlc-uanELJUkKlQanbApJq&j=0N8oaa7wCRRfpsjvECBROdU1&s=YHPb1I1u0B9cZwjYSKKjr-Ef&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=New+Atlas%3A+Technology"
     },
-    "image": "new-atlas.jpg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=stxlc-uanELJUkKlQanbApJq&j=0N8oaa7wCRRfpsjvECBROdU1&s=YHPb1I1u0B9cZwjYSKKjr-Ef&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=New+Atlas%3A+Technology"
-  },
-  {
-    "settings": {
-      "url": "https://feeds.feedburner.com/smittenkitchen",
-      "name": "Smitten Kitchen",
-      "description": "Fearless cooking from a tiny NYC kitchen",
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://feeds.feedburner.com/smittenkitchen",
+        "name": "Smitten Kitchen",
+        "description": "Fearless cooking from a tiny NYC kitchen",
+        "extractImg": true
+      },
+      "image": "smitten-kitchen.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=sMDBUBjhmIdCn4vh1kJlK2qX&j=WvqpUwYPMgOw3IeqArCY84g9&s=Vc3MYePPJzlB-ZBOoxJ8_i0H&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Smitten+Kitchen"
     },
-    "image": "smitten-kitchen.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=sMDBUBjhmIdCn4vh1kJlK2qX&j=WvqpUwYPMgOw3IeqArCY84g9&s=Vc3MYePPJzlB-ZBOoxJ8_i0H&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Smitten+Kitchen"
-  },
-  {
-    "settings": {
-      "url": "https://damndelicious.net/feed/",
-      "name": "Damn Delicious",
-      "description": "Quick and Easy Recipes",
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://damndelicious.net/feed/",
+        "name": "Damn Delicious",
+        "description": "Quick and Easy Recipes",
+        "extractImg": true
+      },
+      "image": "damn-delicious.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=lQXlrGYNu-Vt15ReKOS5LgVI&j=2JxUQxKSeOASyp3qflMcsQ7R&s=ITadcr8PbiWuyeLv7bdJ5rb7&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Damn+Delicious"
     },
-    "image": "damn-delicious.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=lQXlrGYNu-Vt15ReKOS5LgVI&j=2JxUQxKSeOASyp3qflMcsQ7R&s=ITadcr8PbiWuyeLv7bdJ5rb7&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Damn+Delicious"
-  },
-  {
-    "settings": {
-      "url": "https://refractor.io/index.rss",
-      "name": "Refractor - Science in Focus",
-      "description": "Latest Science and Health news. Extraordinary ideas moving the world forward.",
-      "html": false,
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://refractor.io/index.rss",
+        "name": "Refractor - Science in Focus",
+        "description": "Latest Science and Health news. Extraordinary ideas moving the world forward.",
+        "html": false,
+        "extractImg": true
+      },
+      "image": "refractor.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=IYXGrjwIfoSSQp_6Tx3_cM83&j=4Tz1Jkg1V5dziiDQGMLiQ_vk&s=SlY-mJEObtnoOndD1JQJvHt9&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Refractor+%2D+Science"
     },
-    "image": "refractor.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=IYXGrjwIfoSSQp_6Tx3_cM83&j=4Tz1Jkg1V5dziiDQGMLiQ_vk&s=SlY-mJEObtnoOndD1JQJvHt9&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Refractor+%2D+Science"
-  },
-  {
-    "settings": {
-      "url": "https://delta.chat/feed.xml",
-      "name": "Delta Chat (Blog)",
-      "description": "The official Delta Chat blog (https://delta.chat/blog)",
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://delta.chat/feed.xml",
+        "name": "Delta Chat (Blog)",
+        "description": "The official Delta Chat blog (https://delta.chat/blog)",
+        "extractImg": true
+      },
+      "image": "dc-blog.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=HAohSURiQW-mZg2OU8Nr50Gv&j=L8xK0jBW_d7BRFa1IHz5AvEK&s=Dat-girmoflpTTqYI9wgcPcB&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Delta+Chat+%28Blog%29"
     },
-    "image": "dc-blog.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=HAohSURiQW-mZg2OU8Nr50Gv&j=L8xK0jBW_d7BRFa1IHz5AvEK&s=Dat-girmoflpTTqYI9wgcPcB&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Delta+Chat+%28Blog%29"
-  },
-  {
-    "settings": {
-      "url": "https://chaos.social/@delta.rss",
-      "name": "Delta Chat (Social)",
-      "description": "The official Delta Chat account in social media (https://chaos.social/@delta)",
-      "html": false
+    {
+      "settings": {
+        "url": "https://chaos.social/@delta.rss",
+        "name": "Delta Chat (Social)",
+        "description": "The official Delta Chat account in social media (https://chaos.social/@delta)",
+        "html": false
+      },
+      "image": "dc-social.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=V0eoPL-0Ypa9BYEYPCBuNOYf&j=nM1_cgF2OBoC_3xVQnb9YQFD&s=8PQh-hIBaZxtHxWtlezrSAUC&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Delta+Chat+%28Social%29"
     },
-    "image": "dc-social.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=V0eoPL-0Ypa9BYEYPCBuNOYf&j=nM1_cgF2OBoC_3xVQnb9YQFD&s=8PQh-hIBaZxtHxWtlezrSAUC&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Delta+Chat+%28Social%29"
-  },
-  {
-    "settings": {
-      "url": "https://www.wired.com/feed/rss",
-      "name": "WIRED",
-      "description": "In-depth reporting on technology, science, security, and innovation with expert commentary and investigative journalism",
-      "html": false
+    {
+      "settings": {
+        "url": "https://www.wired.com/feed/rss",
+        "name": "WIRED",
+        "description": "In-depth reporting on technology, science, security, and innovation with expert commentary and investigative journalism",
+        "html": false
+      },
+      "image": "wired.jpg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=D_ZcNp3zuR0BVmVf8WOyH1q-&j=yHqqYUxPpl_qjiRgt_-dz2sY&s=RNBf2hvEl3CjtOkK7lI-2DGh&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=WIRED"
     },
-    "image": "wired.jpg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=D_ZcNp3zuR0BVmVf8WOyH1q-&j=yHqqYUxPpl_qjiRgt_-dz2sY&s=RNBf2hvEl3CjtOkK7lI-2DGh&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=WIRED"
-  },
-  {
-    "settings": {
-      "url": "https://techcrunch.com/feed/",
-      "name": "TechCrunch",
-      "description": "Startup news, technology trends, product launches, and venture capital coverage from the global tech ecosystem",
-      "html": false,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "https://techcrunch.com/feed/",
+        "name": "TechCrunch",
+        "description": "Startup news, technology trends, product launches, and venture capital coverage from the global tech ecosystem",
+        "html": false,
+        "socialImg": true
+      },
+      "image": "techcrunch.jpg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=mtFjM8hBcM-nJkYGwzUP1Flq&j=Qu8gKeQsVD2Rc7cor57OxOrY&s=kp9bXgYKkdAGV19tY-ol6Dss&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=TechCrunch"
     },
-    "image": "techcrunch.jpg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=mtFjM8hBcM-nJkYGwzUP1Flq&j=Qu8gKeQsVD2Rc7cor57OxOrY&s=kp9bXgYKkdAGV19tY-ol6Dss&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=TechCrunch"
-  },
-  {
-    "settings": {
-      "url": "https://feeds.arstechnica.com/arstechnica/index",
-      "name": "Ars Technica",
-      "description": "Original news, reviews, analysis of tech trends, and expert advice on the most fundamental aspects of tech."
+    {
+      "settings": {
+        "url": "https://feeds.arstechnica.com/arstechnica/index",
+        "name": "Ars Technica",
+        "description": "Original news, reviews, analysis of tech trends, and expert advice on the most fundamental aspects of tech."
+      },
+      "image": "arstechnica.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=1K7uC8gXJK1jf5Te4iOMlLF9&j=slow94rmJTHE_6KGEngvdY7-&s=CZBYtWNkRJLf39ynRl9mFIpj&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Ars+Technica"
     },
-    "image": "arstechnica.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=1K7uC8gXJK1jf5Te4iOMlLF9&j=slow94rmJTHE_6KGEngvdY7-&s=CZBYtWNkRJLf39ynRl9mFIpj&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Ars+Technica"
-  },
-  {
-    "settings": {
-      "url": "https://www.bunicomic.com/feed/",
-      "name": "Buni",
-      "description": "Buni is a dark comic about an optimistic bunny with terrible luck.\n\nWebsite: www.bunicomic.com",
-      "html": false,
-      "text": false,
-      "extractImg": false,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "https://www.bunicomic.com/feed/",
+        "name": "Buni",
+        "description": "Buni is a dark comic about an optimistic bunny with terrible luck.\n\nWebsite: www.bunicomic.com",
+        "html": false,
+        "text": false,
+        "extractImg": false,
+        "socialImg": true
+      },
+      "image": "buni.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Y3pDrb-vc-TBru-KS5H0F_25&j=7d-o0B4hvWwxianajAFyvfXm&s=Q0lLQSPxZn495mdZ7G_zoQqM&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Buni"
     },
-    "image": "buni.webp",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Y3pDrb-vc-TBru-KS5H0F_25&j=7d-o0B4hvWwxianajAFyvfXm&s=Q0lLQSPxZn495mdZ7G_zoQqM&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Buni"
-  },
-  {
-    "settings": {
-      "url": "https://heyokyay.com/feed/",
-      "name": "heyokyay",
-      "description": "Comics about life, love and all the cats in between. 🍪\n\nWebsite: heyokyay.com",
-      "html": false,
-      "text": false,
-      "includeLink": false,
-      "extractImg": true,
-      "socialImg": false
+    {
+      "settings": {
+        "url": "https://heyokyay.com/feed/",
+        "name": "heyokyay",
+        "description": "Comics about life, love and all the cats in between. 🍪\n\nWebsite: heyokyay.com",
+        "html": false,
+        "text": false,
+        "includeLink": false,
+        "extractImg": true,
+        "socialImg": false
+      },
+      "image": "heyokyay.jpg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Whju-cocqhrRnHOOn9mo_uc8&j=UKMkDXNz0jPq0Q1HfJax-lY_&s=qAQt47mDmYCnFoVL0YwfIjhf&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=heyokyay"
     },
-    "image": "heyokyay.jpg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Whju-cocqhrRnHOOn9mo_uc8&j=UKMkDXNz0jPq0Q1HfJax-lY_&s=qAQt47mDmYCnFoVL0YwfIjhf&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=heyokyay"
-  },
-  {
-    "settings": {
-      "url": "https://bsky.app/profile/did:plc:gdcz3s2rofr4bbom5bx3kqrr/rss",
-      "name": "Twonks",
-      "description": "Twonks is a funny, offbeat webcomic series combining rude and twisted humour with a cast of cute but ultimately stupid characters.\n\nWebsite: www.twonks.co.uk",
-      "html": false,
-      "includeLink": false,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "https://bsky.app/profile/did:plc:gdcz3s2rofr4bbom5bx3kqrr/rss",
+        "name": "Twonks",
+        "description": "Twonks is a funny, offbeat webcomic series combining rude and twisted humour with a cast of cute but ultimately stupid characters.\n\nWebsite: www.twonks.co.uk",
+        "html": false,
+        "includeLink": false,
+        "socialImg": true
+      },
+      "image": "twonk.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=F7hsuSLrI6-oOt2vYtZyHni8&j=ouhN66ogZdpwhHhxtiHYHo7N&s=WKRB0o4bjlUWQamUwag9nt9G&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Twonks"
     },
-    "image": "twonk.webp",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=F7hsuSLrI6-oOt2vYtZyHni8&j=ouhN66ogZdpwhHhxtiHYHo7N&s=WKRB0o4bjlUWQamUwag9nt9G&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Twonks"
-  },
-  {
-    "settings": {
-      "url": "https://www.theverge.com/rss/science/index.xml",
-      "name": "Science | The Verge",
-      "description": "Featuring the latest in daily science news, Verge Science is all you need to keep track of what’s going on in health, the environment, and your whole world",
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://www.theverge.com/rss/science/index.xml",
+        "name": "Science | The Verge",
+        "description": "Featuring the latest in daily science news, Verge Science is all you need to keep track of what’s going on in health, the environment, and your whole world",
+        "extractImg": true
+      },
+      "image": "the-verge.jpg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=1ASwjrj09u6WUazySPqavMzw&j=kC4SMzOiE9nZcelgfHteQTs2&s=wIIYCJXMMi0v_FDIa2J4Ykfo&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Science+%7C+The+Verge"
     },
-    "image": "the-verge.jpg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=1ASwjrj09u6WUazySPqavMzw&j=kC4SMzOiE9nZcelgfHteQTs2&s=wIIYCJXMMi0v_FDIa2J4Ykfo&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Science+%7C+The+Verge"
-  },
-  {
-    "settings": {
-      "url": "https://bsky.app/profile/did:plc:dhow23r7araohqic3xoykz3r/rss",
-      "name": "Leftist Gamer Memes",
-      "description": "Crafting memes, comrade. ☭",
-      "html": false,
-      "includeLink": false,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "https://bsky.app/profile/did:plc:dhow23r7araohqic3xoykz3r/rss",
+        "name": "Leftist Gamer Memes",
+        "description": "Crafting memes, comrade. ☭",
+        "html": false,
+        "includeLink": false,
+        "socialImg": true
+      },
+      "image": "leftistgamermemes.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=-FVyUanRixV_lqFCSrh9ZLmA&j=QY9vRTOyE_A3M7lwOJKO8UBi&s=NmIRaJZpEoPTwepRda5VYAg8&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Leftist+Gamer+Memes"
     },
-    "image": "leftistgamermemes.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=-FVyUanRixV_lqFCSrh9ZLmA&j=QY9vRTOyE_A3M7lwOJKO8UBi&s=NmIRaJZpEoPTwepRda5VYAg8&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Leftist+Gamer+Memes"
-  },
-  {
-    "settings": {
-      "url": "https://theshovel.com.au/feed/",
-      "name": "The Shovel",
-      "description": "News you can believe in",
-      "html": true,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "https://theshovel.com.au/feed/",
+        "name": "The Shovel",
+        "description": "News you can believe in",
+        "html": true,
+        "socialImg": true
+      },
+      "image": "the-shovel.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=KADXtnkLIuqXxe05vlEV38FY&j=jRJ3eri307TQQe84NPxMzF4Z&s=bUZFY9dti7iya6qnw8KYOpXd&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=The+Shovel"
     },
-    "image": "the-shovel.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=KADXtnkLIuqXxe05vlEV38FY&j=jRJ3eri307TQQe84NPxMzF4Z&s=bUZFY9dti7iya6qnw8KYOpXd&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=The+Shovel"
-  },
-  {
-    "settings": {
-      "url": "https://mastodon.online/@streetartutopia.rss",
-      "name": "Street Art Utopia",
-      "description": "We declare the world as our canvas!\n\nWebsite: streetartutopia.com",
-      "html": false,
-      "includeLink": false
+    {
+      "settings": {
+        "url": "https://mastodon.online/@streetartutopia.rss",
+        "name": "Street Art Utopia",
+        "description": "We declare the world as our canvas!\n\nWebsite: streetartutopia.com",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "street-art-utopia.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=MgHEG7vN3vvZdX3fA38ATHwk&j=BuL4xJ-tKn7MUeFq4CXK04m6&s=k58srCpWmRoJvvshCf2Icg7j&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Street+Art+Utopia"
     },
-    "image": "street-art-utopia.webp",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=MgHEG7vN3vvZdX3fA38ATHwk&j=BuL4xJ-tKn7MUeFq4CXK04m6&s=k58srCpWmRoJvvshCf2Icg7j&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Street+Art+Utopia"
-  },
-  {
-    "settings": {
-      "url": "https://pluralistic.net/feed/",
-      "name": "Pluralistic",
-      "description": "Daily links from Cory Doctorow",
-      "extractImg": true
+    {
+      "settings": {
+        "url": "https://pluralistic.net/feed/",
+        "name": "Pluralistic",
+        "description": "Daily links from Cory Doctorow",
+        "extractImg": true
+      },
+      "image": "pluralistic.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=qGsBzEyxwfXZHdC3c_xgTSt4&j=dfmqdw31uNWGhZOWTmC9kt6m&s=V-0OT8cqMFvtYK5kH7E2Phcy&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Pluralistic"
     },
-    "image": "pluralistic.webp",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=qGsBzEyxwfXZHdC3c_xgTSt4&j=dfmqdw31uNWGhZOWTmC9kt6m&s=V-0OT8cqMFvtYK5kH7E2Phcy&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Pluralistic"
-  },
-  {
-    "settings": {
-      "url": "https://mastodon.social/@greenpeace.rss",
-      "name": "Greenpeace International",
-      "description": "Greenpeace exists because this fragile Earth deserves a voice. It needs solutions. It needs change. It needs action.\n\nWebsite: https://greenpeace.org/international",
-      "html": false
+    {
+      "settings": {
+        "url": "https://mastodon.social/@greenpeace.rss",
+        "name": "Greenpeace International",
+        "description": "Greenpeace exists because this fragile Earth deserves a voice. It needs solutions. It needs change. It needs action.\n\nWebsite: https://greenpeace.org/international",
+        "html": false
+      },
+      "image": "greenpeace.jpeg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=OVB2LD5FvbhhrYHzkdBQU50p&j=uxWwBrg1nDUH08i3wgVuw6US&s=hpmcA1sjEKnnc2s71Y7_Bsf4&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Greenpeace+International"
     },
-    "image": "greenpeace.jpeg",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=OVB2LD5FvbhhrYHzkdBQU50p&j=uxWwBrg1nDUH08i3wgVuw6US&s=hpmcA1sjEKnnc2s71Y7_Bsf4&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Greenpeace+International"
-  },
-  {
-    "settings": {
-      "url": "https://tmz.com/rss.xml",
-      "name": "TMZ",
-      "description": "Celebrity Gossip and Entertainment News, Covering Celebrity News and Hollywood Rumors. Get All The Latest Gossip at TMZ - Thirty Mile Zone",
-      "html": false,
-      "socialImg": true
+    {
+      "settings": {
+        "url": "https://tmz.com/rss.xml",
+        "name": "TMZ",
+        "description": "Celebrity Gossip and Entertainment News, Covering Celebrity News and Hollywood Rumors. Get All The Latest Gossip at TMZ - Thirty Mile Zone",
+        "html": false,
+        "socialImg": true
+      },
+      "image": "tmz.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Lag8ma2zvqt9M6lxVyDFAK8M&j=28vnoDuiulBQ3ziLasFkBgTJ&s=yY_cA6MXlKR08nM5zllWlujZ&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=TMZ"
+    }
+  ],
+  "fr": [
+    {
+      "settings": {
+        "url": "https://mediapart.social/@mediapart.rss",
+        "name": "Mediapart",
+        "description": "Journal d'information numérique, indépendant et participatif. Seul·es nos lecteurs et lectrices peuvent nous acheter !",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "mediapart.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=tQ7BkdRj286D4Nr3y890Asm-&j=gf8fonHWOR6N6DllhL6BelnR&s=z0z2jafqKo0Wkse0kfdTLeSs&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Mediapart"
     },
-    "image": "tmz.png",
-    "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Lag8ma2zvqt9M6lxVyDFAK8M&j=28vnoDuiulBQ3ziLasFkBgTJ&s=yY_cA6MXlKR08nM5zllWlujZ&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=TMZ"
-  }
-]
+    {
+      "settings": {
+        "url": "https://mastodon.social/@lemonde.rss",
+        "name": "Le Monde",
+        "description": "Premier quotidien français 📰",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "lemonde.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Cdy_zjRnxOeanfsvl4DgbRw5&j=DYbAd4jXoICTu4oeoNGq0uAF&s=KijCQW9OHUKEFL6J9fsB5Lqb&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Le+Monde"
+    },
+    {
+      "settings": {
+        "url": "https://www.france24.com/fr/rss",
+        "name": "France 24",
+        "description": "France 24 décrypte l’actualité internationale, politique, l’économie, l’environnement, la culture, le sport, en France et à l’international avec analyses, des interviews, des reportages exclusifs, des magazines et des documentaires",
+        "html": false
+      },
+      "image": "france24.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=tZNlpOLJrZ1WhuaY-uQC3BZI&j=toUe_CDh1QoHeMkL_1w-aCEb&s=UECQXKX3a0slPHJJYWJDz8Um&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=France+24"
+    },
+    {
+      "settings": {
+        "url": "https://www.usine-digitale.fr/arc/outboundfeeds/rss/",
+        "name": "L'Usine Digitale",
+        "description": "L'Usine Digitale est le média de la transformation numérique de l'économie. On y parle IA, cloud, fintech, Digital RH, data, cybersecurité..."
+      },
+      "image": "ud.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=3ZwVn1_r1UM6XQEfmLprWZud&j=aqQw83DbtbaLtx3oiH0JHUaY&s=n0psA_v9978nSVF6O65Eacpj&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=L%27Usine+Digitale"
+    }
+  ]
+}

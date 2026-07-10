@@ -1,18 +1,20 @@
-[
-  {
-    "settings": {
-      "name": "Debugging Memes",
-      "description": "Memes and other content around developers, free/libre software culture and other nerdy stuff"
+{
+  "en": [
+    {
+      "settings": {
+        "name": "Debugging Memes",
+        "description": "Memes and other content around developers, free/libre software culture and other nerdy stuff"
+      },
+      "image": "debugging-memes.png",
+      "invite": "https://i.delta.chat/#B68D965B65A63BBE7EB32D56234652E2C899213F&v=3&x=ImcSr1dp4fEWrZreS4Emlb5u&j=eX6UqJEePp9y_i-225abLctf&s=NKEuhQYd9UlzXhnW7rCTHNbF&a=57cyvwkiidqqxnryms0q%40chat.in%2Dthe.eu&n=Debugging+Memes&b=Debugging+Memes"
     },
-    "image": "debugging-memes.png",
-    "invite": "https://i.delta.chat/#B68D965B65A63BBE7EB32D56234652E2C899213F&v=3&x=ImcSr1dp4fEWrZreS4Emlb5u&j=eX6UqJEePp9y_i-225abLctf&s=NKEuhQYd9UlzXhnW7rCTHNbF&a=57cyvwkiidqqxnryms0q%40chat.in%2Dthe.eu&n=Debugging+Memes&b=Debugging+Memes"
-  },
-  {
-    "settings": {
-      "name": "Meme Logistics",
-      "description": "Your go-to lefty memes supply chain. Join us, you have nothing to lose but your chains!"
-    },
-    "image": "meme-logistics.jpg",
-    "invite": "https://i.delta.chat/#818297831FAA0AB9917497FA5B145F41993374F1&v=3&x=xusVctOPSGOA6oFq4esfR68V&j=YspskxfxoImavuPj3qFTuX7H&s=d1sWSLq-ceUR9x5nJpWX7dLa&a=207nv967sz55do78f1xj%40chat.in%2Dthe.eu&n=Meme+Logistics&b=Meme+Logistics"
-  }
-]
+    {
+      "settings": {
+        "name": "Meme Logistics",
+        "description": "Your go-to lefty memes supply chain. Join us, you have nothing to lose but your chains!"
+      },
+      "image": "meme-logistics.jpg",
+      "invite": "https://i.delta.chat/#818297831FAA0AB9917497FA5B145F41993374F1&v=3&x=xusVctOPSGOA6oFq4esfR68V&j=YspskxfxoImavuPj3qFTuX7H&s=d1sWSLq-ceUR9x5nJpWX7dLa&a=207nv967sz55do78f1xj%40chat.in%2Dthe.eu&n=Meme+Logistics&b=Meme+Logistics"
+    }
+  ]
+}

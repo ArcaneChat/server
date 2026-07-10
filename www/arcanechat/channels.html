@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
-    <title>ArcaneChat Channels</title>
+    <title id="pageTitle">ArcaneChat Channels</title>
     <style>
       * {
         margin: 0;
@@ -33,6 +33,35 @@
         text-align: center;
         color: white;
         margin-bottom: 50px;
+        position: relative;
+      }
+
+      .header-top {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1em;
+      }
+
+      .language-selector {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        font-size: 0.95em;
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+      }
+
+      .language-selector:hover {
+        background: white;
+      }
+
+      .language-selector:focus {
+        outline: 2px solid white;
+        outline-offset: 2px;
       }
 
       .header h1 {
@@ -180,21 +209,115 @@
         .header h1 {
           font-size: 2em;
         }
+
+        .header-top {
+          justify-content: center;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <h1>Channel Directory</h1>
-        <p>Discover ArcaneChat channels</p>
+        <div class="header-top">
+          <select
+            id="languageSelector"
+            class="language-selector"
+            aria-label="Select language"
+          ></select>
+        </div>
+        <h1 id="headerTitle">Channel Directory</h1>
+        <p id="headerSubtitle">Discover ArcaneChat channels</p>
       </div>
 
       <div class="channels-grid" id="channelsContainer"></div>
     </div>
 
     <script>
+      // --- TRANSLATIONS ---
+      const translations = {
+        en: {
+          pageTitle: "ArcaneChat Channels",
+          headerTitle: "Channel Directory",
+          headerSubtitle: "Discover ArcaneChat channels",
+          joinChannel: "Join Channel",
+          share: "Share",
+          showMore: "Show more",
+          showLess: "Show Less",
+          selectLanguage: "Select language"
+        },
+        es: {
+          pageTitle: "Canales de ArcaneChat",
+          headerTitle: "Directorio de Canales",
+          headerSubtitle: "Descubre los canales de ArcaneChat",
+          joinChannel: "Unirse al canal",
+          share: "Compartir",
+          showMore: "Ver más",
+          showLess: "Ver menos",
+          selectLanguage: "Seleccionar idioma"
+        },
+        fr: {
+          pageTitle: "Canaux ArcaneChat",
+          headerTitle: "Répertoire des canaux",
+          headerSubtitle: "Découvrez les canaux ArcaneChat",
+          joinChannel: "Rejoindre le canal",
+          share: "Partager",
+          showMore: "Afficher plus",
+          showLess: "Afficher moins",
+          selectLanguage: "Sélectionner la langue"
+        },
+        de: {
+          pageTitle: "ArcaneChat Kanäle",
+          headerTitle: "Kanalverzeichnis",
+          headerSubtitle: "Entdecke ArcaneChat Kanäle",
+          joinChannel: "Kanal beitreten",
+          share: "Teilen",
+          showMore: "Mehr anzeigen",
+          showLess: "Weniger anzeigen",
+          selectLanguage: "Sprache auswählen"
+        },
+        it: {
+          pageTitle: "Canali ArcaneChat",
+          headerTitle: "Elenco dei canali",
+          headerSubtitle: "Scopri i canali ArcaneChat",
+          joinChannel: "Unisciti al canale",
+          share: "Condividi",
+          showMore: "Mostra di più",
+          showLess: "Mostra meno",
+          selectLanguage: "Seleziona lingua"
+        },
+      };
+
+      function t(key) {
+        return translations[currentLang][key];
+      }
+
+      function updateStaticTranslations() {
+        document.getElementById("pageTitle").textContent = t("pageTitle");
+        document.getElementById("headerTitle").textContent = t("headerTitle");
+        document.getElementById("headerSubtitle").textContent = t("headerSubtitle");
+        document.getElementById("languageSelector").setAttribute("aria-label", t("selectLanguage"));
+      }
+
+      // --- CORE LOGIC ---
+
       const assets = "/assets/channels";
+      const FALLBACK_LANG = "en";
+
+      let channelsData = null;
+      let availableLanguages = [];
+      let currentLang = FALLBACK_LANG;
+
+     function h(tag, attributes, ...children) {
+       const element = document.createElement(tag);
+       if (attributes) {
+         Object.entries(attributes).forEach((entry) => {
+           element.setAttribute(entry[0], entry[1]);
+         });
+       }
+       element.append(...children);
+       return element;
+     }
 
       function toOpenpgp4fpr(url) {
         return url
@@ -202,26 +325,78 @@
           .replace(/&/, "#");
       }
 
-      async function renderChannels() {
-        function h(tag, attributes, ...children) {
-          const element = document.createElement(tag);
-          if (attributes) {
-            Object.entries(attributes).forEach((entry) => {
-              element.setAttribute(entry[0], entry[1]);
-            });
+      function getLanguageDisplayName(code) {
+        try {
+          const displayNames = new Intl.DisplayNames([code], {
+            type: "language",
+            languageDisplay: "standard",
+          });
+          const name = displayNames.of(code);
+          if (name) {
+            return name.charAt(0).toUpperCase() + name.slice(1);
           }
-          element.append(...children);
-          return element;
+        } catch (e) {
+          // fallthrough
+        }
+        return code.toUpperCase();
+      }
+
+      function detectBrowserLanguage(langs) {
+        const browserLangs = navigator.languages && navigator.languages.length
+          ? navigator.languages
+          : [navigator.language || navigator.userLanguage || FALLBACK_LANG];
+
+        for (const lang of browserLangs) {
+          if (!lang) continue;
+          if (langs.includes(lang)) return lang;
+          const base = lang.split("-")[0];
+          if (langs.includes(base)) return base;
+        }
+        return FALLBACK_LANG;
+      }
+
+      async function loadChannels() {
+        const data = await (await fetch(`${assets}/channels-others.json`)).json();
+        const rssData = await (await fetch(`${assets}/channels.json`)).json();
+        for (const [key, value] of Object.entries(rssData)) {
+          if (data.hasOwnProperty(key)) {
+            data[key] = data[key].concat(value);
+          } else {
+            data[key] = value;
+          }
+        }
+        return data;
+      }
+
+      function populateLanguageSelector() {
+        const selector = document.getElementById("languageSelector");
+        selector.innerHTML = "";
+
+        const sorted = [...availableLanguages].sort((a, b) =>
+          getLanguageDisplayName(a).localeCompare(getLanguageDisplayName(b)),
+        );
+
+        for (const lang of sorted) {
+          const option = h("option", {"value": lang}, getLanguageDisplayName(lang));
+          if (lang === currentLang) option.selected = true;
+          selector.appendChild(option);
         }
 
-        const data = (
-          await (await fetch(`${assets}/channels-others.json`)).json()
-        ).concat(await (await fetch(`${assets}/channels.json`)).json());
+        selector.addEventListener("change", (e) => {
+          currentLang = e.target.value;
+          document.documentElement.lang = currentLang;
+          updateStaticTranslations();
+          renderChannelList();
+        });
+      }
 
+      function renderChannelList() {
         const container = document.getElementById("channelsContainer");
+        container.innerHTML = "";
+
         const MAX_LENGTH = 160;
 
-        data.forEach((channel) => {
+        channelsData[currentLang].forEach((channel) => {
           const description = channel.settings.description || "";
           const isLong = description.length > MAX_LENGTH;
 
@@ -235,7 +410,7 @@
             const showMoreBtn = h(
               "button",
               { class: "show-more-btn" },
-              "Show more",
+              t("showMore"),
             );
             channelContent.push(showMoreBtn);
 
@@ -244,11 +419,11 @@
               expanded = !expanded;
               if (expanded) {
                 descEl.textContent = description;
-                showMoreBtn.textContent = "Show Less";
+                showMoreBtn.textContent = t("showLess");
               } else {
                 descEl.textContent =
                   description.substring(0, MAX_LENGTH).trimEnd() + "... ";
-                showMoreBtn.textContent = "Show more";
+                showMoreBtn.textContent = t("showMore");
               }
             });
           } else {
@@ -275,7 +450,7 @@
                 h(
                   "a",
                   { href: toOpenpgp4fpr(channel.invite), class: "join-button" },
-                  "Join Channel",
+                  t("joinChannel"),
                 ),
                 h(
                   "a",
@@ -284,7 +459,7 @@
                     class: "share-button",
                     target: "_blank",
                   },
-                  "Share",
+                  t("share"),
                 ),
               ),
             ),
@@ -292,7 +467,21 @@
         });
       }
 
-      document.addEventListener("DOMContentLoaded", renderChannels);
+      async function init() {
+        channelsData = await loadChannels();
+        availableLanguages = Object.keys(channelsData).filter(
+          (k) => channelsData[k].length > 0,
+        );
+
+        currentLang = detectBrowserLanguage(availableLanguages);
+        document.documentElement.lang = currentLang;
+
+        populateLanguageSelector();
+        updateStaticTranslations();
+        renderChannelList();
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
     </script>
   </body>
 </html>
