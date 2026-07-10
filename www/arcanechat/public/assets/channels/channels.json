@@ -282,5 +282,29 @@
       "image": "ud.png",
       "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=3ZwVn1_r1UM6XQEfmLprWZud&j=aqQw83DbtbaLtx3oiH0JHUaY&s=n0psA_v9978nSVF6O65Eacpj&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=L%27Usine+Digitale"
     }
+  ],
+  "de": [
+    {
+      "settings": {
+        "url": "https://mastodon.social/@derpostillon.rss",
+        "name": "Der Postillon 📯",
+        "description": "Ehrliche Nachrichten - unabhängig, schnell, seit 1845",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "derpostillon.jpg",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=RTTEIobZqawTmsUGB-ETTHGI&j=JM3ghjnBKSiPLUipEpigaZNL&s=Otg4WhbbxU4Or9a5o9ViqVDy&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Der+Postillon+%F0%9F%93%AF"
+    },
+    {
+      "settings": {
+        "url": "https://ard.social/@tagesschau.rss",
+        "name": "tagesschau",
+        "description": "Hier trötet die tagesschau Nachrichten von tagesschau.de",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "tagesschau.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=d_wwOf-TnqeuXXn2RfPjtF98&j=Vrkj1NO_dcE07c4d7jrPTEWh&s=bd40cIrml-Md4chb1X_qxS6r&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=tagesschau"
+    }
   ]
 }
