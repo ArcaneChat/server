@@ -286,6 +286,50 @@
   "de": [
     {
       "settings": {
+        "url": "https://troet.cafe/@ndaktuell.rss",
+        "name": "das nd",
+        "description": "Sozialistische Genossenschaft & Human Media. Dein linker Space, um das alles irgendwie auszuhalten",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "nd.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=52l2bb2Z1UdwjA_TJrHnrslG&j=yxb7hf4ZNW85aL1PK5N7W3wq&s=ZG1VoizdCBMvJm2ayozlx9KE&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=das+nd"
+    },
+    {
+      "settings": {
+        "url": "https://mastodon.social/@dielinke.rss",
+        "name": "Die Linke",
+        "description": "Kämpft für soziale Sicherheit, Frieden und Klimagerechtigkeit",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "die-linke.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=A_9Ou-cnoxgJzW9TrTaxvO01&j=dhL4h1iTXKR5fU1PqjWQRNgH&s=olT-er7BC_oXtiYRTLipNtqO&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Die+Linke"
+    },
+    {
+      "settings": {
+        "url": "https://chaos.social/@fff.rss",
+        "name": "Fridays for Future Deutschland",
+        "description": "FridaysForFuture ist Teil der globalen Klimagerechtigkeitsbewegung & kämpft für die Einhaltung der 1,5-Grad-Grenze. Website: fridaysforfuture.de",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "fff.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=pYBKLWDG0gva7GCuop9kKLjR&j=bmBUvA8YSq-nZ4vE6F1_ObVn&s=SFYe6FdHyOnDtwgK_FwaDV5u&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Fridays+for+Future+Deuts_"
+    },
+    {
+      "settings": {
+        "url": "https://social.bund.de/@bfdi.rss",
+        "name": "BfDI",
+        "description": "Hier schreibt die Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI) zu Themen des Datenschutzes und der Informationsfreiheit.\n\nBeiträge ohne ergänzenden Hinweis sind solche der BfDI, Prof. Dr. Louisa Specht-Riemenschneider, in persona, übrige Beiträge der Behörde sind mit dem Zusatz \"ÖA\" gekennzeichnet.\n\nWebsite: bfdi.bund.de",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "bfdi.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=1TZ70ns3y2rUSYQbukU1B4KZ&j=GDab9zuf-10A8AkthAThHUtB&s=ze-4-ezcY5kYUeyTuPg9onHi&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=BfDI"
+    },
+    {
+      "settings": {
         "url": "https://mastodon.social/@derpostillon.rss",
         "name": "Der Postillon 📯",
         "description": "Ehrliche Nachrichten - unabhängig, schnell, seit 1845",
