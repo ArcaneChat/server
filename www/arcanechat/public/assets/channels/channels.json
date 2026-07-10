@@ -243,6 +243,27 @@
   "fr": [
     {
       "settings": {
+        "url": "https://mastodon.social/@lemonde.rss",
+        "name": "Le Monde",
+        "description": "Premier quotidien français 📰",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "lemonde.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Cdy_zjRnxOeanfsvl4DgbRw5&j=DYbAd4jXoICTu4oeoNGq0uAF&s=KijCQW9OHUKEFL6J9fsB5Lqb&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Le+Monde"
+    },
+    {
+      "settings": {
+        "url": "https://flipboard.com/@LeFigaro.rss",
+        "name": "Le Figaro",
+        "description": "Actualités, économie, politique, culture et divertissements",
+        "html": false
+      },
+      "image": "le-figaro.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=tz0_moifa7_Qn40NBoHhJeFg&j=HYzDyT4rI55WVw0zqhUursFE&s=teTxS2Y7JpmVeLKuOBUrq6Mz&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Le+Figaro"
+    },
+    {
+      "settings": {
         "url": "https://mediapart.social/@mediapart.rss",
         "name": "Mediapart",
         "description": "Journal d'information numérique, indépendant et participatif. Seul·es nos lecteurs et lectrices peuvent nous acheter !",
@@ -254,14 +275,12 @@
     },
     {
       "settings": {
-        "url": "https://mastodon.social/@lemonde.rss",
-        "name": "Le Monde",
-        "description": "Premier quotidien français 📰",
-        "html": false,
-        "includeLink": false
+        "url": "https://www.usine-digitale.fr/arc/outboundfeeds/rss/",
+        "name": "L'Usine Digitale",
+        "description": "L'Usine Digitale est le média de la transformation numérique de l'économie. On y parle IA, cloud, fintech, Digital RH, data, cybersecurité..."
       },
-      "image": "lemonde.png",
-      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=Cdy_zjRnxOeanfsvl4DgbRw5&j=DYbAd4jXoICTu4oeoNGq0uAF&s=KijCQW9OHUKEFL6J9fsB5Lqb&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Le+Monde"
+      "image": "ud.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=3ZwVn1_r1UM6XQEfmLprWZud&j=aqQw83DbtbaLtx3oiH0JHUaY&s=n0psA_v9978nSVF6O65Eacpj&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=L%27Usine+Digitale"
     },
     {
       "settings": {
@@ -275,12 +294,37 @@
     },
     {
       "settings": {
-        "url": "https://www.usine-digitale.fr/arc/outboundfeeds/rss/",
-        "name": "L'Usine Digitale",
-        "description": "L'Usine Digitale est le média de la transformation numérique de l'économie. On y parle IA, cloud, fintech, Digital RH, data, cybersecurité..."
+        "url": "https://bsky.app/profile/did:plc:uo4didwt5qe4onrscbmqwvwm/rss",
+        "name": "Libération",
+        "description": "Retrouvez toute l'info en continu avec Libération pour ne rien manquer de l'actualité : Politique, International, Société, Sport, Environnement et Sciences...",
+        "html": false,
+        "includeLink": false,
+        "socialImg": true
       },
-      "image": "ud.png",
-      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=3ZwVn1_r1UM6XQEfmLprWZud&j=aqQw83DbtbaLtx3oiH0JHUaY&s=n0psA_v9978nSVF6O65Eacpj&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=L%27Usine+Digitale"
+      "image": "liberation.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=b328ncgWpfDDbyXdGwoHGPrt&j=doIso19qXfmjoEpYhQVrLKxR&s=K_WwjxGdJzOdbHwl4mY7k9O4&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Lib%C3%A9ration"
+    },
+    {
+      "settings": {
+        "url": "https://www.nouvelobs.com/a-la-une/rss.xml",
+        "name": "Le Nouvel Obs",
+        "description": "Actualité politique, information sociale ou internationale",
+        "html": false
+      },
+      "image": "nouvelobs.png",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=8t-Opc5CsOXC-JceOcAJYBki&j=bMb2OMYJKjIxKHAxzcvoR6n6&s=e30CyboRK0WieQlqvn3U3N-M&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Le+Nouvel+Obs"
+    },
+    {
+      "settings": {
+        "url": "https://bsky.app/profile/did:plc:anpfslmr5xhyw7oqzai3dprd/rss",
+        "name": "Le Parisien",
+        "description": "L’actualité qui vous concerne 📱🗞️",
+        "html": false,
+        "includeLink": false,
+        "socialImg": true
+      },
+      "image": "leparisien.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=AgJH0U0OKcYuKR-aI6Rf_QqN&j=zX8SWXpsBmP_DSigXDsxWBO9&s=Me-4siQEu_IYeavprH0Q1hKR&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=Le+Parisien"
     }
   ],
   "de": [
