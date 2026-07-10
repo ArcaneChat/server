@@ -299,6 +299,24 @@
         document.getElementById("languageSelector").setAttribute("aria-label", t("selectLanguage"));
       }
 
+      // --- LOCALSTORAGE HELPERS ---
+
+      const STORAGE_KEY = "arcanachat-lang";
+
+      function getStoredLang() {
+        try {
+          return localStorage.getItem(STORAGE_KEY);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function saveLang(lang) {
+        try {
+          localStorage.setItem(STORAGE_KEY, lang);
+        } catch (e) {}
+      }
+
       // --- CORE LOGIC ---
 
       const assets = "/assets/channels";
@@ -384,6 +402,7 @@
 
         selector.addEventListener("change", (e) => {
           currentLang = e.target.value;
+          saveLang(currentLang);
           document.documentElement.lang = currentLang;
           updateStaticTranslations();
           renderChannelList();
@@ -473,7 +492,13 @@
           (k) => channelsData[k].length > 0,
         );
 
-        currentLang = detectBrowserLanguage(availableLanguages);
+        const storedLang = getStoredLang();
+        if (storedLang && availableLanguages.includes(storedLang)) {
+          currentLang = storedLang;
+        } else {
+          currentLang = detectBrowserLanguage(availableLanguages);
+        }
+
         document.documentElement.lang = currentLang;
 
         populateLanguageSelector();
