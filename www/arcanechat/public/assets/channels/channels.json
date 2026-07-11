@@ -393,6 +393,30 @@
       },
       "image": "tagesschau.webp",
       "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=d_wwOf-TnqeuXXn2RfPjtF98&j=Vrkj1NO_dcE07c4d7jrPTEWh&s=bd40cIrml-Md4chb1X_qxS6r&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=tagesschau"
+    },
+    {
+      "settings": {
+        "url": "https://edi.social/@zdfmagazin.rss",
+        "name": "ZDF Magazin Royale",
+        "description": "Das Leitmagazin für die Meinungsführer unter den Opinionleadern. Member of the Quality Alliance! | ly.zdf.de/impressum | ly.zdf.de/netiquette",
+        "html": false,
+        "includeLink": false
+      },
+      "image": "zdf.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=a2O6wkljjZFPCKnzeahcVPEL&j=CSrxTEQXDW0zI4ZBv1lgPNUB&s=FIhM7AeeXKzNpLDTSdhPpu48&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=ZDF+Magazin+Royale"
+    },
+        {
+      "settings": {
+        "url": "https://islieb.de/feed/",
+        "name": "islieb",
+        "description": "Kleine Comics übers Leben, die Liebe und den ganzen behämmerten Rest. 🍪\n\nWebsite: islieb.de",
+        "html": false,
+        "text": false,
+        "includeLink": false,
+        "extractImg": true
+      },
+      "image": "islieb.webp",
+      "invite": "https://i.delta.chat/#EB87F92DC57303205E7F3ACB6DAA06D8FE761414&v=3&x=4UzsE5z8drgVPVXk36f7HslX&j=YU-C44pLWKhydHHuv68iNWC2&s=gbEvGxSpKGKGsArbSRAnooxl&a=6j2tb0xyz%40arcanechat.me&n=ChannelsBot&b=islieb"
     }
   ]
 }
