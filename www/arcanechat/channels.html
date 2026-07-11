@@ -77,7 +77,7 @@
 
       .channels-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: 25px;
       }
 
@@ -260,7 +260,7 @@
           pageTitle: "Canaux ArcaneChat",
           headerTitle: "Répertoire des canaux",
           headerSubtitle: "Découvrez les canaux ArcaneChat",
-          joinChannel: "Rejoindre le canal",
+          joinChannel: "Rejoindre",
           share: "Partager",
           showMore: "Afficher plus",
           showLess: "Afficher moins",
@@ -299,7 +299,7 @@
       };
 
       function t(key) {
-        return translations[currentLang][key];
+        return (translations[currentLang] || translations[FALLBACK_LANG])[key];
       }
 
       function updateStaticTranslations() {
