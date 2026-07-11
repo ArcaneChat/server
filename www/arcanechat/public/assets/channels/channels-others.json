@@ -15,6 +15,42 @@
       },
       "image": "meme-logistics.jpg",
       "invite": "https://i.delta.chat/#818297831FAA0AB9917497FA5B145F41993374F1&v=3&x=xusVctOPSGOA6oFq4esfR68V&j=YspskxfxoImavuPj3qFTuX7H&s=d1sWSLq-ceUR9x5nJpWX7dLa&a=207nv967sz55do78f1xj%40chat.in%2Dthe.eu&n=Meme+Logistics&b=Meme+Logistics"
+    },
+    {
+      "settings": {
+        "name": "BSD Cafe Announcements",
+        "description": "This is the BSD Cafe Announcements channel"
+      },
+      "image": "bsd-cafe-announcements.webp",
+      "invite": "https://i.delta.chat/#35785273EDA8016AC3F52535A476DDD42385EECC&v=3&x=myjU1Kptf6TYHbEMIM3llwtK&j=SVr4Chzi5ILf6j9s3RdR1-qP&s=aElheIzBYKIVJTEIl6TwlMTJ&a=cttf6p58k%40chatmail.bsd.cafe&n=BSD+Cafe+Announcements&b=BSD+Cafe+Announcements"
+    }
+  ],
+  "es": [
+    {
+      "settings": {
+        "name": "Xataka",
+        "description": "Apasionados por la tecnología"
+      },
+      "image": "xataka.webp",
+      "invite": "https://i.delta.chat/#F088C9D6200709F9E12C73405C9FE79151FF15B5&v=3&x=cpa4wANSHkmeQKRLDiSN16yI&j=pzQcp_N98meFdz7xtng7YUb_&s=fT7lfxnMvdOxAfsRYktJPEFB&a=o7701rt9c%40nine.testrun.org&n=Xataka&b=Xataka"
+    }
+  ],
+  "ru": [
+    {
+      "settings": {
+        "name": "ИА Панорама",
+        "description": "опережая события - Информационное агентство"
+      },
+      "image": "Панорама.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=Ax0dDEm5waZaz5axic2qOWVo&j=twQECVjNTdEQE2a1yM-Sigwc&s=d-9NndMWjU0txaHskWKWvLJe&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%98%D0%90+%D0%9F%D0%B0%D0%BD%D0%BE%D1%80%D0%B0%D0%BC%D0%B0"
+    },
+    {
+      "settings": {
+        "name": "chat.gluek.info",
+        "description": "+ chatmail.uk\n+ bots: TG Bridge, Ntfy, YT, Bouncer, WebPreview, Uptime"
+      },
+      "image": "chat.gluek.info.webp",
+      "invite": "https://i.delta.chat/#DFF2CAB1FEB7182F997C0A01466AA64DE33D8A39&v=3&x=0L2QjY1UBDNxrpjEOUOkPWML&j=mJPzcWZ_IcyZqg4pHePw7DkM&s=muo_Oza48UI3n3o4QlQ2A87U&a=p3xjn215np%40chat.gluek.info&n=chat.gluek.info&b=chat.gluek.info"
     }
   ]
 }
