@@ -2,6 +2,14 @@
   "en": [
     {
       "settings": {
+        "name": "ArcaneChat Channel",
+        "description": "🔮 Welcome to the ArcaneChat official channel ✨\n\nHere you will receive news and spoilers about the development and upcoming features of the ArcaneChat app, its bots and in-chat apps, as well as tips & tricks to help you get the most out of ArcaneChat"
+      },
+      "image": "arcanechat.webp",
+      "invite": "openpgp4fpr:0A45953086F0C166D3BAF1D4BB2025496E4C2704#x=MVPi07rQBEmHO4FRb3brpwDe&j=n8mkKqu42WAKKUCx1bQOVh23&s=AM1YCd_2hKuiSiTEb-2177On&a=arcanechat%40arcanechat.me&n=ArcaneChat&b=ArcaneChat+Channel"
+    },
+    {
+      "settings": {
         "name": "Debugging Memes",
         "description": "Memes and other content around developers, free/libre software culture and other nerdy stuff"
       },
@@ -38,11 +46,19 @@
   "ru": [
     {
       "settings": {
-        "name": "ИА Панорама",
-        "description": "опережая события - Информационное агентство"
+        "name": "Baza",
+        "description": "Baza — русский новостной канал, публикующий эксклюзивные новости и журналистские расследования о событиях, политике, происшествиях и интересных историях"
       },
-      "image": "Панорама.webp",
-      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=Ax0dDEm5waZaz5axic2qOWVo&j=twQECVjNTdEQE2a1yM-Sigwc&s=d-9NndMWjU0txaHskWKWvLJe&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%98%D0%90+%D0%9F%D0%B0%D0%BD%D0%BE%D1%80%D0%B0%D0%BC%D0%B0"
+      "image": "baza.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=fiZSIxYatlAPpkZhYe85A4Iy&j=uREg54_XTlWWRIPEqIvOX_8K&s=JNv3H80Fl8n7G2_XVgnB2lYw&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=Baza"
+    },
+    {
+      "settings": {
+        "name": "Mash",
+        "description": "Mash — русский новостной сайт с короткими статьями, фото и видео о политике, обществе, спорте и вирусных темах"
+      },
+      "image": "mash.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=Ui0XhBw4p2m_j_MCn_W1DZni&j=Tok17AGXApdKsYv-fgl9ARpf&s=6gfO-_X9Cb5rn0UKEeWOjAIY&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=mash"
     },
     {
       "settings": {
@@ -51,6 +67,102 @@
       },
       "image": "chat.gluek.info.webp",
       "invite": "https://i.delta.chat/#DFF2CAB1FEB7182F997C0A01466AA64DE33D8A39&v=3&x=0L2QjY1UBDNxrpjEOUOkPWML&j=mJPzcWZ_IcyZqg4pHePw7DkM&s=muo_Oza48UI3n3o4QlQ2A87U&a=p3xjn215np%40chat.gluek.info&n=chat.gluek.info&b=chat.gluek.info"
+    },
+    {
+      "settings": {
+        "name": "Жесть Белгород",
+        "description": "Главный канал Белгородской области!"
+      },
+      "image": "zhest_belgorod.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=EFext36Sq3Rnu_FyXbVY-ELz&j=WrOr0C1vARJgONpaYy5iz4zq&s=lGuCyWYWPqCELkDQn1vjb8CE&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%96%D0%B5%D1%81%D1%82%D1%8C+%D0%91%D0%B5%D0%BB%D0%B3%D0%BE%D1%80%D0%BE%D0%B4"
+    },
+    {
+      "settings": {
+        "name": " Zона приграничья🇷🇺",
+        "description": "📸 Мониторинг БПЛА по Белгородской области"
+      },
+      "image": "glaz_graniza.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=w6FYV6ze9zxn0G9soDs8ic4K&j=WBDNoIRxOavoy3xtTxg86zQS&s=vtHrdUerWeZv_tgqkK5ZSN-2&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=Z%D0%BE%D0%BD%D0%B0+%D0%BF%D1%80%D0%B8%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D1%8C%D1%8F%F0%9F%87%B7%F0%9F%87%BA"
+    },
+    {
+      "settings": {
+        "name": "Да, Но / Yes, But",
+        "description": "Да, Но (Yes, But) — двухпанельный веб-комикс от Gudim о нелепостях повседневной жизни"
+      },
+      "image": "yesbut_official.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=dWuUgBu6Fxquu1bFD0tDKT1I&j=JC_t68JJrBMBbA-8tDYvGJxB&s=7c2rF_K0IX6abkOQI_JAiKmP&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%94%D0%B0%2C+%D0%9D%D0%BE+%2F+Yes%2C+But"
+    },
+    {
+      "settings": {
+        "name": "Эксплойт",
+        "description": "Главное медиа об интернет-культуре и технологиях"
+      },
+      "image": "exploitex.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=-Gs-AiP5TvYQjUmzhICLEepq&j=nKS64slDZILK1G2rzexN5RqG&s=NCSJ7W0Jm1MxUw7jjAciT-31&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%AD%D0%BA%D1%81%D0%BF%D0%BB%D0%BE%D0%B9%D1%82"
+    },
+    {
+      "settings": {
+        "name": "ИА Панорама",
+        "description": "опережая события - Информационное агентство"
+      },
+      "image": "Панорама.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=Ax0dDEm5waZaz5axic2qOWVo&j=twQECVjNTdEQE2a1yM-Sigwc&s=d-9NndMWjU0txaHskWKWvLJe&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%98%D0%90+%D0%9F%D0%B0%D0%BD%D0%BE%D1%80%D0%B0%D0%BC%D0%B0"
+    },
+    {
+      "settings": {
+        "name": "Поток сознания ресурса Темненкова",
+        "description": "Практические гайды по самохостингу для людей, которые не DevOps-инженеры, но хотят контролировать свою инфраструктуру"
+      },
+      "image": "temnenkovblog.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=ETjppVgjEn5RYSacsP3ySbYL&j=Rh7uf8_jnAal6ru8iRqWviQ7&s=S7hajvQI5nvzjuoRKirBrDRv&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%9F%D0%BE%D1%82%D0%BE%D0%BA+%D1%81%D0%BE%D0%B7%D0%BD%D0%B0%D0%BD%D0%B8%D1%8F+%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D0%B0+%D0%A2_"
+    },
+    {
+      "settings": {
+        "name": "Диалектик",
+        "description": "Мы занимаемся освещением социальных проблем и вопросов, связанных с противоречиями современного общества. Мы не получаем грантов от международных и российских организаций, работаем только в ваших интересах"
+      },
+      "image": "dialectic_club.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=BivAwyHKfgiRTYwFIsG42GNr&j=HDH6N_CDO29B-3y_uiiN0BAf&s=LaQ_8XhTNez1XsKuYlmEj_g2&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%94%D0%B8%D0%B0%D0%BB%D0%B5%D0%BA%D1%82%D0%B8%D0%BA"
+    },
+    {
+      "settings": {
+        "name": "Tech Talk",
+        "description": "Простой разговор на сложные технические темы — о России и мире. Новости, аналитика, расследования"
+      },
+      "image": "ru_tech_talk.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=KSah1Oihz5sXcA93EpnTRJck&j=vmODp12F4tadC2muClf1aI1Y&s=QZlLYLDdttyltWL0MtBu83hI&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=Tech+Talk"
+    },
+    {
+      "settings": {
+        "name": "Блокировки Рунета | Новости",
+        "description": "Следим за блокировками и сбоями рунета 24/7"
+      },
+      "image": "blokirovki_runeta.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=GYqe9WJrCUwH_f9ks6t4Pi5J&j=R3DFcyLzTVipVYrPQrdXB2sl&s=F7NFehtlxPxR51iJVEXcodSN&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=blokirovki_runeta"
+    },
+    {
+      "settings": {
+        "name": "ЕЖ",
+        "description": "И Ежу понятно!…"
+      },
+      "image": "ejdailyru.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=-by-b21cpMY5aUuqssEaiXAN&j=gHEf91yyQdIAtuXf1KJ3d9GV&s=2HEz7N6NRnIv-nSwUJaZ5KH8&a=tgdeltabot%40chatmail.uk&n=TG+Bridge&b=%D0%95%D0%96"
+    },
+    {
+      "settings": {
+        "name": "Ateo Breaking",
+        "description": "Независимость и здравый смысл. Новости без цензуры!"
+      },
+      "image": "ateobreaking.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=VFKG-XlGxRrKppnCgb9b5M1P&j=rKVMsXpaRk2IS_5ab68z_ARG&s=R3nkVkmDil243hFeGsdEY7Mm&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=ateobreaking"
+    },
+    {
+      "settings": {
+        "name": "Пездуза",
+        "description": "Весь контент — сатирический вымысел, все совпадения случайны"
+      },
+      "image": "pezduzalive.webp",
+      "invite": "https://i.delta.chat/#3BE7D830B07071379A08CFB26E18EE0AAC58A438&v=3&x=fRtl-FVt7nZl68ASjddbkTE4&j=lXBoE5MFFkcdp0wVCh7Ih58o&s=x4AZN5oOQaCxXpBLUJmN8bYP&a=tgdeltabot%40chat.gluek.info&n=TG+Bridge&b=%D0%9F%D0%B5%D0%B7%D0%B4%D1%83%D0%B7%D0%B0"
     }
   ]
 }
