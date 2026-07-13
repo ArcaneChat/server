@@ -80,8 +80,9 @@ filter    unix -        n       n       -       -       lmtp
 127.0.0.1:{{ config.postfix_reinject_port }} inet  n       -       n       -       100      smtpd
   -o syslog_name=postfix/reinject
   -o milter_macro_daemon_name=ORIGINATING
-  -o smtpd_milters=unix:opendkim/opendkim.sock
   -o cleanup_service_name=authclean
+{% if not config.ipv4_relay %}  -o smtpd_milters=unix:opendkim/opendkim.sock
+{% endif %}
 
 # Local SMTP server for reinjecting incoming filtered mail 
 127.0.0.1:{{ config.postfix_reinject_port_incoming }} inet  n       -       n       -       100      smtpd
@@ -100,3 +101,8 @@ filter    unix -        n       n       -       -       lmtp
 # cannot send unprotected Subject.
 authclean unix  n       -       -       -       0       cleanup
   -o header_checks=regexp:/etc/postfix/submission_header_cleanup
+
+lmtp-filtermail unix  -       -       y       -       10000       lmtp
+  -o syslog_name=postfix/lmtp-filtermail
+  -o lmtp_header_checks=
+  -o lmtp_tls_security_level=none

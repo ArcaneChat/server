@@ -14,8 +14,6 @@ Minimal requirements and prerequisites
 
 You will need the following:
 
--  Control over a domain through a DNS provider of your choice.
-
 -  A Debian 12 **deployment server** with reachable SMTP/SUBMISSIONS/IMAPS/HTTPS ports.
    IPv6 is encouraged if available. Chatmail relay servers only require
    1GB RAM, one CPU, and perhaps 10GB storage for a few thousand active
@@ -28,6 +26,11 @@ You will need the following:
    (An ed25519 private key is required due to an `upstream bug in
    paramiko <https://github.com/paramiko/paramiko/issues/2191>`_)
 
+-  Control over a domain through a DNS provider of your choice
+   (there is experimental support for :ref:`IP-only relays <iponly>`).
+
+
+.. _setup:
 
 Setup with ``scripts/cmdeploy``
 -------------------------------------
@@ -97,6 +100,15 @@ steps. Please substitute it with your own domain.
    If DNS records are missing, it will recommend which you should
    configure at your DNS provider (it can take some time until they are
    public).
+
+
+
+Docker installation
+-------------------
+
+There is experimental support for running chatmail via Docker.
+A monolithic image based on the above cmdeploy method is available `through a separate repository <https://github.com/chatmail/docker/pkgs/container/docker>`_.
+See the `chatmail/docker README <https://github.com/chatmail/docker>`_ for full setup instructions.
 
 Other helpful commands
 ----------------------

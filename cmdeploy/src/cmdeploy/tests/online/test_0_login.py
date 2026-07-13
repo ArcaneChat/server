@@ -12,7 +12,7 @@ def test_init(tmp_path, maildomain):
     inipath = tmp_path.joinpath("chatmail.ini")
     main(["init", "--config", str(inipath), maildomain])
     config = read_config(inipath)
-    assert config.mail_domain == maildomain
+    assert config.mail_domain_bare == maildomain
 
 
 def test_capabilities(imap):
@@ -89,12 +89,11 @@ def test_concurrent_logins_same_account(
         assert login_results.get()
 
 
-def test_no_vrfy(cmfactory, chatmail_config):
+def test_no_vrfy(cmfactory, chatmail_config, maildomain):
     ac = cmfactory.get_online_account()
     addr = ac.get_config("addr")
-    domain = chatmail_config.mail_domain
 
-    s = smtplib.SMTP(domain)
+    s = smtplib.SMTP(maildomain)
     s.starttls()
 
     s.putcmd("vrfy", f"wrongaddress@{chatmail_config.mail_domain}")

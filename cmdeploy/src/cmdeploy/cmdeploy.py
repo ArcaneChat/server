@@ -84,13 +84,24 @@ def run_cmd_options(parser):
     add_ssh_host_option(parser)
 
 
+def _warn_unused_settings(unused_keys, out):
+    if unused_keys:
+        names = ", ".join(unused_keys)
+        out.red(
+            f"WARNING: chatmail.ini contains settings that have no effect: {names}\n"
+            "Please remove them from chatmail.ini."
+        )
+
+
 def run_cmd(args, out):
     """Deploy chatmail services on the remote server."""
 
-    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain
+    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain_bare
     sshexec = get_sshexec(ssh_host)
     require_iroh = args.config.enable_iroh_relay
     strict_tls = args.config.tls_cert_mode == "acme"
+    if args.config.ipv4_relay:
+        args.dns_check_disabled = True
     if not args.dns_check_disabled:
         remote_data = dns.get_initial_remote_data(sshexec, args.config.mail_domain)
         if not dns.check_initial_remote_data(remote_data, strict_tls=strict_tls, print=out.red):
@@ -119,8 +130,11 @@ def run_cmd(args, out):
         elif not args.dns_check_disabled and strict_tls and not remote_data["acme_account_url"]:
             out.red("Deploy completed but letsencrypt not configured")
             out.red("Run 'cmdeploy run' again")
+        elif args.config.ipv4_relay:
+            out.green("Deploy completed.")
         else:
             out.green("Deploy completed, call `cmdeploy dns` next.")
+        _warn_unused_settings(args.config._unused_keys, out)
         return 0
     except subprocess.CalledProcessError:
         out.red("Deploy failed")
@@ -140,6 +154,10 @@ def dns_cmd_options(parser):
 
 def dns_cmd(args, out):
     """Check DNS entries and optionally generate dns zone file."""
+    if args.config.ipv4_relay:
+        ipv4 = args.config.ipv4_relay
+        print(f"[WARNING] {ipv4} is not a domain, skipping DNS checks.")
+        return 0
     ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain
     sshexec = get_sshexec(ssh_host, verbose=args.verbose)
     tls_cert_mode = args.config.tls_cert_mode
@@ -177,7 +195,7 @@ def status_cmd_options(parser):
 def status_cmd(args, out):
     """Display status for online chatmail instance."""
 
-    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain
+    ssh_host = args.ssh_host if args.ssh_host else args.config.mail_domain_bare
     sshexec = get_sshexec(ssh_host, verbose=args.verbose)
 
     out.green(f"chatmail domain: {args.config.mail_domain}")

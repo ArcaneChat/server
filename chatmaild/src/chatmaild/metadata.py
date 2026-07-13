@@ -1,4 +1,5 @@
 import logging
+import socket
 import sys
 import time
 from contextlib import contextmanager
@@ -7,7 +8,14 @@ from .config import read_config
 from .dictproxy import DictProxy
 from .filedict import FileDict
 from .notifier import Notifier
-from .turnserver import turn_credentials
+
+
+def turn_credentials(turn_socket_path):
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client_socket:
+        client_socket.settimeout(5)
+        client_socket.connect(turn_socket_path)
+        with client_socket.makefile("rb") as file:
+            return file.readline().decode("utf-8").strip()
 
 
 def _is_valid_token_timestamp(timestamp, now):
@@ -70,44 +78,53 @@ class Metadata:
                 # Some tokens have expired, remove them.
                 with self._modify_tokens(addr) as _tokens:
                     pass
+        elif isinstance(tokens, list):
+            with self._modify_tokens(addr) as tokens:
+                token_list = list(tokens.keys())
         else:
             token_list = []
         return token_list
 
 
 class MetadataDictProxy(DictProxy):
-    def __init__(self, notifier, metadata, iroh_relay=None, turn_hostname=None):
+    def __init__(
+        self,
+        notifier,
+        metadata,
+        iroh_relay=None,
+        turn_hostname=None,
+        turn_socket_path=None,
+    ):
         super().__init__()
         self.notifier = notifier
         self.metadata = metadata
         self.iroh_relay = iroh_relay
         self.turn_hostname = turn_hostname
+        self.turn_socket_path = turn_socket_path
 
     def handle_lookup(self, parts):
         # Lpriv/43f5f508a7ea0366dff30200c15250e3/devicetoken\tlkj123poi@c2.testrun.org
-        keyparts = parts[0].split("/", 2)
-        if keyparts[0] == "priv":
-            keyname = keyparts[2]
-            addr = parts[1]
-            if keyname == self.metadata.DEVICETOKEN_KEY:
+        match parts[0].split("/", 2):
+            case ["priv", _, keyname] if keyname == self.metadata.DEVICETOKEN_KEY:
+                addr = parts[1]
                 res = " ".join(self.metadata.get_tokens_for_addr(addr))
                 return f"O{res}\n"
-        elif keyparts[0] == "shared":
-            keyname = keyparts[2]
-            if (
-                keyname == "vendor/vendor.dovecot/pvt/server/vendor/deltachat/irohrelay"
-                and self.iroh_relay
-            ):
-                # Handle `GETMETADATA "" /shared/vendor/deltachat/irohrelay`
-                return f"O{self.iroh_relay}\n"
-            elif keyname == "vendor/vendor.dovecot/pvt/server/vendor/deltachat/turn":
-                try:
-                    res = turn_credentials()
-                except Exception:
-                    logging.exception("failed to get TURN credentials")
-                    return "N\n"
-                port = 3478
-                return f"O{self.turn_hostname}:{port}:{res}\n"
+            case ["shared", _, keyname]:
+                prefix = "vendor/vendor.dovecot/pvt/server/vendor/deltachat/"
+                if keyname.startswith(prefix):
+                    match keyname[len(prefix) :]:
+                        case "irohrelay" if self.iroh_relay:
+                            return f"O{self.iroh_relay}\n"
+                        case "turn":
+                            try:
+                                res = turn_credentials(self.turn_socket_path)
+                            except Exception:
+                                logging.exception("failed to get TURN credentials")
+                                return "N\n"
+                            return f"O{self.turn_hostname}:3478:{res}\n"
+                        case "maxsmtprecipients":
+                            # postfix default  (see "postconf smtpd_recipient_limit")
+                            return "O1000\n"
 
         logging.warning(f"lookup ignored: {parts!r}")
         return "N\n"
@@ -117,12 +134,13 @@ class MetadataDictProxy(DictProxy):
         # https://github.com/dovecot/core/blob/main/src/lib-storage/mailbox-attribute.h
         keyname = parts[1].split("/")
         value = parts[2] if len(parts) > 2 else ""
-        if keyname[0] == "priv" and keyname[2] == self.metadata.DEVICETOKEN_KEY:
-            self.metadata.add_token_to_addr(addr, value)
-            return True
-        elif keyname[0] == "priv" and keyname[2] == "messagenew":
-            self.notifier.new_message_for_addr(addr, self.metadata)
-            return True
+        match keyname:
+            case ["priv", _, key] if key == self.metadata.DEVICETOKEN_KEY:
+                self.metadata.add_token_to_addr(addr, value)
+                return True
+            case ["priv", _, "messagenew"]:
+                self.notifier.new_message_for_addr(addr, self.metadata)
+                return True
 
         return False
 
@@ -133,6 +151,7 @@ def main():
     config = read_config(config_path)
     iroh_relay = config.iroh_relay
     mail_domain = config.mail_domain
+    socket_path = config.turn_socket_path
 
     vmail_dir = config.mailboxes_dir
     if not vmail_dir.exists():
@@ -150,6 +169,7 @@ def main():
         metadata=metadata,
         iroh_relay=iroh_relay,
         turn_hostname=mail_domain,
+        turn_socket_path=socket_path,
     )
 
     dictproxy.serve_forever_from_socket(socket)

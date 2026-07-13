@@ -5,6 +5,7 @@ import subprocess
 import time
 
 import pytest
+from chatmaild.config import is_valid_ipv4
 
 from cmdeploy import remote
 from cmdeploy.cmdeploy import get_sshexec
@@ -21,6 +22,8 @@ class TestSSHExecutor:
         assert out == out2
 
     def test_perform_initial(self, sshexec, maildomain):
+        if is_valid_ipv4(maildomain):
+            pytest.skip(f"{maildomain} is not a domain")
         res = sshexec(
             remote.rdns.perform_initial_checks, kwargs=dict(mail_domain=maildomain)
         )
@@ -61,8 +64,10 @@ class TestSSHExecutor:
         else:
             pytest.fail("didn't raise exception")
 
-    def test_opendkim_restarted(self, sshexec):
+    def test_opendkim_restarted(self, sshexec, maildomain):
         """check that opendkim is not running for longer than a day."""
+        if is_valid_ipv4(maildomain):
+            pytest.skip(f"{maildomain} is an IPv4 relay, opendkim is not installed")
         cmd = "systemctl show opendkim --timestamp=utc --property=ActiveEnterTimestamp"
         out = sshexec(call=remote.rshell.shell, kwargs=dict(command=cmd))
         datestring = out.split("=")[1]
@@ -189,6 +194,34 @@ def test_reject_missing_dkim(cmsetup, maildata, from_addr):
             s.sendmail(from_addr=from_addr, to_addrs=recipient.addr, msg=msg)
 
 
+def test_bounces_are_dkim_signed(cmsetup, cmsetup2, maildata, maildomain):
+    # we send a message to non-existant user and expect a bounce message
+    # which will only get through if the bounce message was DKIM-signed
+
+    if is_valid_ipv4(maildomain):
+        pytest.skip("DKIM is not configured on IPv4-only relays")
+
+    sender = cmsetup2.gen_users(1)[0]
+    nonexistent = f"nosuchuser_test42@{cmsetup.maildomain}"
+
+    msg = maildata(
+        "encrypted.eml",
+        from_addr=sender.addr,
+        to_addr=nonexistent,
+    ).as_string()
+    sender.smtp.sendmail(sender.addr, [nonexistent], msg)
+
+    def bounce_in_inbox():
+        messages = sender.imap.fetch_all_messages()
+        for m in messages:
+            if "mail delivery" in m.lower() or "undelivered" in m.lower():
+                return m
+        raise ValueError("bounce not yet in inbox")
+
+    bounce = try_n_times(30, bounce_in_inbox)
+    assert "nosuchuser_test42" in bounce
+
+
 def try_n_times(n, f):
     for _ in range(n - 1):
         try:
@@ -281,3 +314,15 @@ def test_deployed_state(remote):
     # assert len(git_status) == len(remote_version)  # for some reason, we only get 11 lines from remote.iter_output()
     for i in range(len(remote_version)):
         assert git_status[i] == remote_version[i], "You have undeployed changes."
+
+
+def test_nginx_access_log_only_defined_once(sshdomain):
+    sshexec = get_sshexec(sshdomain)
+    conf = sshexec(
+        call=remote.rshell.shell,
+        kwargs=dict(command="nginx -T 2>/dev/null"),
+    )
+    access_logs = [l for l in conf.splitlines() if l.strip().startswith("access_log")]
+    assert len(access_logs) == 1, (
+        f"expected 1 access_log, found {len(access_logs)}: {access_logs}"
+    )

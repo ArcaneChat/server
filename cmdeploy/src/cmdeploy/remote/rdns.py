@@ -64,21 +64,25 @@ def get_dkim_entry(mail_domain, pre_command, dkim_selector):
     )
 
 
-def query_dns(typ, domain):
-    # Get autoritative nameserver from the SOA record.
-    soa_answers = [
+def get_authoritative_ns(domain):
+    ns_replies = [
         x.split()
         for x in shell(
-            f"dig -r -q {domain} -t SOA +noall +authority +answer", print=log_progress
+            f"dig -r -q {domain} -t NS +noall +authority +answer", print=log_progress
         ).split("\n")
     ]
-    soa = [a for a in soa_answers if len(a) >= 3 and a[3] == "SOA"]
-    if not soa:
+    filtered_replies = [a for a in ns_replies if len(a) >= 5 and a[3] == "NS"]
+    if not filtered_replies:
         return
-    ns = soa[0][4]
+    return filtered_replies[0][4]
+
+
+def query_dns(typ, domain):
+    ns = get_authoritative_ns(domain)
 
     # Query authoritative nameserver directly to bypass DNS cache.
-    res = shell(f"dig @{ns} -r -q {domain} -t {typ} +short", print=log_progress)
+    direct_ns = f"@{ns}" if ns else ""
+    res = shell(f"dig {direct_ns} -r -q {domain} -t {typ} +short", print=log_progress)
     return next((line for line in res.split("\n") if not line.startswith(";")), "")
 
 
