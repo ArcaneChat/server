@@ -75,6 +75,7 @@ http {
 
 		location /mxdeliv/ {
 		    proxy_pass http://127.0.0.1:{{ config.filtermail_http_port_incoming }};
+		}
 
 		location ~ ^/(channels|privacy)/?$ {
 			default_type text/html;
