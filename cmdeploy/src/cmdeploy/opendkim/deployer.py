@@ -37,21 +37,15 @@ class OpendkimDeployer(Deployer):
         )
         need_restart |= main_config.changed
 
-        screen_script = files.put(
-            src=get_resource("opendkim/screen.lua"),
-            dest="/etc/opendkim/screen.lua",
-            user="root",
-            group="root",
-            mode="644",
+        screen_script = files.file(
+            path="/etc/opendkim/screen.lua",
+            present=False,
         )
         need_restart |= screen_script.changed
 
-        final_script = files.put(
-            src=get_resource("opendkim/final.lua"),
-            dest="/etc/opendkim/final.lua",
-            user="root",
-            group="root",
-            mode="644",
+        final_script = files.file(
+            path="/etc/opendkim/final.lua",
+            present=False,
         )
         need_restart |= final_script.changed
 
@@ -108,6 +102,13 @@ class OpendkimDeployer(Deployer):
             dest="/etc/systemd/system/opendkim.service.d/10-prevent-memory-leak.conf",
         )
         need_restart |= service_file.changed
+
+        files.file(
+            name="chown opendkim: /etc/dkimkeys/opendkim.private",
+            path="/etc/dkimkeys/opendkim.private",
+            user="opendkim",
+            group="opendkim",
+        )
 
         self.need_restart = need_restart
 

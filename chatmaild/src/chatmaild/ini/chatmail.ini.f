@@ -11,11 +11,15 @@ mail_domain = {mail_domain}
 # Restrictions on user addresses
 #
 
-# how many mails a user can send out per minute
+# email sending rate per user and minute
 max_user_send_per_minute = 60
 
+# per-user max burst size for sending rate limiting (GCRA bucket capacity)
+max_user_send_burst_size = 10
+
 # maximum mailbox size of a chatmail address
-max_mailbox_size = 100M
+# Oldest messages will be removed automatically, so mailboxes never run full.
+max_mailbox_size = 500M
 
 # maximum message size for an e-mail in bytes
 max_message_size = 31457280
@@ -44,6 +48,13 @@ passthrough_senders =
 # list of e-mail recipients for which to accept outbound un-encrypted mails
 # (space-separated, item may start with "@" to whitelist whole recipient domains)
 passthrough_recipients =
+
+# Use externally managed TLS certificates instead of built-in acmetool.
+# Paths refer to files on the deployment server (not the build machine).
+# Both files must already exist before running cmdeploy.
+# Certificate renewal is your responsibility; changed files are
+# picked up automatically by all relay services.
+# tls_external_cert_and_key = /path/to/fullchain.pem /path/to/privkey.pem
 
 # path to www directory - documented here: https://chatmail.at/doc/relay/getting_started.html#custom-web-pages
 #www_folder = www

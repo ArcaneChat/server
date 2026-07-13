@@ -1,9 +1,10 @@
 import imaplib
-import io
+import ipaddress
 import itertools
 import os
 import random
 import smtplib
+import ssl
 import subprocess
 import time
 from pathlib import Path
@@ -14,10 +15,12 @@ from chatmaild.config import read_config
 conftestdir = Path(__file__).parent
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        "--slow", action="store_true", default=False, help="also run slow tests"
-    )
+def _is_ip(domain):
+    try:
+        ipaddress.ip_address(domain)
+        return True
+    except ValueError:
+        return False
 
 
 def pytest_configure(config):
@@ -27,24 +30,29 @@ def pytest_configure(config):
     )
 
 
-def pytest_runtest_setup(item):
-    markers = list(item.iter_markers(name="slow"))
-    if markers:
-        if not item.config.getoption("--slow"):
-            pytest.skip("skipping slow test, use --slow to run")
+def _get_chatmail_config():
+    inipath = os.environ.get("CHATMAIL_INI")
+    if inipath:
+        path = Path(inipath).resolve()
+        return read_config(path), path
+
+    current = Path().resolve()
+    while 1:
+        path = current.joinpath("chatmail.ini").resolve()
+        if path.exists():
+            return read_config(path), path
+        if current == current.parent:
+            break
+        current = current.parent
+    return None, None
 
 
 @pytest.fixture(scope="session")
 def chatmail_config(pytestconfig):
-    current = basedir = Path().resolve()
-    while 1:
-        path = current.joinpath("chatmail.ini").resolve()
-        if path.exists():
-            return read_config(path)
-        if current == current.parent:
-            break
-        current = current.parent
-
+    config, path = _get_chatmail_config()
+    if config:
+        return config
+    basedir = Path().resolve()
     pytest.skip(f"no chatmail.ini file found in {basedir} or parent dirs")
 
 
@@ -72,10 +80,17 @@ def sshdomain2(maildomain2):
 
 
 def pytest_report_header():
-    domain = os.environ.get("CHATMAIL_DOMAIN")
-    if domain:
-        text = f"chatmail test instance: {domain}"
-        return ["-" * len(text), text, "-" * len(text)]
+    config, path = _get_chatmail_config()
+    domain2 = os.environ.get("CHATMAIL_DOMAIN2", "NOT SET")
+    domain = config.mail_domain if config else "NOT SET"
+    path = path if path else "NOT SET"
+
+    lines = [
+        f"chatmail.ini {domain} location: {path}",
+        f"chatmail2: {domain2}",
+    ]
+    sep = "-" * max(map(len, lines))
+    return [sep, *lines, sep]
 
 
 @pytest.fixture
@@ -90,15 +105,22 @@ def cm_data(request):
 
 
 @pytest.fixture
-def benchmark(request):
-    def bench(func, num, name=None, reportfunc=None):
+def benchmark(request, chatmail_config):
+    def bench(func, num, name=None, reportfunc=None, cooldown=0.0):
         if name is None:
             name = func.__name__
+        if cooldown == "auto":
+            per_minute = max(chatmail_config.max_user_send_per_minute, 1)
+            cooldown = chatmail_config.max_user_send_burst_size * 60 / per_minute
+
         durations = []
         for i in range(num):
             now = time.time()
             func()
             durations.append(time.time() - now)
+            if cooldown > 0 and i + 1 < num:
+                # Keep post-run cooldown out of measured benchmark duration.
+                time.sleep(cooldown)
         durations.sort()
         request.config._benchresults[name] = (reportfunc, durations)
 
@@ -144,15 +166,25 @@ def pytest_terminal_summary(terminalreporter):
             tr.write_line(line)
 
 
-@pytest.fixture
-def imap(maildomain):
-    return ImapConn(maildomain)
+@pytest.fixture(scope="session")
+def ssl_context(chatmail_config):
+    if chatmail_config.tls_cert_mode == "self":
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        return ctx
+    return None
 
 
 @pytest.fixture
-def make_imap_connection(maildomain):
+def imap(maildomain, ssl_context):
+    return ImapConn(maildomain, ssl_context=ssl_context)
+
+
+@pytest.fixture
+def make_imap_connection(maildomain, ssl_context):
     def make_imap_connection():
-        conn = ImapConn(maildomain)
+        conn = ImapConn(maildomain, ssl_context=ssl_context)
         conn.connect()
         return conn
 
@@ -164,12 +196,13 @@ class ImapConn:
     logcmd = "journalctl -f -u dovecot"
     name = "dovecot"
 
-    def __init__(self, host):
+    def __init__(self, host, ssl_context=None):
         self.host = host
+        self.ssl_context = ssl_context
 
     def connect(self):
         print(f"imap-connect {self.host}")
-        self.conn = imaplib.IMAP4_SSL(self.host)
+        self.conn = imaplib.IMAP4_SSL(self.host, ssl_context=self.ssl_context)
 
     def login(self, user, password):
         print(f"imap-login {user!r} {password!r}")
@@ -195,14 +228,14 @@ class ImapConn:
 
 
 @pytest.fixture
-def smtp(maildomain):
-    return SmtpConn(maildomain)
+def smtp(maildomain, ssl_context):
+    return SmtpConn(maildomain, ssl_context=ssl_context)
 
 
 @pytest.fixture
-def make_smtp_connection(maildomain):
+def make_smtp_connection(maildomain, ssl_context):
     def make_smtp_connection():
-        conn = SmtpConn(maildomain)
+        conn = SmtpConn(maildomain, ssl_context=ssl_context)
         conn.connect()
         return conn
 
@@ -214,12 +247,14 @@ class SmtpConn:
     logcmd = "journalctl -f -t postfix/smtpd -t postfix/smtp -t postfix/lmtp"
     name = "postfix"
 
-    def __init__(self, host):
+    def __init__(self, host, ssl_context=None):
         self.host = host
+        self.ssl_context = ssl_context
 
     def connect(self):
         print(f"smtp-connect {self.host}")
-        self.conn = smtplib.SMTP_SSL(self.host)
+        context = self.ssl_context or ssl.create_default_context()
+        self.conn = smtplib.SMTP_SSL(self.host, context=context)
 
     def login(self, user, password):
         print(f"smtp-login {user!r} {password!r}")
@@ -243,6 +278,7 @@ def gencreds(chatmail_config):
 
     def gen(domain=None):
         domain = domain if domain else chatmail_config.mail_domain
+        addr_domain = f"[{domain}]" if _is_ip(domain) else domain
         while 1:
             num = next(count)
             alphanumeric = "abcdefghijklmnopqrstuvwxyz1234567890"
@@ -256,98 +292,161 @@ def gencreds(chatmail_config):
             password = "".join(
                 random.choices(alphanumeric, k=chatmail_config.password_min_length)
             )
-            yield f"{user}@{domain}", f"{password}"
+            yield f"{user}@{addr_domain}", f"{password}"
 
     return lambda domain=None: next(gen(domain))
 
 
 #
-# Delta Chat testplugin re-use
+# Delta Chat RPC-based test support
 # use the cmfactory fixture to get chatmail instance accounts
 #
 
+from deltachat_rpc_client import DeltaChat, Rpc
 
-class ChatmailTestProcess:
-    """Provider for chatmail instance accounts as used by deltachat.testplugin.acfactory"""
 
-    def __init__(self, pytestconfig, maildomain, gencreds):
-        self.pytestconfig = pytestconfig
-        self.maildomain = maildomain
-        assert "." in self.maildomain, maildomain
+class ChatmailACFactory:
+    """RPC-based account factory for chatmail testing."""
+
+    def __init__(self, rpc, maildomain, gencreds, chatmail_config):
+        self.dc = DeltaChat(rpc)
+        self.rpc = rpc
+        self._maildomain = maildomain
         self.gencreds = gencreds
-        self._addr2files = {}
+        self.chatmail_config = chatmail_config
 
-    def get_liveconfig_producer(self):
-        while 1:
-            user, password = self.gencreds(self.maildomain)
-            config = {
-                "addr": user,
-                "mail_pw": password,
-            }
-            # speed up account configuration
-            config["mail_server"] = self.maildomain
-            config["send_server"] = self.maildomain
-            yield config
+    def _make_transport(self, domain):
+        """Build a transport config dict for the given domain."""
+        addr, password = self.gencreds(domain)
+        transport = {
+            "addr": addr,
+            "password": password,
+            # Setting server explicitly skips requesting autoconfig XML,
+            # see https://datatracker.ietf.org/doc/draft-ietf-mailmaint-autoconfig/
+            "imapServer": domain,
+            "smtpServer": domain,
+        }
+        if self.chatmail_config.tls_cert_mode == "self":
+            transport["certificateChecks"] = "acceptInvalidCertificates"
+        return transport
 
-    def cache_maybe_retrieve_configured_db_files(self, cache_addr, db_target_path):
-        pass
+    def get_online_account(self, domain=None):
+        """Create, configure and bring online a single account."""
+        return self.get_online_accounts(1, domain)[0]
 
-    def cache_maybe_store_configured_db_files(self, acc):
-        pass
+    def get_online_accounts(self, num, domain=None):
+        """Create multiple online accounts in parallel."""
+        domain = domain or self._maildomain
+        futures = []
+        accounts = []
+        for _ in range(num):
+            account = self.dc.add_account()
+            addr, password = self.gencreds(domain)
+            if _is_ip(domain):
+                # Use DCLOGIN scheme with explicit server hosts,
+                # matching how madmail presents its addresses to users.
+                qr = (
+                    f"dclogin:{addr}"
+                    f"?p={password}&v=1"
+                    f"&ih={domain}&ip=993"
+                    f"&sh={domain}&sp=465"
+                    f"&ic=3&ss=default"
+                )
+                future = account.add_transport_from_qr.future(qr)
+            else:
+                future = account.add_or_update_transport.future(
+                    self._make_transport(domain)
+                )
+            futures.append(future)
+
+            # ensure messages stay in INBOX so that they can be
+            # concurrently fetched via extra IMAP connections during tests
+            account.set_config("delete_server_after", "10")
+            accounts.append(account)
+
+        for future in futures:
+            future()
+
+        for account in accounts:
+            account.bring_online()
+        return accounts
+
+    def get_accepted_chat(self, ac1, ac2):
+        """Create a 1:1 chat between ac1 and ac2 accepted on both sides."""
+        ac2.create_chat(ac1)
+        return ac1.create_chat(ac2)
+
+
+@pytest.fixture(scope="session")
+def rpc(tmp_path_factory):
+    """Start a deltachat-rpc-server process for the test session."""
+
+    # NB: accounts_dir must NOT already exist as directory --
+    # core-rust only creates accounts.toml if the dir doesn't exist yet.
+    accounts_dir = str(tmp_path_factory.mktemp("dc") / "accounts")
+    rpc = Rpc(accounts_dir=accounts_dir)
+    rpc.start()
+    yield rpc
+    rpc.close()
 
 
 @pytest.fixture
-def cmfactory(request, gencreds, tmpdir, maildomain):
-    # cloned from deltachat.testplugin.amfactory
-    pytest.importorskip("deltachat")
-    from deltachat.testplugin import ACFactory
-
-    testproc = ChatmailTestProcess(request.config, maildomain, gencreds)
-
-    class Data:
-        def read_path(self, path):
-            return
-
-    am = ACFactory(request=request, tmpdir=tmpdir, testprocess=testproc, data=Data())
-
-    # nb. a bit hacky
-    # would probably be better if deltachat's test machinery grows native support
-    def switch_maildomain(maildomain2):
-        am.testprocess.maildomain = maildomain2
-
-    am.switch_maildomain = switch_maildomain
-
-    yield am
-    if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
-        if testproc.pytestconfig.getoption("--extra-info"):
-            logfile = io.StringIO()
-            am.dump_imap_summary(logfile=logfile)
-            print(logfile.getvalue())
-            # request.node.add_report_section("call", "imap-server-state", s)
+def cmfactory(rpc, gencreds, maildomain, chatmail_config):
+    """Return a ChatmailACFactory for creating online Delta Chat accounts."""
+    return ChatmailACFactory(
+        rpc=rpc,
+        maildomain=maildomain,
+        gencreds=gencreds,
+        chatmail_config=chatmail_config,
+    )
 
 
 @pytest.fixture
 def remote(sshdomain):
-    return Remote(sshdomain)
+    r = Remote(sshdomain)
+    yield r
+    r.close()
 
 
 class Remote:
     def __init__(self, sshdomain):
         self.sshdomain = sshdomain
+        self._procs = []
 
-    def iter_output(self, logcmd=""):
+    def iter_output(self, logcmd="", ready=None):
         getjournal = "journalctl -f" if not logcmd else logcmd
-        self.popen = subprocess.Popen(
-            ["ssh", f"root@{self.sshdomain}", getjournal],
+        print(self.sshdomain)
+        match self.sshdomain:
+            case "@local": command = []
+            case "localhost": command = []
+            case _: command = ["ssh", f"root@{self.sshdomain}"]
+        [command.append(arg) for arg in getjournal.split()]
+        popen = subprocess.Popen(
+            command,
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
         )
-        while 1:
-            line = self.popen.stdout.readline()
-            res = line.decode().strip().lower()
-            if res:
+        self._procs.append(popen)
+        try:
+            while 1:
+                line = popen.stdout.readline()
+                res = line.decode().strip().lower()
+                if not res:
+                    break
+                if ready is not None:
+                    ready()
+                    ready = None
                 yield res
-            else:
-                break
+        finally:
+            popen.terminate()
+            popen.wait()
+
+    def close(self):
+        while self._procs:
+            proc = self._procs.pop()
+            proc.kill()
+            proc.wait()
 
 
 @pytest.fixture
@@ -363,38 +462,40 @@ def lp(request):
 
 
 @pytest.fixture
-def cmsetup(maildomain, gencreds):
-    return CMSetup(maildomain, gencreds)
+def cmsetup(maildomain, gencreds, ssl_context):
+    return CMSetup(maildomain, gencreds, ssl_context)
 
 
 class CMSetup:
-    def __init__(self, maildomain, gencreds):
+    def __init__(self, maildomain, gencreds, ssl_context):
         self.maildomain = maildomain
         self.gencreds = gencreds
+        self.ssl_context = ssl_context
 
     def gen_users(self, num):
         print(f"Creating {num} online users")
         users = []
         for i in range(num):
             addr, password = self.gencreds()
-            user = CMUser(self.maildomain, addr, password)
+            user = CMUser(self.maildomain, addr, password, self.ssl_context)
             assert user.smtp
             users.append(user)
         return users
 
 
 class CMUser:
-    def __init__(self, maildomain, addr, password):
+    def __init__(self, maildomain, addr, password, ssl_context=None):
         self.maildomain = maildomain
         self.addr = addr
         self.password = password
+        self.ssl_context = ssl_context
         self._smtp = None
         self._imap = None
 
     @property
     def smtp(self):
         if not self._smtp:
-            handle = SmtpConn(self.maildomain)
+            handle = SmtpConn(self.maildomain, ssl_context=self.ssl_context)
             handle.connect()
             handle.login(self.addr, self.password)
             self._smtp = handle
@@ -403,7 +504,7 @@ class CMUser:
     @property
     def imap(self):
         if not self._imap:
-            imap = ImapConn(self.maildomain)
+            imap = ImapConn(self.maildomain, ssl_context=self.ssl_context)
             imap.connect()
             imap.login(self.addr, self.password)
             self._imap = imap

@@ -1,6 +1,6 @@
 import pytest
 
-from chatmaild.config import read_config
+from chatmaild.config import parse_size_mb, read_config
 
 
 def test_read_config_basic(example_config):
@@ -33,7 +33,7 @@ def test_read_config_testrun(make_config):
     assert config.filtermail_smtp_port == 10080
     assert config.postfix_reinject_port == 10025
     assert config.max_user_send_per_minute == 60
-    assert config.max_mailbox_size == "100M"
+    assert config.max_mailbox_size == "500M"
     assert config.delete_mails_after == "20"
     assert config.delete_large_after == "7"
     assert config.username_min_length == 9
@@ -73,3 +73,65 @@ def test_config_userstate_paths(make_config, tmp_path):
 def test_config_max_message_size(make_config, tmp_path):
     config = make_config("something.testrun.org", dict(max_message_size="10000"))
     assert config.max_message_size == 10000
+
+
+def test_config_tls_default_acme(make_config):
+    config = make_config("chat.example.org")
+    assert config.tls_cert_mode == "acme"
+    assert config.tls_cert_path == "/var/lib/acme/live/chat.example.org/fullchain"
+    assert config.tls_key_path == "/var/lib/acme/live/chat.example.org/privkey"
+
+
+def test_config_tls_self(make_config):
+    config = make_config("_test.example.org")
+    assert config.tls_cert_mode == "self"
+    assert config.tls_cert_path == "/etc/ssl/certs/mailserver.pem"
+    assert config.tls_key_path == "/etc/ssl/private/mailserver.key"
+
+
+def test_config_tls_external(make_config):
+    config = make_config(
+        "chat.example.org",
+        {
+            "tls_external_cert_and_key": "/custom/fullchain.pem /custom/privkey.pem",
+        },
+    )
+    assert config.tls_cert_mode == "external"
+    assert config.tls_cert_path == "/custom/fullchain.pem"
+    assert config.tls_key_path == "/custom/privkey.pem"
+
+
+def test_config_tls_external_overrides_underscore(make_config):
+    config = make_config(
+        "_test.example.org",
+        {
+            "tls_external_cert_and_key": "/certs/fullchain.pem /certs/privkey.pem",
+        },
+    )
+    assert config.tls_cert_mode == "external"
+    assert config.tls_cert_path == "/certs/fullchain.pem"
+    assert config.tls_key_path == "/certs/privkey.pem"
+
+
+def test_config_tls_external_bad_format(make_config):
+    with pytest.raises(ValueError, match="two space-separated"):
+        make_config(
+            "chat.example.org",
+            {
+                "tls_external_cert_and_key": "/only/one/path.pem",
+            },
+        )
+
+
+def test_parse_size_mb():
+    assert parse_size_mb("500M") == 500
+    assert parse_size_mb("2G") == 2048
+    assert parse_size_mb("  1g  ") == 1024
+    assert parse_size_mb("100MB") == 100
+    assert parse_size_mb("256") == 256
+
+
+def test_max_mailbox_size_mb(make_config):
+    config = make_config("chat.example.org")
+    assert config.max_mailbox_size == "500M"
+    assert config.max_mailbox_size_mb == 500

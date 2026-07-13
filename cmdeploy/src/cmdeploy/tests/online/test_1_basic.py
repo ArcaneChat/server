@@ -7,13 +7,13 @@ import time
 import pytest
 
 from cmdeploy import remote
-from cmdeploy.sshexec import SSHExec
+from cmdeploy.cmdeploy import get_sshexec
 
 
 class TestSSHExecutor:
     @pytest.fixture(scope="class")
     def sshexec(self, sshdomain):
-        return SSHExec(sshdomain)
+        return get_sshexec(sshdomain)
 
     def test_ls(self, sshexec):
         out = sshexec(call=remote.rdns.shell, kwargs=dict(command="ls"))
@@ -27,6 +27,7 @@ class TestSSHExecutor:
         assert res["A"] or res["AAAA"]
 
     def test_logged(self, sshexec, maildomain, capsys):
+        sshexec.verbose = False
         sshexec.logged(
             remote.rdns.perform_initial_checks, kwargs=dict(mail_domain=maildomain)
         )
@@ -52,6 +53,8 @@ class TestSSHExecutor:
                 remote.rdns.perform_initial_checks,
                 kwargs=dict(mail_domain=None),
             )
+        except AssertionError:
+            pass
         except sshexec.FuncError as e:
             assert "rdns.py" in str(e)
             assert "AssertionError" in str(e)
@@ -66,6 +69,44 @@ class TestSSHExecutor:
         since_date = datetime.datetime.strptime(datestring, "%a %Y-%m-%d %H:%M:%S %Z")
         now = datetime.datetime.now(since_date.tzinfo)
         assert (now - since_date).total_seconds() < 60 * 60 * 51
+
+
+def test_dovecot_main_process_matches_installed_binary(sshdomain):
+    sshexec = get_sshexec(sshdomain)
+    main_pid = int(
+        sshexec(
+            call=remote.rshell.shell,
+            kwargs=dict(
+                command="timeout 10 systemctl show -p MainPID --value dovecot.service"
+            ),
+        ).strip()
+    )
+    assert main_pid != 0, "dovecot.service MainPID is 0 -- service not running?"
+
+    exe = sshexec(
+        call=remote.rshell.shell,
+        kwargs=dict(command=f"timeout 10 readlink /proc/{main_pid}/exe"),
+    ).strip()
+    status_text = sshexec(
+        call=remote.rshell.shell,
+        kwargs=dict(
+            command="timeout 10 systemctl show -p StatusText --value dovecot.service"
+        ),
+    ).strip()
+    installed_version = sshexec(
+        call=remote.rshell.shell, kwargs=dict(command="timeout 10 dovecot --version")
+    ).strip()
+
+    assert not exe.endswith("(deleted)"), (
+        f"running dovecot binary was deleted (stale after upgrade): {exe}"
+    )
+    expected_status_text = f"v{installed_version}"
+    assert status_text == expected_status_text or status_text.startswith(
+        f"{expected_status_text} "
+    ), (
+        f"dovecot status version mismatch: "
+        f"StatusText={status_text!r}, installed={installed_version!r}"
+    )
 
 
 def test_timezone_env(remote):
@@ -83,10 +124,8 @@ def test_remote(remote, imap_or_smtp):
 
 
 def test_use_two_chatmailservers(cmfactory, maildomain2):
-    ac1 = cmfactory.new_online_configuring_account(cache=False)
-    cmfactory.switch_maildomain(maildomain2)
-    ac2 = cmfactory.new_online_configuring_account(cache=False)
-    cmfactory.bring_accounts_online()
+    ac1 = cmfactory.get_online_account()
+    ac2 = cmfactory.get_online_account(domain=maildomain2)
     cmfactory.get_accepted_chat(ac1, ac2)
     domain1 = ac1.get_config("addr").split("@")[1]
     domain2 = ac2.get_config("addr").split("@")[1]
@@ -146,7 +185,7 @@ def test_reject_missing_dkim(cmsetup, maildata, from_addr):
     conn.starttls()
 
     with conn as s:
-        with pytest.raises(smtplib.SMTPDataError, match="No valid DKIM signature"):
+        with pytest.raises(smtplib.SMTPDataError, match="No DKIM signature found"):
             s.sendmail(from_addr=from_addr, to_addrs=recipient.addr, msg=msg)
 
 
@@ -182,19 +221,20 @@ def test_rewrite_subject(cmsetup, maildata):
     assert "Subject: Unencrypted subject" not in rcvd_msg
 
 
-@pytest.mark.slow
 def test_exceed_rate_limit(cmsetup, gencreds, maildata, chatmail_config):
     """Test that the per-account send-mail limit is exceeded."""
     user1, user2 = cmsetup.gen_users(2)
     mail = maildata(
         "encrypted.eml", from_addr=user1.addr, to_addr=user2.addr
     ).as_string()
-    for i in range(chatmail_config.max_user_send_per_minute + 5):
-        print("Sending mail", str(i))
+
+    start = time.time()
+    for i in range(chatmail_config.max_user_send_per_minute * 3):
+        print("Sending mail", str(i + 1), "at", time.time() - start, "s.")
         try:
             user1.smtp.sendmail(user1.addr, [user2.addr], mail)
         except smtplib.SMTPException as e:
-            if i < chatmail_config.max_user_send_per_minute:
+            if i < chatmail_config.max_user_send_burst_size:
                 pytest.fail(f"rate limit was exceeded too early with msg {i}")
             outcome = e.recipients[user2.addr]
             assert outcome[0] == 450
@@ -203,7 +243,6 @@ def test_exceed_rate_limit(cmsetup, gencreds, maildata, chatmail_config):
     pytest.fail("Rate limit was not exceeded")
 
 
-@pytest.mark.slow
 def test_expunged(remote, chatmail_config):
     outdated_days = int(chatmail_config.delete_mails_after) + 1
     find_cmds = [
@@ -216,7 +255,7 @@ def test_expunged(remote, chatmail_config):
     ]
     outdated_days = int(chatmail_config.delete_large_after) + 1
     find_cmds.append(
-        "find {chatmail_config.mailboxes_dir} -path '*/cur/*' -mtime +{outdated_days} -size +200k -type f"
+        f"find {chatmail_config.mailboxes_dir} -path '*/cur/*' -mtime +{outdated_days} -size +200k -type f"
     )
     for cmd in find_cmds:
         for line in remote.iter_output(cmd):

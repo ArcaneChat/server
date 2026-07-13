@@ -1,8 +1,14 @@
+import shutil
 import smtplib
 import subprocess
 import sys
 
 import pytest
+
+pytestmark = pytest.mark.skipif(
+    shutil.which("filtermail") is None,
+    reason="filtermail binary not found",
+)
 
 
 @pytest.fixture
@@ -41,6 +47,8 @@ def test_one_mail(
     make_config, make_popen, smtpserver, maildata, filtermail_mode, monkeypatch
 ):
     monkeypatch.setenv("PYTHONUNBUFFERED", "1")
+    # DKIM is tested by cmdeploy tests.
+    monkeypatch.setenv("FILTERMAIL_SKIP_DKIM", "1")
     smtp_inject_port = 20025
     if filtermail_mode == "outgoing":
         settings = dict(
@@ -58,6 +66,10 @@ def test_one_mail(
 
     popen = make_popen(["filtermail", path, filtermail_mode])
     line = popen.stderr.readline().strip()
+
+    # skip a warning that FILTERMAIL_SKIP_DKIM shouldn't be used in prod
+    if b"DKIM verification DISABLED!" in line:
+        line = popen.stderr.readline().strip()
     if b"loop" not in line:
         print(line.decode("ascii"), file=sys.stderr)
         pytest.fail("starting filtermail failed")

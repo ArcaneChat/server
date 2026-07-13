@@ -3,7 +3,7 @@ from copy import deepcopy
 import pytest
 
 from cmdeploy import remote
-from cmdeploy.dns import check_full_zone, check_initial_remote_data
+from cmdeploy.dns import check_full_zone, check_initial_remote_data, parse_zone_records
 
 
 @pytest.fixture
@@ -60,6 +60,29 @@ def mockdns(request, mockdns_base, mockdns_expected):
     return mockdns_base
 
 
+class TestGetDkimEntry:
+    def test_dkim_entry_returns_tuple_on_success(self, mockdns):
+        entry, web_entry = remote.rdns.get_dkim_entry(
+            "some.domain", "", dkim_selector="opendkim"
+        )
+        # May return None,None if openssl not available, but should never crash
+        if entry is not None:
+            assert "opendkim._domainkey.some.domain" in entry
+            assert "opendkim._domainkey.some.domain" in web_entry
+
+    def test_dkim_entry_returns_none_tuple_on_error(self, monkeypatch):
+        """CalledProcessError must return (None, None), not bare None."""
+        from subprocess import CalledProcessError
+
+        def failing_shell(command, fail_ok=False, print=print):
+            raise CalledProcessError(1, command)
+
+        monkeypatch.setattr(remote.rdns, "shell", failing_shell)
+        result = remote.rdns.get_dkim_entry("some.domain", "", dkim_selector="opendkim")
+        assert result == (None, None)
+        assert result[0] is None and result[1] is None
+
+
 class TestPerformInitialChecks:
     def test_perform_initial_checks_ok1(self, mockdns, mockdns_expected):
         remote_data = remote.rdns.perform_initial_checks("some.domain")
@@ -91,19 +114,60 @@ class TestPerformInitialChecks:
         assert not res
         assert len(l) == 2
 
+    def test_perform_initial_checks_no_mta_sts_self_signed(self, mockdns):
+        del mockdns["CNAME"]["mta-sts.some.domain"]
+        remote_data = remote.rdns.perform_initial_checks("some.domain")
+        assert not remote_data["MTA_STS"]
+
+        l = []
+        res = check_initial_remote_data(remote_data, strict_tls=False, print=l.append)
+        assert res
+        assert not l
+
+
+def test_parse_zone_records():
+    text = """
+    ; This is a comment
+    some.domain. 3600 IN A 1.1.1.1
+
+    ; Another comment
+    www.some.domain. 3600 IN CNAME some.domain.
+
+    ; Multi-word rdata
+    some.domain. 3600 IN MX 10 mail.some.domain.
+
+    ; DKIM record (single line, multi-word TXT rdata)
+    dkim._domainkey.some.domain. 3600 IN TXT "v=DKIM1;k=rsa;p=MIIBIjANBgkqhkiG" "9w0BAQEFAAOCAQ8AMIIBCgKCAQEA"
+
+    ; Another TXT record
+    _dmarc.some.domain. 3600 IN TXT "v=DMARC1;p=reject"
+    """
+    records = list(parse_zone_records(text))
+    assert records == [
+        ("some.domain", "3600", "A", "1.1.1.1"),
+        ("www.some.domain", "3600", "CNAME", "some.domain."),
+        ("some.domain", "3600", "MX", "10 mail.some.domain."),
+        (
+            "dkim._domainkey.some.domain",
+            "3600",
+            "TXT",
+            '"v=DKIM1;k=rsa;p=MIIBIjANBgkqhkiG" "9w0BAQEFAAOCAQ8AMIIBCgKCAQEA"',
+        ),
+        ("_dmarc.some.domain", "3600", "TXT", '"v=DMARC1;p=reject"'),
+    ]
+
+
+def test_parse_zone_records_invalid_line():
+    text = "invalid line"
+    with pytest.raises(ValueError, match="Bad zone record line"):
+        list(parse_zone_records(text))
+
 
 def parse_zonefile_into_dict(zonefile, mockdns_base, only_required=False):
-    for zf_line in zonefile.split("\n"):
-        if zf_line.startswith("#"):
-            if "Recommended" in zf_line and only_required:
-                return
-            continue
-        if not zf_line.strip():
-            continue
-        zf_domain, zf_typ, zf_value = zf_line.split(maxsplit=2)
-        zf_domain = zf_domain.rstrip(".")
-        zf_value = zf_value.strip()
-        mockdns_base.setdefault(zf_typ, {})[zf_domain] = zf_value
+    if only_required:
+        zonefile = zonefile.split("; Recommended")[0]
+    for name, ttl, rtype, rdata in parse_zone_records(zonefile):
+        mockdns_base.setdefault(rtype, {})[name] = rdata
 
 
 class MockSSHExec:

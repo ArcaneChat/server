@@ -20,7 +20,8 @@ class Config:
     def __init__(self, inipath, params):
         self._inipath = inipath
         self.mail_domain = params["mail_domain"]
-        self.max_user_send_per_minute = int(params["max_user_send_per_minute"])
+        self.max_user_send_per_minute = int(params.get("max_user_send_per_minute", 60))
+        self.max_user_send_burst_size = int(params.get("max_user_send_burst_size", 10))
         self.max_mailbox_size = params["max_mailbox_size"]
         self.max_message_size = int(params.get("max_message_size", "31457280"))
         self.delete_mails_after = params["delete_mails_after"]
@@ -32,13 +33,16 @@ class Config:
         self.passthrough_senders = params["passthrough_senders"].split()
         self.passthrough_recipients = params["passthrough_recipients"].split()
         self.www_folder = params.get("www_folder", "")
-        self.filtermail_smtp_port = int(params["filtermail_smtp_port"])
+        self.filtermail_smtp_port = int(params.get("filtermail_smtp_port", "10080"))
         self.filtermail_smtp_port_incoming = int(
-            params["filtermail_smtp_port_incoming"]
+            params.get("filtermail_smtp_port_incoming", "10081")
         )
-        self.postfix_reinject_port = int(params["postfix_reinject_port"])
+        self.filtermail_http_port_incoming = int(
+            params.get("filtermail_http_port_incoming", "10082")
+        )
+        self.postfix_reinject_port = int(params.get("postfix_reinject_port", "10025"))
         self.postfix_reinject_port_incoming = int(
-            params["postfix_reinject_port_incoming"]
+            params.get("postfix_reinject_port_incoming", "10026")
         )
         self.mtail_address = params.get("mtail_address")
         self.disable_ipv6 = params.get("disable_ipv6", "false").lower() == "true"
@@ -56,12 +60,42 @@ class Config:
         self.privacy_pdo = params.get("privacy_pdo")
         self.privacy_supervisor = params.get("privacy_supervisor")
 
+        # TLS certificate management.
+        # If tls_external_cert_and_key is set, use externally managed certs.
+        # Otherwise derived from the domain name:
+        # - Domains starting with "_" use self-signed certificates
+        # - All other domains use ACME.
+        external = params.get("tls_external_cert_and_key", "").strip()
+
+        if external:
+            parts = external.split()
+            if len(parts) != 2:
+                raise ValueError(
+                    "tls_external_cert_and_key must have two space-separated"
+                    " paths: CERT_PATH KEY_PATH"
+                )
+            self.tls_cert_mode = "external"
+            self.tls_cert_path, self.tls_key_path = parts
+        elif self.mail_domain.startswith("_"):
+            self.tls_cert_mode = "self"
+            self.tls_cert_path = "/etc/ssl/certs/mailserver.pem"
+            self.tls_key_path = "/etc/ssl/private/mailserver.key"
+        else:
+            self.tls_cert_mode = "acme"
+            self.tls_cert_path = f"/var/lib/acme/live/{self.mail_domain}/fullchain"
+            self.tls_key_path = f"/var/lib/acme/live/{self.mail_domain}/privkey"
+
         # deprecated option
         mbdir = params.get("mailboxes_dir", f"/home/vmail/mail/{self.mail_domain}")
         self.mailboxes_dir = Path(mbdir.strip())
 
         # old unused option (except for first migration from sqlite to maildir store)
         self.passdb_path = Path(params.get("passdb_path", "/home/vmail/passdb.sqlite"))
+
+    @property
+    def max_mailbox_size_mb(self):
+        """Return max_mailbox_size as an integer in megabytes."""
+        return parse_size_mb(self.max_mailbox_size)
 
     def _getbytefile(self):
         return open(self._inipath, "rb")
@@ -74,6 +108,16 @@ class Config:
         password_path = maildir.joinpath("password")
 
         return User(maildir, addr, password_path, uid="vmail", gid="vmail")
+
+
+def parse_size_mb(limit):
+    """Parse a size string like ``500M`` or ``2G`` and return megabytes."""
+    value = limit.strip().upper().removesuffix("B")
+    if value.endswith("G"):
+        return int(value[:-1]) * 1024
+    if value.endswith("M"):
+        return int(value[:-1])
+    return int(value)
 
 
 def write_initial_config(inipath, mail_domain, overrides):

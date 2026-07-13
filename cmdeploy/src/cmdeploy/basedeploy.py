@@ -1,8 +1,49 @@
 import importlib.resources
 import io
 import os
+from contextlib import contextmanager
 
+from pyinfra import host
+from pyinfra.facts.server import Command
 from pyinfra.operations import files, server, systemd
+
+
+def has_systemd():
+    """Returns False during Docker image builds or any other non-systemd environment."""
+    return os.path.isdir("/run/systemd/system")
+
+
+def is_in_container() -> bool:
+    """Return True if running inside a container (Docker, LXC, etc.)."""
+    return (
+        host.get_fact(
+            Command,
+            "systemd-detect-virt --container --quiet 2>/dev/null && echo yes || true",
+        )
+        == "yes"
+    )
+
+
+@contextmanager
+def blocked_service_startup():
+    """Prevent services from auto-starting during package installation.
+
+    Installs a ``/usr/sbin/policy-rc.d`` that exits 101, blocking any
+    service from being started by the package manager.  This avoids bind
+    conflicts and CPU/RAM spikes during initial setup.  The file is removed
+    when the context exits.
+    """
+    # For documentation about policy-rc.d, see:
+    # https://people.debian.org/~hmh/invokerc.d-policyrc.d-specification.txt
+    files.put(
+        src=get_resource("policy-rc.d"),
+        dest="/usr/sbin/policy-rc.d",
+        user="root",
+        group="root",
+        mode="755",
+    )
+    yield
+    files.file("/usr/sbin/policy-rc.d", present=False)
 
 
 def get_resource(arg, pkg=__package__):
@@ -17,9 +58,8 @@ def configure_remote_units(mail_domain, units) -> None:
 
     # install systemd units
     for fn in units:
-        execpath = fn if fn != "filtermail-incoming" else "filtermail"
         params = dict(
-            execpath=f"{remote_venv_dir}/bin/{execpath}",
+            execpath=f"{remote_venv_dir}/bin/{fn}",
             config_path=remote_chatmail_inipath,
             remote_venv_dir=remote_venv_dir,
             mail_domain=mail_domain,

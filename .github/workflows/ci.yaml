@@ -1,0 +1,77 @@
+name: Run unit-tests and container-based deploy+test verification
+
+on:
+  # Triggers when a PR is merged into main or a direct push occurs
+  push:
+    branches: [ "main" ]
+    
+  # Triggers for any PR (and its subsequent commits) targeting the main branch
+  pull_request:
+    branches: [ "main" ]
+
+permissions: {}
+
+# Newest push wins: Prevents multiple runs from clashing and wasting runner efforts
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  tox:
+    name: isolated chatmaild tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        # Checkout pull request HEAD commit instead of merge commit
+        # Otherwise `test_deployed_state` will be unhappy.
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: download filtermail
+        run: curl -L https://github.com/chatmail/filtermail/releases/download/v0.6.1/filtermail-x86_64 -o /usr/local/bin/filtermail && chmod +x /usr/local/bin/filtermail
+      - name: run chatmaild tests 
+        working-directory: chatmaild
+        run: pipx run tox
+
+  scripts:
+    name: deploy-chatmail tests 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: initenv 
+        run: scripts/initenv.sh
+
+      - name: append venv/bin to PATH
+        run: echo venv/bin >>$GITHUB_PATH
+
+      - name: run formatting checks 
+        run: cmdeploy fmt -v 
+
+      - name: run deploy-chatmail offline tests 
+        run: pytest --pyargs cmdeploy 
+
+  lxc-test:
+    name: LXC deploy and test
+    uses: chatmail/cmlxc/.github/workflows/lxc-test.yml@v0.10.0
+    with:
+      cmlxc_commands: |
+        cmlxc init 
+        # single cmdeploy relay test
+        cmlxc -v deploy-cmdeploy --source ./repo cm0
+        cmlxc -v test-mini cm0
+        cmlxc -v test-cmdeploy cm0
+
+        # cross cmdeploy relay test
+        cmlxc -v deploy-cmdeploy --source ./repo --ipv4-only cm1
+        cmlxc -v test-cmdeploy cm0 cm1
+
+        # cross cmdeploy/madmail relay tests
+        cmlxc -v deploy-madmail mad0
+        cmlxc -v test-cmdeploy cm0 mad0
+        cmlxc -v test-mini cm0 mad0
+        cmlxc -v test-mini mad0 cm0

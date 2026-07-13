@@ -42,6 +42,11 @@ The deployed system components of a chatmail relay are:
 -  Dovecot_ is the Mail Delivery Agent (MDA) and
    stores messages for users until they download them
 
+-  `filtermail <https://github.com/chatmail/filtermail>`_
+   prevents unencrypted email from leaving or entering the chatmail
+   service and is integrated into Postfix’s outbound and inbound mail
+   pipelines.
+
 -  Nginx_ shows the web page with privacy policy and additional information
 
 -  `acmetool <https://hlandau.github.io/acmetool/>`_ manages TLS
@@ -85,11 +90,6 @@ short overview of ``chatmaild`` services:
    <https://doc.dovecot.org/2.3/configuration_manual/authentication/dict/#complete-example-for-authenticating-via-a-unix-socket>`_
    to authenticate logins.
 
--  `filtermail <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/filtermail.py>`_
-   prevents unencrypted email from leaving or entering the chatmail
-   service and is integrated into Postfix’s outbound and inbound mail
-   pipelines.
-
 -  `chatmail-metadata <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/metadata.py>`_
    is contacted by a `Dovecot lua
    script <https://github.com/chatmail/relay/blob/main/cmdeploy/src/cmdeploy/dovecot/push_notification.lua>`_
@@ -102,16 +102,16 @@ short overview of ``chatmaild`` services:
    Apple/Google/Huawei.
 
 -  `chatmail-expire <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/expire.py>`_
-   deletes users if they have not logged in for a longer while.
-   The timeframe can be configured in ``chatmail.ini``.
+   deletes old messages, large messages, and entire mailboxes
+   of users who have not logged in for longer than
+   ``delete_inactive_users_after`` days.
+
+-  ``chatmail-quota-expire`` is called by Dovecot's ``quota_warning`` mechanism
+   and will automatically remove oldest messages to keep mailboxes well under ``max_mailbox_size``.
 
 -  `lastlogin <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/lastlogin.py>`_
    is contacted by Dovecot when a user logs in and stores the date of
    the login.
-
--  `metrics <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/metrics.py>`_
-   collects some metrics and displays them at
-   ``https://example.org/metrics``.
 
 ``www/``
 ~~~~~~~~~
@@ -142,11 +142,9 @@ Chatmail relay dependency diagram
         nginx-internal --- autoconfig.xml;
         certs-nginx[("`TLS certs
         /var/lib/acme`")] --> nginx-internal;
-        systemd-timer --- chatmail-metrics;
         systemd-timer --- acmetool;
         systemd-timer --- chatmail-expire-daily;
         systemd-timer --- chatmail-fsreport-daily;
-        chatmail-metrics --- website;
         acmetool --> certs[("`TLS certs
         /var/lib/acme`")];
         nginx-external --- |993|dovecot;
@@ -162,6 +160,8 @@ Chatmail relay dependency diagram
         /home/vmail/.../user"];
         dovecot --- |lastlogin.socket|lastlogin;
         dovecot --- chatmail-metadata;
+        dovecot --- |quota-warning|chatmail-quota-expire;
+        chatmail-quota-expire --- maildir;
         lastlogin --- maildir;
         doveauth --- maildir;
         chatmail-expire-daily --- maildir;
@@ -297,8 +297,7 @@ TLS requirements
 
 Postfix is configured to require valid TLS by setting
 `smtp_tls_security_level <https://www.postfix.org/postconf.5.html#smtp_tls_security_level>`_
-to ``verify``. If emails don’t arrive at your chatmail relay server, the
-problem is likely that your relay does not have a valid TLS certificate.
+to ``verify``.
 
 You can test it by resolving ``MX`` records of your relay domain and
 then connecting to MX relays (e.g ``mx.example.org``) with
@@ -309,6 +308,11 @@ When providing a TLS certificate to your chatmail relay server, make
 sure to provide the full certificate chain and not just the last
 certificate.
 
+If you use an external certificate manager (e.g. Traefik or certbot),
+set ``tls_external_cert_and_key`` in ``chatmail.ini``
+to provide the certificate and key paths.
+See :ref:`external-tls` for details.
+
 If you are running an Exim server and don’t see incoming connections
 from a chatmail relay server in the logs, make sure ``smtp_no_mail`` log
 item is enabled in the config with ``log_selector = +smtp_no_mail``. By
@@ -316,6 +320,14 @@ default Exim does not log sessions that are closed before sending the
 ``MAIL`` command. This happens if certificate is not recognized as valid
 by Postfix, so you might think that connection is not established while
 actually it is a problem with your TLS certificate.
+
+If emails don’t arrive at your chatmail relay server, the
+problem is likely that your relay does not have a valid TLS certificate.
+
+Note that connections to relays with underscore-prefixed test domains
+(e.g. ``_chat.example.org``) use ``encrypt`` tls security level,
+because such domains cannot obtain valid Let's Encrypt certificates
+and run with self-signed certificates.
 
 
 .. _dovecot: https://dovecot.org

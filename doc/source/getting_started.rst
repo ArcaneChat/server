@@ -16,15 +16,16 @@ You will need the following:
 
 -  Control over a domain through a DNS provider of your choice.
 
--  A Debian 12 server with reachable SMTP/SUBMISSIONS/IMAPS/HTTPS ports.
+-  A Debian 12 **deployment server** with reachable SMTP/SUBMISSIONS/IMAPS/HTTPS ports.
    IPv6 is encouraged if available. Chatmail relay servers only require
    1GB RAM, one CPU, and perhaps 10GB storage for a few thousand active
    chatmail addresses.
 
--  Key-based SSH authentication to the root user. You must add a
-   passphrase-protected private key to your local ssh-agent because you
-   can’t type in your passphrase during deployment. (An ed25519 private
-   key is required due to an `upstream bug in
+-  A Linux or Unix **build machine** with key-based SSH access to the root
+   user of the deployment server.
+   You must add a passphrase-protected private key to your local ssh-agent because you
+   can’t type in your passphrase during deployment.
+   (An ed25519 private key is required due to an `upstream bug in
    paramiko <https://github.com/paramiko/paramiko/issues/2191>`_)
 
 
@@ -34,16 +35,25 @@ Setup with ``scripts/cmdeploy``
 We use ``chat.example.org`` as the chatmail domain in the following
 steps. Please substitute it with your own domain.
 
-1. Setup the initial DNS records. The following is an example in the
+1. Setup the initial DNS records for your deployment server.
+   The following is an example in the
    familiar BIND zone file format with a TTL of 1 hour (3600 seconds).
    Please substitute your domain and IP addresses.
 
    ::
 
-       chat.example.com. 3600 IN A 198.51.100.5
-       chat.example.com. 3600 IN AAAA 2001:db8::5
-       www.chat.example.com. 3600 IN CNAME chat.example.com.
-       mta-sts.chat.example.com. 3600 IN CNAME chat.example.com.
+       chat.example.org. 3600 IN A 198.51.100.5
+       chat.example.org. 3600 IN AAAA 2001:db8::5
+       www.chat.example.org. 3600 IN CNAME chat.example.org.
+       mta-sts.chat.example.org. 3600 IN CNAME chat.example.org.
+
+   .. note::
+
+      For experimental deployments using self-signed certificates,
+      use a domain name starting with ``_``
+      (e.g. ``_chat.example.org``).
+      The ``mta-sts`` CNAME and ``_mta-sts`` TXT records
+      are not needed for such domains.
 
 2. On your local PC, clone the repository and bootstrap the Python
    virtualenv.
@@ -54,20 +64,30 @@ steps. Please substitute it with your own domain.
        cd relay
        scripts/initenv.sh
 
-3. On your local PC, create chatmail configuration file
+3. On your local build machine (PC), create a chatmail configuration file
    ``chatmail.ini``:
 
    ::
 
        scripts/cmdeploy init chat.example.org  # <-- use your domain
 
-4. Verify that SSH root login to your remote server works:
+   To use self-signed TLS certificates
+   instead of Let's Encrypt,
+   use a domain name starting with ``_``
+   (e.g. ``scripts/cmdeploy init _chat.example.org``).
+   Domains starting with ``_`` cannot obtain WebPKI certificates,
+   so self-signed mode is derived automatically.
+   This is useful for private or test deployments.
+   See the :doc:`overview`
+   for details on certificate provisioning.
+
+4. Verify that SSH root login to the deployment server server works:
 
    ::
 
        ssh root@chat.example.org  # <-- use your domain
 
-5. From your local PC, deploy the remote chatmail relay server:
+5. From your local build machine, setup and configure the remote deployment server:
 
    ::
 
@@ -81,7 +101,7 @@ steps. Please substitute it with your own domain.
 Other helpful commands
 ----------------------
 
-To check the status of your remotely running chatmail service:
+To check the status of your deployment server running the chatmail service:
 
 ::
 
@@ -158,7 +178,7 @@ Disable automatic address creation
 --------------------------------------------------------
 
 If you need to stop address creation, e.g. because some script is wildly
-creating addresses, login with ssh and run:
+creating addresses, login with ssh to the deployment machine and run:
 
 ::
 
@@ -167,3 +187,72 @@ creating addresses, login with ssh and run:
 Chatmail address creation will be denied while this file is present.
 
 
+Running a relay with self-signed certificates
+----------------------------------------------
+
+Use a domain name starting with ``_`` (e.g. ``_chat.example.org``)
+to run a relay with self-signed certificates.
+Domains starting with ``_`` cannot obtain WebPKI certificates
+so the relay automatically uses self-signed certificates
+and all other relays will accept connections from it
+without requiring certificate verification.
+This is useful for experimental setups and testing.
+
+.. _external-tls:
+
+Running a relay with externally managed certificates
+-----------------------------------------------------
+
+If you already have a TLS certificate manager
+(e.g. Traefik, certbot, or another ACME client)
+running on the deployment server,
+you can configure the relay to use those certificates
+instead of the built-in ``acmetool``.
+
+Set the following in ``chatmail.ini``::
+
+    tls_external_cert_and_key = /path/to/fullchain.pem /path/to/privkey.pem
+
+The paths must point to certificate and key files
+on the deployment server.
+During ``cmdeploy run``, these paths are written into
+the Postfix, Dovecot, and Nginx configurations.
+No certificate files are transferred from the build machine —
+they must already exist on the server,
+managed by your external certificate tool.
+
+The deploy will verify that both files exist on the server.
+``acmetool`` is **not** installed or run in this mode.
+
+.. note::
+
+   You are responsible for certificate renewal.
+   When the certificate file changes on disk,
+   all relay services pick up the new certificate automatically
+   via a systemd path watcher installed during deploy.
+   The watcher uses inotify, which does not cross bind-mount boundaries.
+   If you use such a setup, you must trigger the reload explicitly after renewal::
+
+      systemctl start tls-cert-reload.service
+
+
+Migrating to a new build machine
+----------------------------------
+
+To move or add a build machine,
+clone the relay repository on the new build machine, and copy the ``chatmail.ini`` file from the old build machine.
+Make sure ``rsync`` is installed, then initialize the environment:
+
+::
+
+   ./scripts/initenv.sh
+
+Run safety checks before a new deployment:
+
+::
+
+   ./scripts/cmdeploy dns
+   ./scripts/cmdeploy status
+
+If you keep multiple build machines (ie laptop and desktop), keep ``chatmail.ini`` in sync between
+them.

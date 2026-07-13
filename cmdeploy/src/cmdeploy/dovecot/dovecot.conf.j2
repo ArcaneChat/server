@@ -1,7 +1,7 @@
 ## Dovecot configuration file
 
 {% if disable_ipv6 %}
-listen = *
+listen = 0.0.0.0
 {% endif %}
 
 protocols = imap lmtp
@@ -26,7 +26,7 @@ default_client_limit = 20000
 # Increase number of logged in IMAP connections.
 # Each connection is handled by a separate `imap` process.
 # `imap` process should have `client_limit=1` as described in
-# <https://doc.dovecot.org/configuration_manual/service_configuration/#service-limits>
+# <https://doc.dovecot.org/2.3/configuration_manual/service_configuration/#service-limits>
 # so each logged in IMAP session will need its own `imap` process.
 #
 # If this limit is reached,
@@ -44,11 +44,11 @@ mail_server_comment = Chatmail server
 
 # `zlib` enables compressing messages stored in the maildir.
 # See
-# <https://doc.dovecot.org/configuration_manual/zlib_plugin/>
+# <https://doc.dovecot.org/2.3/configuration_manual/zlib_plugin/>
 # for documentation.
 #
 # quota plugin documentation:
-# <https://doc.dovecot.org/configuration_manual/quota_plugin/>
+# <https://doc.dovecot.org/2.3/configuration_manual/quota_plugin/>
 mail_plugins = zlib quota
 
 imap_capability = +XDELTAPUSH XCHATMAIL
@@ -125,14 +125,19 @@ plugin {
 
 protocol lmtp {
   # notify plugin is a dependency of push_notification plugin:
-  # <https://doc.dovecot.org/settings/plugin/notify-plugin/>
+  # <https://doc.dovecot.org/2.3/settings/plugin/notify-plugin/>
   #
   # push_notification plugin documentation:
-  # <https://doc.dovecot.org/configuration_manual/push_notification/>
+  # <https://doc.dovecot.org/2.3/configuration_manual/push_notification/>
   #
   # mail_lua and push_notification_lua are needed for Lua push notification handler.
-  # <https://doc.dovecot.org/configuration_manual/push_notification/#configuration>
+  # <https://doc.dovecot.org/2.3/configuration_manual/push_notification/#configuration>
   mail_plugins = $mail_plugins mail_lua notify push_notification push_notification_lua
+
+  # Disable fsync for LMTP. May lose delivered message,
+  # but unlikely to cause problems with multiple relays.
+  # https://doc.dovecot.org/2.3/admin_manual/mailbox_formats/#fsyncing
+  mail_fsync = never
 }
 
 plugin {
@@ -144,17 +149,31 @@ plugin {
 }
 
 plugin {
-  # for now we define static quota-rules for all users 
   quota = maildir:User quota
-  quota_rule = *:storage={{ config.max_mailbox_size }}
   quota_max_mail_size={{ config.max_message_size }}
   quota_grace = 0
-  # quota_over_flag_value = TRUE
+
+  quota_rule = *:storage={{ config.max_mailbox_size_mb }}M
+
+  # Trigger at 75%% of quota, expire oldest messages down to 70%%.
+  # The percentages are chosen to prevent current Delta Chat users
+  # from seeing "quota warnings" which trigger at 80% and 95%.
+
+  quota_warning = storage=75%% quota-warning {{ config.max_mailbox_size_mb * 70 // 100 }} {{ config.mailboxes_dir }}/%u
+}
+
+service quota-warning {
+  executable = script /usr/local/lib/chatmaild/venv/bin/chatmail-quota-expire
+  user = vmail
+  unix_listener quota-warning {
+     user = vmail
+     mode = 0600
+  }
 }
 
 # push_notification configuration
 plugin {
-  # <https://doc.dovecot.org/configuration_manual/push_notification/#lua-lua>
+  # <https://doc.dovecot.org/2.3/configuration_manual/push_notification/#lua-lua>
   push_notification_driver = lua:file=/etc/dovecot/push_notification.lua
 }
 
@@ -167,6 +186,8 @@ service lmtp {
     user = postfix
   }
 }
+
+lmtp_add_received_header = no
 
 service auth {
   unix_listener /var/spool/postfix/private/auth {
@@ -226,8 +247,8 @@ service anvil {
 }
 
 ssl = required
-ssl_cert = </var/lib/acme/live/{{ config.mail_domain }}/fullchain
-ssl_key = </var/lib/acme/live/{{ config.mail_domain }}/privkey
+ssl_cert = <{{ config.tls_cert_path }}
+ssl_key = <{{ config.tls_key_path }}
 ssl_dh = </usr/share/dovecot/dh.pem
 ssl_min_protocol = TLSv1.3
 ssl_prefer_server_ciphers = yes
@@ -250,6 +271,9 @@ protocol imap {
   # sort -sn <(sed 's/ / C: /' *.in) <(sed 's/ / S: /' cat *.out)
 
   rawlog_dir = %h 
+
+  # Disable fsync for IMAP. May lose IMAP changes like setting flags. 
+  mail_fsync = never
 } 
 {% endif %}
 
@@ -275,5 +299,158 @@ service imap-hibernate {
     mode = 0660
     group = $default_internal_group
   }
+}
+{% endif %}
+
+{% if config.mtail_address %}
+#
+# Dovecot Statistics
+#
+# OpenMetrics endpoint at http://{{- config.mtail_address}}:3904/metrics
+service stats {
+  inet_listener http {
+    port = 3904
+    address = {{- config.mtail_address}}
+  }
+}
+
+# IMAP Command Metrics
+# - Bytes in/out for compression efficiency analysis
+# - Lock wait time for contention debugging
+# - Grouped by command name and reply state
+metric imap_command {
+  filter = event=imap_command_finished
+  fields = bytes_in bytes_out lock_wait_usecs running_usecs
+  group_by = cmd_name tagged_reply_state
+}
+
+# Duration buckets for latency histograms (base 10: 10us, 100us, 1ms, 10ms, 100ms, 1s, 10s, 100s)
+metric imap_command_duration {
+  filter = event=imap_command_finished
+  group_by = cmd_name duration:exponential:1:8:10
+}
+
+# Slow command outliers (>1 second = 1000000 usecs)
+# Useful for alerting without high cardinality
+metric imap_command_slow {
+  filter = event=imap_command_finished AND duration>1000000 AND NOT cmd_name=IDLE
+  group_by = cmd_name
+}
+
+# IDLE-specific Metrics
+
+metric imap_idle {
+  filter = event=imap_command_finished AND cmd_name=IDLE
+  fields = bytes_in bytes_out running_usecs
+  group_by = tagged_reply_state
+}
+
+metric imap_idle_duration {
+  filter = event=imap_command_finished AND cmd_name=IDLE
+  # Base 10: 100ms to 27h (covers short wakeups to long idle sessions)
+  group_by = duration:exponential:5:11:10
+}
+
+metric imap_idle_commands {
+  filter = event=imap_command_finished AND cmd_name=IDLE
+  group_by = tagged_reply_state
+}
+
+metric imap_idle_failed {
+  filter = event=imap_command_finished AND cmd_name=IDLE AND NOT tagged_reply_state=OK
+}
+
+# Hibernation Metrics (requires imap_hibernate_timeout)
+
+metric imap_hibernated {
+  filter = event=imap_client_hibernated
+}
+
+metric imap_hibernated_failed {
+  filter = event=imap_client_hibernated AND error=*
+}
+
+metric imap_unhibernated {
+  filter = event=imap_client_unhibernated
+  fields = hibernation_usecs
+}
+
+metric imap_unhibernated_reason {
+  filter = event=imap_client_unhibernated
+  group_by = reason
+  fields = hibernation_usecs
+}
+
+metric imap_unhibernated_reason_sleep {
+  filter = event=imap_client_unhibernated
+  group_by = reason hibernation_usecs:exponential:4:8:10
+}
+
+metric imap_unhibernated_failed {
+  filter = event=imap_client_unhibernated AND error=*
+}
+
+# Hibernation duration buckets (how long clients stayed hibernated)
+# Base 10: 100ms to 27h
+metric imap_hibernation_duration {
+  filter = event=imap_client_unhibernated
+  group_by = reason duration:exponential:5:11:10
+}
+
+# Authentication / Login Metrics
+
+metric auth_request {
+  filter = event=auth_request_finished
+  group_by = success
+}
+
+metric auth_request_duration {
+  filter = event=auth_request_finished
+  group_by = success duration:exponential:2:6:10
+}
+
+metric auth_failed {
+  filter = event=auth_request_finished AND success=no
+}
+
+# Passdb cache effectiveness
+metric auth_passdb {
+  filter = event=auth_passdb_request_finished
+  group_by = result cache
+}
+
+# Master login (post-auth userdb lookup)
+metric auth_master_login {
+  filter = event=auth_master_client_login_finished
+}
+
+metric auth_master_login_failed {
+  filter = event=auth_master_client_login_finished AND error=*
+}
+
+# Mail Delivery (LMTP) - affects IDLE wakeup latency
+
+metric mail_delivery {
+  filter = event=mail_delivery_finished
+}
+
+metric mail_delivery_duration {
+  filter = event=mail_delivery_finished
+  group_by = duration:exponential:3:7:10
+}
+
+metric mail_delivery_failed {
+  filter = event=mail_delivery_finished AND error=*
+}
+
+# Connection Events
+
+metric client_connected {
+  filter = event=client_connection_connected AND category="service:imap"
+}
+
+metric client_disconnected {
+  filter = event=client_connection_disconnected AND category="service:imap"
+  fields = bytes_in bytes_out
 }
 {% endif %}

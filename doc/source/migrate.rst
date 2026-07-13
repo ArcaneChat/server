@@ -1,72 +1,98 @@
 
-Migrating to a new host
------------------------
+Migrating to a new machine
+===========================
 
-If you want to migrate chatmail relay from an old machine to a new
-machine, you can use these steps. They were tested with a Linux laptop;
-you might need to adjust some of the steps to your environment.
+This migration tutorial provides a step-wise approach
+to safely migrate a chatmail relay from one remote machine to another.
 
-Let’s assume that your ``mail_domain`` is ``mail.example.org``, all
-involved machines run Debian 12, your old site’s IP address is
-``13.37.13.37``, and your new site’s IP address is ``13.12.23.42``.
+Preliminary notes and assumptions
+---------------------------------
 
-Note, you should lower the TTLs of your DNS records to a value such as
-300 (5 minutes) so the migration happens as smoothly as possible.
+- If the migration is a planned move,
+  it's recommended to lower the Time To Live (TTL) of your DNS records to a value such as 300 (5 minutes),
+  at best much earlier than the actual planned migration.
+  This speeds up propagation of DNS changes in the Internet after the migration is complete.
 
-During the guide you might get a warning about changed SSH Host keys; in
-this case, just run ``ssh-keygen -R "mail.example.org"`` as recommended.
+- The migration steps were tested with a Linux laptop; you might need to adjust some of the steps to your local environment.
 
-1. First, disable mail services on the old site.
+- Your ``mail_domain`` is ``mail.example.org``.
+
+- All remote machines run Debian 12.
+
+- The old site’s IP version 4 address is ``$OLD_IP4``.
+
+- The new site’s IP addresses are ``$NEW_IP4`` and ``$NEW_IPV6``.
+
+
+The six steps to migrate
+------------------------
+
+Note that during some of the following steps you might get a warning about changed SSH Host keys;
+in this case, just run ``ssh-keygen -R "mail.example.org"`` as recommended.
+
+
+1. **Initially transfer mailboxes from old to new site.**
+
+   Login to old site, forwarding your ssh-agent with ``ssh -A``
+   to allow using ssh to directly copy files from old to new site.
+   ::
+
+       ssh -A root@$OLD_IP4
+       tar c /home/vmail/mail | ssh root@$NEW_IP4 "tar x -C /"
+
+
+2. **Pre-configure the new site but keep it inactive until step 6**
+   ::
+
+       CMDEPLOY_STAGES=install,configure scripts/cmdeploy run --ssh-host $NEW_IP4
+
+
+3. **It's getting serious: disable mail services on the old site.**
+   Users will not be able to send or receive messages until all steps are completed.
+   Other relays and mail servers will retry delivering messages from time to time,
+   so nothing is lost for users.
 
    ::
 
-       cmdeploy run --disable-mail --ssh-host 13.37.13.37
+       scripts/cmdeploy run --disable-mail --ssh-host $OLD_IP4
 
-   Now your users will notice the migration and will not be able to send
-   or receive messages until the migration is completed.
 
-2. Now we want to copy ``/home/vmail``, ``/var/lib/acme``,
-   ``/etc/dkimkeys``, and ``/var/spool/postfix`` to
-   the new site. Login to the old site while forwarding your SSH agent
-   so you can copy directly from the old to the new site with your SSH
-   key:
+4. **Final synchronization of TLS/DKIM secrets, mail queues and mailboxes.**
+   Again we use ssh-agent forwarding (``-A``) to allow transfering all important data directly
+   from the old to the new site.
+   ::
+
+       ssh -A root@$OLD_IP4
+       tar c /var/lib/acme /etc/dkimkeys /var/spool/postfix | ssh root@$NEW_IP4 "tar x -C /"
+       rsync -azH /home/vmail/mail root@$NEW_IP4:/home/vmail/
+
+   Login to the new site and ensure file ownerships are correctly set:
 
    ::
 
-       ssh -A root@13.37.13.37
-       tar c - /home/vmail/mail /var/lib/acme /etc/dkimkeys /var/spool/postfix | ssh root@13.12.23.42 "tar x -C /"
-
-   This transfers all addresses, the TLS certificate,
-   and DKIM keys (so DKIM DNS record remains valid).
-   It also preserves the Postfix mail spool so any messages
-   pending delivery will still be delivered.
-
-3. Install chatmail on the new machine:
-
-   ::
-
-       cmdeploy run --disable-mail --ssh-host 13.12.23.42
-
-   Postfix and Dovecot are disabled for now; we will enable them later.
-   We first need to make the new site fully operational.
-
-4. On the new site, run the following to ensure the ownership is correct
-   in case UIDs/GIDs changed:
-
-   ::
-
+       ssh root@$NEW_IP4
        chown root: -R /var/lib/acme
        chown opendkim: -R /etc/dkimkeys
        chown vmail: -R /home/vmail/mail
 
-5. Now, update DNS entries.
 
-   If other MTAs try to deliver messages to your chatmail domain they
-   may fail intermittently, as DNS catches up with the new site settings
-   but normally will retry delivering messages for at least a week, so
-   messages will not be lost.
+5. **Update the DNS entries to point to the new site.**
+   You only need to change the ``A`` and ``AAAA`` records, for example:
 
-6. Finally, you can execute ``cmdeploy run --ssh-host 13.12.23.42`` to
-   turn on chatmail on the new relay. Your users will be able to use the
-   chatmail relay as soon as the DNS changes have propagated. Voilà!
+   ::
+
+       mail.example.org.    IN A    $NEW_IP4
+       mail.example.org.    IN AAAA $NEW_IP6
+
+
+6. **Activate chatmail relay on new site.**
+
+   ::
+
+        CMDEPLOY_STAGES=activate scripts/cmdeploy run --ssh-host $NEW_IP4
+
+   Voilà!
+   Users will be able to use the relay as soon as the DNS changes have propagated.
+   If you have lowered the Time-to-Live for DNS records in step 1,
+   better use a higher value again (between 14400 and 86400 seconds) once you are sure everything works.
 
