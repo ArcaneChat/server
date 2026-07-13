@@ -4,9 +4,7 @@ Description=Outgoing Chatmail Postfix before queue filter
 [Service]
 ExecStart={{ bin_path }} {{ config_path }} outgoing
 Restart=always
-RestartSec=5
-WatchdogSec=3600
-WatchdogSignal=SIGKILL
+RestartSec=30
 User=vmail
 
 [Install]
