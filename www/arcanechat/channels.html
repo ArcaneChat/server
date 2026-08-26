@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" type="image/png" href="/img/favicon-96x96.png" sizes="96x96" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/img/favicon-96x96.png"
+      sizes="96x96"
+    />
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <link rel="shortcut icon" href="/img/favicon.ico" />
 
@@ -244,7 +249,7 @@
           share: "Share",
           showMore: "Show more",
           showLess: "Show Less",
-          selectLanguage: "Select language"
+          selectLanguage: "Select language",
         },
         es: {
           pageTitle: "Canales de ArcaneChat",
@@ -254,7 +259,7 @@
           share: "Compartir",
           showMore: "Ver más",
           showLess: "Ver menos",
-          selectLanguage: "Seleccionar idioma"
+          selectLanguage: "Seleccionar idioma",
         },
         fr: {
           pageTitle: "Canaux ArcaneChat",
@@ -264,7 +269,7 @@
           share: "Partager",
           showMore: "Afficher plus",
           showLess: "Afficher moins",
-          selectLanguage: "Sélectionner la langue"
+          selectLanguage: "Sélectionner la langue",
         },
         de: {
           pageTitle: "ArcaneChat Kanäle",
@@ -274,7 +279,7 @@
           share: "Teilen",
           showMore: "Mehr anzeigen",
           showLess: "Weniger anzeigen",
-          selectLanguage: "Sprache auswählen"
+          selectLanguage: "Sprache auswählen",
         },
         it: {
           pageTitle: "Canali ArcaneChat",
@@ -284,7 +289,7 @@
           share: "Condividi",
           showMore: "Mostra di più",
           showLess: "Mostra meno",
-          selectLanguage: "Seleziona lingua"
+          selectLanguage: "Seleziona lingua",
         },
         ru: {
           pageTitle: "Каналы ArcaneChat",
@@ -294,8 +299,8 @@
           share: "Поделиться",
           showMore: "Показать больше",
           showLess: "Показать меньше",
-          selectLanguage: "Выберите язык"
-        }
+          selectLanguage: "Выберите язык",
+        },
       };
 
       function t(key) {
@@ -305,8 +310,11 @@
       function updateStaticTranslations() {
         document.getElementById("pageTitle").textContent = t("pageTitle");
         document.getElementById("headerTitle").textContent = t("headerTitle");
-        document.getElementById("headerSubtitle").textContent = t("headerSubtitle");
-        document.getElementById("languageSelector").setAttribute("aria-label", t("selectLanguage"));
+        document.getElementById("headerSubtitle").textContent =
+          t("headerSubtitle");
+        document
+          .getElementById("languageSelector")
+          .setAttribute("aria-label", t("selectLanguage"));
       }
 
       // --- LOCALSTORAGE HELPERS ---
@@ -336,16 +344,16 @@
       let availableLanguages = [];
       let currentLang = FALLBACK_LANG;
 
-     function h(tag, attributes, ...children) {
-       const element = document.createElement(tag);
-       if (attributes) {
-         Object.entries(attributes).forEach((entry) => {
-           element.setAttribute(entry[0], entry[1]);
-         });
-       }
-       element.append(...children);
-       return element;
-     }
+      function h(tag, attributes, ...children) {
+        const element = document.createElement(tag);
+        if (attributes) {
+          Object.entries(attributes).forEach((entry) => {
+            element.setAttribute(entry[0], entry[1]);
+          });
+        }
+        element.append(...children);
+        return element;
+      }
 
       function toOpenpgp4fpr(url) {
         return url
@@ -370,9 +378,10 @@
       }
 
       function detectBrowserLanguage(langs) {
-        const browserLangs = navigator.languages && navigator.languages.length
-          ? navigator.languages
-          : [navigator.language || navigator.userLanguage || FALLBACK_LANG];
+        const browserLangs =
+          navigator.languages && navigator.languages.length
+            ? navigator.languages
+            : [navigator.language || navigator.userLanguage || FALLBACK_LANG];
 
         for (const lang of browserLangs) {
           if (!lang) continue;
@@ -384,7 +393,9 @@
       }
 
       async function loadChannels() {
-        const data = await (await fetch(`${assets}/channels-others.json`)).json();
+        const data = await (
+          await fetch(`${assets}/channels-others.json`)
+        ).json();
         const rssData = await (await fetch(`${assets}/channels.json`)).json();
         for (const [key, value] of Object.entries(rssData)) {
           if (data.hasOwnProperty(key)) {
@@ -405,7 +416,11 @@
         );
 
         for (const lang of sorted) {
-          const option = h("option", {"value": lang}, getLanguageDisplayName(lang));
+          const option = h(
+            "option",
+            { value: lang },
+            getLanguageDisplayName(lang),
+          );
           if (lang === currentLang) option.selected = true;
           selector.appendChild(option);
         }
