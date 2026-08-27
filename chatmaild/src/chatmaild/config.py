@@ -2,7 +2,6 @@ import ipaddress
 from pathlib import Path
 
 import iniconfig
-from domain_validator import DomainValidator
 
 from chatmaild.user import User
 
@@ -25,7 +24,6 @@ class Config:
             self.mail_domain = f"[{raw_domain}]"
             self.postfix_myhostname = ipaddress.IPv4Address(raw_domain).reverse_pointer
         else:
-            DomainValidator().validate_domain_re(raw_domain)
             self.ipv4_relay = None
             self.mail_domain = raw_domain
             self.postfix_myhostname = raw_domain
@@ -76,6 +74,16 @@ class Config:
         self.privacy_mail = params.pop("privacy_mail", None)
         self.privacy_pdo = params.pop("privacy_pdo", None)
         self.privacy_supervisor = params.pop("privacy_supervisor", None)
+
+        self.max_load_1m = float(params.pop("max_load_1m", 5))
+        self.min_available_memory_mb = parse_size_mb(
+            params.pop("min_available_memory", "200M")
+        )
+        self.min_free_disk_space_mb = parse_size_mb(
+            params.pop("min_free_disk_space", "1G")
+        )
+        self.max_imap_connections = int(params.pop("max_imap_connections", 10000))
+        self.max_smtp_connections = int(params.pop("max_smtp_connections", 1000))
 
         # TLS certificate management.
         # If tls_external_cert_and_key is set, use externally managed certs.

@@ -8,9 +8,9 @@ version = "0.3"
 dependencies = [
   "iniconfig",
   "filelock",
+  "psutil",
   "requests",
-  "crypt-r >= 3.13.1 ; python_version >= '3.11'",
-  "domain-validator",
+  "crypt-r >= 3.13.1 ; python_version >= '3.13'",
 ]
 
 [tool.setuptools]

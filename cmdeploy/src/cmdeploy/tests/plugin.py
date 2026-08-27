@@ -10,13 +10,11 @@ from pathlib import Path
 
 import pytest
 from chatmaild.config import is_valid_ipv4, read_config
-from domain_validator import DomainValidator
 
 
 def format_mail_domain(raw_domain: str) -> str:
     if is_valid_ipv4(raw_domain):
         return f"[{raw_domain}]"
-    DomainValidator().validate_domain_re(raw_domain)
     return raw_domain
 
 
@@ -349,9 +347,9 @@ class ChatmailACFactory:
                 qr = (
                     f"dclogin:{addr}"
                     f"?p={password}&v=1"
-                    f"&ih={domain}&ip=993"
-                    f"&sh={domain}&sp=465"
-                    f"&ic=3&ss=default"
+                    f"&ih={domain}&ip=993&is=ssl"
+                    f"&sh={domain}&sp=465&ss=ssl"
+                    f"&ic=3"
                 )
                 future = account.add_transport_from_qr.future(qr)
             else:
@@ -362,7 +360,7 @@ class ChatmailACFactory:
 
             # ensure messages stay in INBOX so that they can be
             # concurrently fetched via extra IMAP connections during tests
-            account.set_config("delete_server_after", "10")
+            account.set_config("bcc_self", "1")
             accounts.append(account)
 
         for future in futures:

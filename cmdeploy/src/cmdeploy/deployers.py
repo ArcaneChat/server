@@ -138,9 +138,22 @@ class UnboundDeployer(Deployer):
         # On an IPv4-only system, if unbound is started but not configured,
         # it causes subsequent steps to fail to resolve hosts.
         with blocked_service_startup():
+            # dns-root-data is an optional package
+            # that contains /usr/share/dns/root.key
+            #
+            # This file is copied into /var/lib/unbound/root.key
+            # at the start of "unbound" systemd unit
+            # by /usr/libexec/unbound-helper shell script
+            # from the "unbound" package as of version 1.17.1-2+deb12u4
+            #
+            # The same /var/lib/unbound/root.key can be retrieved directly
+            # following the procedure from
+            # <https://www.rfc-editor.org/info/rfc7958/#section-3.1>
+            # with "unbound-anchor -a /var/lib/unbound/root.key"
+            # We don't install and use "unbound-anchor".
             apt.packages(
                 name="Install unbound",
-                packages=["unbound", "unbound-anchor", "dnsutils"],
+                packages=["unbound", "dns-root-data", "dnsutils"],
             )
 
     def configure(self):
@@ -164,23 +177,16 @@ class UnboundDeployer(Deployer):
         self.put_file(
             src=BytesIO(b"nameserver 127.0.0.1\nnameserver 9.9.9.9\n"),
             dest="/etc/resolv.conf",
+            force=True,
         )
-        server.shell(
-            name="Generate root keys for validating DNSSEC",
-            commands=[
-                "unbound-anchor -a /var/lib/unbound/root.key || true",
-            ],
+        self.ensure_directory(
+            path="/etc/unbound/unbound.conf.d",
         )
-        if self.config.disable_ipv6:
-            self.ensure_directory(
-                path="/etc/unbound/unbound.conf.d",
-            )
-            self.put_template(
-                "unbound/unbound.conf.j2",
-                "/etc/unbound/unbound.conf.d/chatmail.conf",
-            )
-        else:
-            self.remove_file("/etc/unbound/unbound.conf.d/chatmail.conf")
+        self.put_template(
+            "unbound/unbound.conf.j2",
+            "/etc/unbound/unbound.conf.d/chatmail.conf",
+            disable_ipv6=self.config.disable_ipv6,
+        )
 
     def activate(self):
         server.shell(
@@ -257,6 +263,13 @@ class WebsiteDeployer(Deployer):
 class LegacyRemoveDeployer(Deployer):
     def install(self):
         apt.packages(name="Remove rspamd", packages="rspamd", present=False)
+
+        # unbound-anchor was used to download /var/lib/unbound/root.key
+        # It is replaced by dns-root-data which contains /usr/share/dns/root.key.
+        # unbound systemd unit copies /usr/share/dns/root.key
+        # into /var/lib/unbound/root.key automatically on start
+        # as long as /usr/share/dns/root.key is present.
+        apt.packages(name="Remove unbound-anchor", packages="unbound-anchor", present=False)
 
         # remove historic expunge script
         # which is now implemented through a systemd timer (chatmail-expire)
@@ -368,6 +381,8 @@ class ChatmailVenvDeployer(Deployer):
     def __init__(self, config):
         self.config = config
         self.units = (
+            # doveauth must restart when chatmaild/ini file changes
+            "doveauth",
             "chatmail-metadata",
             "lastlogin",
             "chatmail-expire",
@@ -516,15 +531,17 @@ def deploy_chatmail(config_path: Path, disable_mail: bool, website_only: bool) -
             ("nginx", 443),
             (["master", "smtpd"], 465),
             (["master", "smtpd"], 587),
-            (["imap-login", "dovecot"], 993),
+            (["dovecot", "imap-login"], 993),
             ("iroh-relay", 3340),
             ("mtail", 3903),
-            ("stats", 3904),
+            (["dovecot", "stats"], 3904),
             ("nginx", 8443),
             (["master", "smtpd"], config.postfix_reinject_port),
             (["master", "smtpd"], config.postfix_reinject_port_incoming),
             ("filtermail", config.filtermail_smtp_port),
             ("filtermail", config.filtermail_smtp_port_incoming),
+            ("filtermail", config.filtermail_http_port_incoming),
+            ("filtermail", config.filtermail_lmtp_port_transport),
         ]
         for service, port in port_services:
             print(f"Checking if port {port} is available for {service}...")

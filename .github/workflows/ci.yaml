@@ -29,7 +29,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
       - name: download filtermail
-        run: curl -L https://github.com/chatmail/filtermail/releases/download/v0.6.6/filtermail-x86_64 -o /usr/local/bin/filtermail && chmod +x /usr/local/bin/filtermail
+        run: curl -L https://github.com/chatmail/filtermail/releases/download/v0.7.4/filtermail-x86_64 -o /usr/local/bin/filtermail && chmod +x /usr/local/bin/filtermail
       - name: run chatmaild tests 
         working-directory: chatmaild
         run: pipx run tox
@@ -57,9 +57,9 @@ jobs:
 
   lxc-test:
     name: LXC deploy and test
-    uses: chatmail/cmlxc/.github/workflows/lxc-test.yml@v0.14.6
+    uses: chatmail/cmlxc/.github/workflows/lxc-test.yml@main
     with:
-      cmlxc_version: v0.14.6
+      cmlxc_version: main
       cmlxc_commands: |
         cmlxc init 
         # single cmdeploy relay test

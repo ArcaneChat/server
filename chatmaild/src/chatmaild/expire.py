@@ -168,6 +168,16 @@ class Expiry:
         if mbox.last_login and mbox.last_login < cutoff_without_login:
             self.remove_mailbox(mbox.basedir)
             return
+        elif mbox.last_login is None:
+            try:
+                if not self.dry:
+                    os.rmdir(mbox.basedir)
+                    self.del_mboxes += 1
+            except OSError:
+                print_info(
+                    f"Skipped deleting {mbox.basedir}, doesn't have last_login but isn't empty"
+                )
+            return
 
         mboxname = os.path.basename(mbox.basedir)
         if self.verbose:

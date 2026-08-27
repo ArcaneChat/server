@@ -1,5 +1,60 @@
 # Changelog for chatmail deployment
 
+## [1.12.0] - 2026-07-31
+
+### Breaking Changes
+
+- [**breaking**] Introduce configurable system limits to reject new address creation and limit imap/smtp connections.
+  Dovecot default connection limit lowered from 50k to 10k,
+  Postfix default connection limit lowered from 5k to 1k,
+  larger relays need to adjust their settings.
+
+### Features
+
+- Reduce maximal_queue_lifetime from 5d to 2d
+- Disable negative cache in unbound (#992)
+- *(mtail)* Add incoming_mailer_daemon_mail_count
+- *(postfix)* Disable processing of MIME headers
+- *(dovecot)* Advertise privacy_mail as admin contact, drop server comment
+
+### Bug Fixes
+
+- Set relay restrictions per smtpd service with default reject
+- Reduce maxproc for filtermail-transport LMTP client to 500
+- Core 2.50.0 does not have delete_server_after config anymore.
+- Check if all required ports are available for filtermail (#983)
+- Always deploy unbound.conf.d/chatmail.conf (#993)
+- Expire empty directories (#994)
+- Crypt-r dependency was declared for wrong Python version
+- Always overwrite /etc/resolv.conf, even if it is a symbolic link
+- Pass kwargs to files.put()
+- List Iroh proxy endpoints used by 0.35 and 1.0, drop stale /relay/probe from earlier versions
+- Fix port discovery when ss -tulpn shows dovecot before stats
+
+### Documentation
+
+- Add scripts/initenv.sh to upgrade instructions
+- Update overview diagrams (#995)
+- *(overview)* Remove mermaid styles from 'Accepting and delivering mail' (#1009)
+- *(README.md)* Clarify security enforcement (#1011)
+
+### Miscellaneous Tasks
+
+- *(ci)* Auto-trigger docker build on release tag push
+- *(acmetool)* Update let's encrypt ToS link to 1.8
+- *(ci)* Update doc staging upload path
+- *(ci)* Fix docs upload path
+
+### Refactor
+
+- *(postfix)* Remove unused "filter" lmtp service
+- Install dns-root-data instead of using unbound-anchor
+- *(deps)* Remove domain-validator dependency
+
+### Testing
+
+- Set socket security for IMAP and SMTP to "TLS" in "dclogin"
+
 ## [1.11.0] - 2026-05-15
 
 ### Breaking Changes
