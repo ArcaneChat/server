@@ -1,10 +1,14 @@
 from pyinfra import facts, host
-from pyinfra.operations import apt
+from pyinfra.operations import apt, server
 
 from cmdeploy.basedeploy import Deployer
+from cmdeploy.pins import FILTERMAIL_ARTIFACTS, MTAIL_ARTIFACTS
 
 
 class MtailDeployer(Deployer):
+    bin_path = "/usr/local/bin/mtail"
+    progs_dir = "/etc/mtail"
+
     def __init__(self, mtail_address):
         self.mtail_address = mtail_address
 
@@ -12,19 +16,10 @@ class MtailDeployer(Deployer):
         # Uninstall mtail package to install a static binary.
         apt.packages(name="Uninstall mtail", packages=["mtail"], present=False)
 
-        (url, sha256sum) = {
-            "x86_64": (
-                "https://github.com/google/mtail/releases/download/v3.0.8/mtail_3.0.8_linux_amd64.tar.gz",
-                "d55cb601049c5e61eabab29998dbbcea95d480e5448544f9470337ba2eea882e",
-            ),
-            "aarch64": (
-                "https://github.com/google/mtail/releases/download/v3.0.8/mtail_3.0.8_linux_arm64.tar.gz",
-                "f748db8ad2a1e0b63684d4c8868cf6a373a20f7e6922e5ece601fff0ee00eb1a",
-            ),
-        }[host.get_fact(facts.server.Arch)]
+        (url, sha256sum) = MTAIL_ARTIFACTS[host.get_fact(facts.server.Arch)]
         self.download_executable(
             url,
-            "/usr/local/bin/mtail",
+            self.bin_path,
             sha256sum,
             extract="gunzip | tar -xf - mtail -O",
         )
@@ -36,8 +31,31 @@ class MtailDeployer(Deployer):
             "mtail/mtail.service.j2",
             address=self.mtail_address or "127.0.0.1",
             port=3903,
+            bin_path=self.bin_path,
+            progs_dir=self.progs_dir,
         )
-        self.put_file("mtail/delivered_mail.mtail", "/etc/mtail/delivered_mail.mtail")
+        if self.mtail_address:
+            self.put_file(
+                "mtail/delivered_mail.mtail", f"{self.progs_dir}/delivered_mail.mtail"
+            )
+            url, sha256sum = FILTERMAIL_ARTIFACTS['mtail']
+            self.download_executable(
+                url,
+                f"{self.progs_dir}/filtermail.mtail",
+                sha256sum,
+                mode="644",
+            )
+            if self.need_restart:
+                # Check if all installed mtail rules compile or fail early
+                # --one_shot to exit, --port 0 to not clash with running mtail.
+                server.shell(
+                    name="Validate mtail programs",
+                    commands=[
+                        f"timeout 30 {self.bin_path} --compile_only --one_shot"
+                        f" --progs {self.progs_dir} --logs /dev/null"
+                        " --address 127.0.0.1 --port 0"
+                    ],
+                )
 
     def activate(self):
         active = bool(self.mtail_address)

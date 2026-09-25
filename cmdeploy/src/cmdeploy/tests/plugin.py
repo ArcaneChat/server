@@ -18,14 +18,8 @@ def format_mail_domain(raw_domain: str) -> str:
     return raw_domain
 
 
-conftestdir = Path(__file__).parent
-
-
 def pytest_configure(config):
     config._benchresults = {}
-    config.addinivalue_line(
-        "markers", "slow: mark test to require --slow option to run"
-    )
 
 
 def _get_chatmail_config():
@@ -211,7 +205,7 @@ class ImapConn:
         status, res = self.conn.select()
         if int(res[0]) == 0:
             raise ValueError("no messages in imap folder")
-        status, results = self.conn.fetch("1:*", "(RFC822)")
+        status, results = self.conn.fetch("1:*", "(BODY.PEEK[])")
         assert status == "OK"
         return results
 
@@ -377,8 +371,12 @@ class ChatmailACFactory:
 
 
 @pytest.fixture(scope="session")
-def rpc(tmp_path_factory):
-    """Start a deltachat-rpc-server process for the test session."""
+def cmrpc(tmp_path_factory):
+    """Start a deltachat-rpc-server process for the test session.
+
+    Not named "rpc": the deltachat-rpc-client pytest plugin registers a
+    function-scoped fixture under that name and would shadow this one.
+    """
 
     # NB: accounts_dir must NOT already exist as directory --
     # core-rust only creates accounts.toml if the dir doesn't exist yet.
@@ -390,10 +388,10 @@ def rpc(tmp_path_factory):
 
 
 @pytest.fixture
-def cmfactory(rpc, gencreds, maildomain, chatmail_config):
+def cmfactory(cmrpc, gencreds, maildomain, chatmail_config):
     """Return a ChatmailACFactory for creating online Delta Chat accounts."""
     return ChatmailACFactory(
-        rpc=rpc,
+        rpc=cmrpc,
         maildomain=maildomain,
         gencreds=gencreds,
         chatmail_config=chatmail_config,

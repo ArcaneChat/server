@@ -1,0 +1,39 @@
+{
+  "clients": [
+    {
+      "clientId": "arcanechat",
+      "sources": [
+        {
+          "sourceId": "gplay",
+          "versionInteger": 300007554,
+          "versionString": "2.62.0",
+          "downloadUrl": "https://github.com/ArcaneChat/android/releases/download/v2.62.0/ArcaneChat-gplay.apk"
+        },
+        {
+          "sourceId": "foss:armeabi-v7a",
+          "versionInteger": 300007551,
+          "versionString": "2.62.0",
+          "downloadUrl": "https://github.com/ArcaneChat/android/releases/download/v2.62.0/ArcaneChat-foss-armeabi-v7a-2.62.0.apk"
+        },
+        {
+          "sourceId": "foss:arm64-v8a",
+          "versionInteger": 300007552,
+          "versionString": "2.62.0",
+          "downloadUrl": "https://github.com/ArcaneChat/android/releases/download/v2.62.0/ArcaneChat-foss-arm64-v8a-2.62.0.apk"
+        }
+      ]
+    },
+
+    {
+      "clientId": "deltachat",
+      "sources": [
+        {
+          "sourceId": "gplay",
+          "versionInteger": 757,
+          "versionString": "2.59.1",
+          "downloadUrl": "https://github.com/deltachat/deltachat-android/releases/download/v2.59.1/deltachat-gplay-release-2.59.1.apk"
+        }
+      ]
+    }
+  ]
+}

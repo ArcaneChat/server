@@ -111,7 +111,7 @@ def test_download_dovecot_package_uses_archive_version_for_url_and_filename(
 
     deb, changed = dovecot_deployer._download_dovecot_package("core", "amd64")
 
-    archive_version = dovecot_deployer.DOVECOT_ARCHIVE_VERSION.replace("+", "%2B")
+    archive_version = dovecot_deployer.DOVECOT_VERSION.replace("+", "%2B")
     expected_deb = f"/root/dovecot-core_{archive_version}_amd64.deb"
 
     # Verify the returned path uses archive version, not package version (with epoch)
@@ -136,6 +136,7 @@ def test_install_skips_dpkg_path_when_epoch_matched_packages_present(
                     "dovecot-core": [dovecot_deployer.DOVECOT_PACKAGE_VERSION],
                     "dovecot-imapd": [dovecot_deployer.DOVECOT_PACKAGE_VERSION],
                     "dovecot-lmtpd": [dovecot_deployer.DOVECOT_PACKAGE_VERSION],
+                    "dovecot-auth-lua": [dovecot_deployer.DOVECOT_PACKAGE_VERSION],
                 },
             ),
             (dovecot_deployer.Arch, "x86_64"),
@@ -180,9 +181,12 @@ def test_install_unsupported_arch_falls_back_to_apt(
     deployer.install()
 
     actual_pkgs = [c["packages"] for c in apt_calls]
-    assert actual_pkgs == [["dovecot-core"], ["dovecot-imapd"], ["dovecot-lmtpd"]], (
-        f"expected apt install of core/imapd/lmtpd, got {actual_pkgs}"
-    )
+    assert actual_pkgs == [
+        ["dovecot-core"],
+        ["dovecot-imapd"],
+        ["dovecot-lmtpd"],
+        ["dovecot-auth-lua"],
+    ], f"expected apt install of core/imapd/lmtpd/auth-lua, got {actual_pkgs}"
     assert track_shell == [], "should not run dpkg for unsupported arch"
     assert deployer.need_restart is True, (
         "need_restart should be True when apt installed a package"

@@ -6,13 +6,13 @@ Technical overview
 Directories of the relay repository
 -----------------------------------
 
-The `chatmail relay repository <https://github.com/chatmail/relay/tree/main/>`_
+The `chatmail relay repository <https://github.com/chatmail/relay>`_
 has four main directories.
 
 ``scripts/``
 ~~~~~~~~~~~~~
 
-`scripts <https://github.com/chatmail/relay/tree/main/scripts>`_
+:repodir:`scripts`
 offers two convenience tools for beginners:
 
 - ``initenv.sh`` installs a local virtualenv Python environment and
@@ -71,7 +71,7 @@ The deployed system components of a chatmail relay are:
 ``chatmaild/``
 ~~~~~~~~~~~~~~
 
-`chatmaild <https://github.com/chatmail/relay/tree/main/chatmaild>`_
+:repodir:`chatmaild`
 is a Python package containing several small services which handle
 authentication, trigger push notifications on new messages, ensure
 that outbound mails are encrypted, delete inactive users, and some
@@ -83,25 +83,25 @@ that integrate with Dovecot and Postfix to achieve instant-onboarding
 and only relaying OpenPGP end-to-end messages encrypted messages. A
 short overview of ``chatmaild`` services:
 
--  `doveauth <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/doveauth.py>`_
-   implements create-on-login address semantics and is used by Dovecot
-   during IMAP login and by Postfix during SMTP/SUBMISSION login which
-   in turn uses `Dovecot SASL
-   <https://doc.dovecot.org/2.3/configuration_manual/authentication/dict/#complete-example-for-authenticating-via-a-unix-socket>`_
-   to authenticate logins.
+-  :repofile:`doveauth <chatmaild/src/chatmaild/doveauth.py>`
+   implements create-on-login address semantics.
+   Dovecot authenticates IMAP logins, and Postfix SMTP/SUBMISSION logins through `Dovecot SASL
+   <https://doc.dovecot.org/2.3/configuration_manual/authentication/authentication_mechanisms/>`_,
+   from an :repofile:`auth.lua <cmdeploy/src/cmdeploy/dovecot/auth.lua.j2>` script
+   that reads the maildir directly. Only addresses which do not exist yet
+   are passed on to doveauth, which owns the creation policy.
 
--  `chatmail-metadata <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/metadata.py>`_
-   is contacted by a `Dovecot lua
-   script <https://github.com/chatmail/relay/blob/main/cmdeploy/src/cmdeploy/dovecot/push_notification.lua>`_
-   to store user-specific relay-side config. On new messages, it `passes
-   the user’s push notification
-   token <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/notifier.py>`_
+-  :repofile:`chatmail-metadata <chatmaild/src/chatmaild/metadata.py>`
+   is contacted by a
+   :repofile:`Dovecot lua script <cmdeploy/src/cmdeploy/dovecot/push_notification.lua>`
+   to store user-specific relay-side config. On new messages, it
+   :repofile:`passes the user’s push notification token <chatmaild/src/chatmaild/notifier.py>`
    to
    `notifications.delta.chat <https://delta.chat/en/help#instant-delivery>`_
    so the push notifications on the user’s phone can be triggered by
    Apple/Google/Huawei.
 
--  `chatmail-expire <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/expire.py>`_
+-  :repofile:`chatmail-expire <chatmaild/src/chatmaild/expire.py>`
    deletes old messages, large messages, and entire mailboxes
    of users who have not logged in for longer than
    ``delete_inactive_users_after`` days.
@@ -109,15 +109,14 @@ short overview of ``chatmaild`` services:
 -  ``chatmail-quota-expire`` is called by Dovecot's ``quota_warning`` mechanism
    and will automatically remove oldest messages to keep mailboxes well under ``max_mailbox_size``.
 
--  `lastlogin <https://github.com/chatmail/relay/blob/main/chatmaild/src/chatmaild/lastlogin.py>`_
+-  :repofile:`lastlogin <chatmaild/src/chatmaild/lastlogin.py>`
    is contacted by Dovecot when a user logs in and stores the date of
    the login.
 
 ``www/``
 ~~~~~~~~~
 
-`www <https://github.com/chatmail/relay/tree/main/www>`_ contains
-the html, css, and markdown files which make up a chatmail relay’s
+:repodir:`www` contains the html, css, and markdown files which make up a chatmail relay’s
 web page. Edit them before deploying to make your chatmail relay
 stand out.
 
@@ -157,7 +156,7 @@ Chatmail relay dependency diagram
         filtermail-outgoing --- |10025 reinject|postfix;
         filtermail-incoming --- |10026 reinject|postfix;
         postfix --- |milter opendkim.sock|OpenDKIM
-        dovecot --- |doveauth.socket|doveauth;
+        dovecot --- |10084 create|doveauth;
         dovecot --- |message delivery|maildir["maildir
         /home/vmail/.../user"];
         dovecot --- |lastlogin.socket|lastlogin;
@@ -248,6 +247,33 @@ Fresh chatmail addresses have a mailbox directory that contains:
    state. If the address is only used by one device, the Maildir
    directories will typically be empty unless the user of that address
    hasn’t been online for a while.
+
+App version information (experimental)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A chatmail relay ships the
+:repofile:`appversions.json <chatmaild/src/chatmaild/defaults/appversions.json>`
+file of the ``chatmaild`` package
+and serves its content under the IMAP METADATA key
+``/shared/vendor/deltachat/appversions``.
+Chat apps installed outside of app stores read this key
+to learn about updates and where to download them.
+The mechanism is experimental and may change.
+
+The file travels with the normal deploy:
+update the repository checkout and run ``cmdeploy run``.
+Local modifications of ``appversions.json`` are deployed as-is,
+so you can serve your own app version information,
+including links to app downloads.
+There is no automatic refresh:
+version information changes only when you deploy again.
+
+.. note::
+
+   Note that as of August 2026, only Delta Chat Android Google Play version
+   is beginning to support discovering app versions from relays.
+   Generally, consumers of relay-provided app version information
+   need to verify themselves that downloaded app files are valid.
 
 Active ports
 ~~~~~~~~~~~~
