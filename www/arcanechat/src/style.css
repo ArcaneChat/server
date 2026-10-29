@@ -315,6 +315,7 @@ h6,
     0 0,
     0 0;
   background-repeat: no-repeat, repeat, no-repeat;
+  background-size: max(100%, 1366px) auto, auto, auto;
 }
 
 @media (max-width: 991.98px) {
@@ -383,6 +384,7 @@ h6,
     0 0,
     0 0;
   background-repeat: no-repeat, repeat, no-repeat;
+  background-size: max(100%, 1366px) auto, auto, auto;
 }
 
 .footer .btn.btn-social {
