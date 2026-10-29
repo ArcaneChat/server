@@ -19,15 +19,15 @@ if (track) {
   track.append(track.firstElementChild.cloneNode(true));
   let index = 0;
   setInterval(() => {
-    index++;
-    track.style.transition = "transform 0.3s";
-    track.style.transform = `translateX(-${index * 100}%)`;
-  }, 3000);
-  track.addEventListener("transitionend", () => {
+    // The last slide is a clone of the first: jump back before advancing.
     if (index === count) {
       index = 0;
       track.style.transition = "none";
       track.style.transform = "translateX(0)";
+      track.offsetWidth;
     }
-  });
+    index++;
+    track.style.transition = "transform 0.3s";
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }, 3000);
 }
