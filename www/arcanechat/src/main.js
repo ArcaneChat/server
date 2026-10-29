@@ -1,6 +1,12 @@
 import Swiper from "swiper";
 import { Autoplay } from "swiper/modules";
-import { Collapse } from "bootstrap";
+
+const toggler = document.querySelector(".navbar-toggler");
+const collapse = document.getElementById("navbarCollapse");
+toggler?.addEventListener("click", () => {
+  const open = collapse.classList.toggle("show");
+  toggler.setAttribute("aria-expanded", open);
+});
 
 window.addEventListener("scroll", () => {
   if (window.scrollY > 100) {
