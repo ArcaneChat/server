@@ -1,6 +1,3 @@
-import Swiper from "swiper";
-import { Autoplay } from "swiper/modules";
-
 const toggler = document.querySelector(".navbar-toggler");
 const collapse = document.getElementById("navbarCollapse");
 toggler?.addEventListener("click", () => {
@@ -16,15 +13,21 @@ window.addEventListener("scroll", () => {
   }
 });
 
-window.addEventListener("load", () => {
-  const swiper = new Swiper(".swiper", {
-    modules: [Autoplay],
-    slidesPerView: 1,
-    centeredSlides: true,
-    loop: true,
-    autoplay: {
-      delay: 3000,
-      disableOnInteraction: false,
-    },
+const track = document.querySelector(".carousel-track");
+if (track) {
+  const count = track.children.length;
+  track.append(track.firstElementChild.cloneNode(true));
+  let index = 0;
+  setInterval(() => {
+    index++;
+    track.style.transition = "transform 0.3s";
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }, 3000);
+  track.addEventListener("transitionend", () => {
+    if (index === count) {
+      index = 0;
+      track.style.transition = "none";
+      track.style.transform = "translateX(0)";
+    }
   });
-});
+}

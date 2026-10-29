@@ -1,8 +1,6 @@
 @import "@fontsource/jost/500.css";
 @import "@fontsource/jost/600.css";
 @import "@fontsource/jost/700.css";
-@import "swiper/css";
-@import "swiper/css/autoplay";
 @import "./base.css";
 
 /********** Template CSS **********/
@@ -368,13 +366,22 @@ h6,
   z-index: 999;
 }
 
-.screenshot-carousel .swiper-slide img {
-  width: 225px;
-  height: 490px;
+.screenshot-carousel .carousel {
+  overflow: hidden;
+  border-radius: 20px;
 }
 
-.screenshot-carousel .swiper {
-  border-radius: 20px;
+.carousel-track {
+  display: flex;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+}
+
+.screenshot-carousel .carousel-slide img {
+  width: 225px;
+  height: 490px;
 }
 
 /*** Footer ***/
