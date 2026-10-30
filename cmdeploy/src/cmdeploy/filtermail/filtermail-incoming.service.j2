@@ -3,6 +3,7 @@ Description=Incoming Chatmail Postfix before queue filter
 
 [Service]
 ExecStart={{ bin_path }} {{ config_path }} incoming
+Environment=FILTERMAIL_SKIP_DKIM=1
 Restart=always
 RestartSec=30
 User=vmail
