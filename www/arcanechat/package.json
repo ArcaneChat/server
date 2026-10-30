@@ -13,7 +13,6 @@
     "vite": "^6.0.7"
   },
   "dependencies": {
-    "@fontsource/jost": "^5.1.2",
-    "swiper": "^11.2.1"
+    "@fontsource/jost": "^5.1.2"
   }
 }

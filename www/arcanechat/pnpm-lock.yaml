@@ -11,9 +11,6 @@ importers:
       '@fontsource/jost':
         specifier: ^5.1.2
         version: 5.1.2
-      swiper:
-        specifier: ^11.2.1
-        version: 11.2.1
     devDependencies:
       bootstrap-icons:
         specifier: ^1.11.3
@@ -467,10 +464,6 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
-  swiper@11.2.1:
-    resolution: {integrity: sha512-62G69+iQRIfUqTmJkWpZDcX891Ra8O9050ckt1/JI2H+0483g+gq0m7gINecDqMtDh2zt5dK+uzBRxGhGOOvQA==}
-    engines: {node: '>= 4.7.0'}
-
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -841,8 +834,6 @@ snapshots:
     optional: true
 
   source-map-js@1.2.1: {}
-
-  swiper@11.2.1: {}
 
   to-regex-range@5.0.1:
     dependencies:
