@@ -14,7 +14,7 @@ class FiltermailDeployer(Deployer):
     def install(self):
         local_bin = os.environ.get("CHATMAIL_FILTERMAIL_BINARY")
         if local_bin:
-            self.put_executable(
+            self.put_executable2(
                 src=local_bin,
                 dest=self.bin_path,
             )

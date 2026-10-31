@@ -2,5 +2,14 @@
 #
 # Wrapper for cmdelpoy to run it in activated virtualenv.
 set -e
+
+TARGET=x86_64-unknown-linux-musl
+DIR=`pwd`
+cd ../filtermail
+cargo build --release --locked --target $TARGET
+cp "target/$TARGET/release/filtermail" "$DIR/filtermail"
+cd "$DIR"
+export CHATMAIL_FILTERMAIL_BINARY="$DIR/filtermail"
+echo $CHATMAIL_FILTERMAIL_BINARY
 . venv/bin/activate
 cmdeploy "$@"

@@ -34,6 +34,11 @@ class PostfixDeployer(Deployer):
         )
 
         self.put_file(
+            "postfix/submission_header_cleanup_keepsubject",
+            "/etc/postfix/submission_header_cleanup_keepsubject",
+        )
+
+        self.put_file(
             "postfix/submission_header_cleanup",
             "/etc/postfix/submission_header_cleanup",
         )

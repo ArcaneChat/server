@@ -1,3 +1,4 @@
+import hashlib
 import importlib.resources
 import io
 import os
@@ -181,6 +182,22 @@ class Deployer:
         )
 
         return self._update_restart_signals(dest, res)
+
+    def put_executable2(self, src, dest):
+        # Overwriting a running binary fails with "Text file busy",
+        # so upload next to it and atomically rename over it.
+        with open(src, "rb") as f:
+            local_sha256 = hashlib.sha256(f.read()).hexdigest()
+        if host.get_fact(Sha256File, dest) == local_sha256:
+            return
+
+        tmp = f"{dest}.new"
+        self.put_file(src, tmp, mode="755")
+        server.shell(
+            name=f"Move {tmp} to {dest}",
+            commands=[f"mv {tmp} {dest}"],
+        )
+        self.need_restart = True
 
     def put_executable(self, src, dest):
         return self.put_file(src, dest, mode="755")

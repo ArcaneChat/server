@@ -511,6 +511,7 @@ def deploy_chatmail(config_path: Path, disable_mail: bool, website_only: bool) -
 
     if not is_in_container():
         port_services = [
+            (["master", "smtpd"], 10027),
             (["master", "smtpd"], 25),
             ("unbound", 53),
         ]
